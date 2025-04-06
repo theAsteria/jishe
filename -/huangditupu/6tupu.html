@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <title>知识图谱-朱祁镇
+    </title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        * {
+            background-color: #edce65;
+        }
+
+        #network-container {
+            width: 100vw;
+            height: 100vh;
+            border: 1px solid #ccc;
+        }
+
+        .info-panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            max-width: 300px;
+        }
+
+
+        .btn {
+            display: inline-block;
+            background: #8b0000;
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #b38f2b;
+            color: #fff;
+        }
+
+        .btn-return {
+            margin: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-return::after {
+            content: '➔';
+            margin-left: 8px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-return:hover::after {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../content.html" class="btn btn-return">
+        返回人物信息页面
+    </a>
+    <div id="network-container"></div>
+    <div id="info-panel" class="info-panel" style="display: none"></div>
+
+    <script>
+        // 原始数据（替换为朱祁镇相关数据）
+        const dataset = [
+            {
+                "@context": "https://schema.org",
+                "@id": "#zhengtong",
+                "@type": "Person",
+                名称: "朱祁镇",
+                别名: ["明英宗"],
+                出生日期: "1427-11-29",
+                逝世日期: "1464-02-19",
+                出生地: "北京",
+                陵墓: "北京明十三陵中的裕陵",
+                职业: {
+                    "@type": "Occupation",
+                    职位名称: "明朝皇帝",
+                    任期开始: "1435",
+                    任期结束: "1449",
+                    再任: { "@id": "#zhengtong_restored", 时间: "1457" },
+                },
+                军事成就: [
+                    { "@id": "#tumu_crisis", 角色: "皇帝（被俘）" },
+                    { "@id": "#restoration_war", 角色: "复位后平乱" },
+                ],
+                重要政策: [
+                    { "@id": "#zhengtong_policy", 类型: "政治改革" },
+                ],
+                相关人物: [
+                    { "@id": "#zhangteng", 关系: "太监（王振）" },
+                    { "@id": "#yuqian", 关系: "将领（于谦）" },
+                    { "@id": "#zhengtong_mother", 关系: "母亲（孙太后）" },
+                ],
+                所属组织: { "@id": "#ming_dynasty" },
+            },
+            {
+                "@id": "#zhangteng",
+                "@type": "Person",
+                名称: "王振",
+                描述: "明英宗时期权势极大的太监",
+                影响: ["导致土木堡之变"],
+            },
+            {
+                "@id": "#yuqian",
+                "@type": "Person",
+                名称: "于谦",
+                描述: "明朝名臣，在土木堡之变后力挽狂澜",
+                历史贡献: ["保卫北京", "拥立朱祁钰为帝"],
+            },
+            {
+                "@id": "#zhengtong_mother",
+                "@type": "Person",
+                名称: "孙太后",
+                描述: "明英宗的母亲，在政治上有重要影响力",
+                历史贡献: ["支持于谦保卫北京", "拥立朱祁镇复位"],
+            },
+            {
+                "@id": "#zhengtong_restored",
+                "@type": "Event",
+                名称: "朱祁镇复位",
+                时间: "1457",
+                描述: "朱祁钰病重时，朱祁镇发动夺门之变复位",
+            },
+            {
+                "@id": "#tumu_crisis",
+                "@type": "Event",
+                名称: "土木堡之变",
+                时间: "1449-08-15",
+                参战方: [
+                    { "@id": "#zhengtong", 阵营: "明军" },
+                    { "@id": "#esen_taiji", 阵营: "瓦剌" },
+                ],
+                结果: "明英宗被俘，明朝国力受损",
+            },
+            {
+                "@id": "#restoration_war",
+                "@type": "Event",
+                名称: "夺门之变",
+                时间: "1457",
+                参战方: [
+                    { "@id": "#zhengtong", 阵营: "复位派" },
+                    { "@id": "#zhengtong_yuqian", 阵营: "景泰帝支持者" },
+                ],
+                结果: "朱祁镇复位，于谦被害",
+            },
+            {
+                "@id": "#zhengtong_policy",
+                "@type": "Event",
+                名称: "朱祁镇复行政策",
+                时间: "1457-1464",
+                内容: ["平反于谦冤案", "重用石亨、徐有贞等"],
+            },
+        ];
+
+        // 创建节点和边的容器
+        const nodes = new vis.DataSet([]);
+        const edges = new vis.DataSet([]);
+
+        // 节点样式配置
+        const typeStyles = {
+            Person: { color: "#FFE4B5", shape: "ellipse" },
+            Event: { color: "#98FB98", shape: "box" },
+        };
+
+        // 解析数据
+        dataset.forEach((entity) => {
+            // 创建节点
+            const node = {
+                id: entity["@id"],
+                label: entity.名称 || entity.名称,
+                group: entity["@type"],
+                ...(typeStyles[entity["@type"]] || {}),
+            };
+            nodes.add(node);
+
+            // 创建关系边
+            const relations = {
+                相关人物: "相关",
+            };
+
+            Object.entries(entity).forEach(([key, value]) => {
+                if (relations[key]) {
+                    const processRelation = (target, relationType) => {
+                        if (target["@id"]) {
+                            edges.add({
+                                from: entity["@id"],
+                                to: target["@id"],
+                                label: relationType,
+                                arrows: "to",
+                            });
+                        }
+                    };
+
+                    if (Array.isArray(value)) {
+                        value.forEach((item) => processRelation(item, relations[key]));
+                    } else {
+                        processRelation(value, relations[key]);
+                    }
+                }
+            });
+        });
+
+        // 网络图配置
+        const options = {
+            nodes: {
+                font: { size: 14 },
+                borderWidth: 2,
+                shadow: true,
+            },
+            edges: {
+                arrows: { to: { scaleFactor: 0.5 } },
+                smooth: { type: "cubicBezier" },
+            },
+            physics: {
+                stabilization: true,
+                barnesHut: {
+                    gravitationalConstant: -2000,
+                    springLength: 200,
+                },
+            },
+        };
+
+        // 创建网络图
+        const container = document.getElementById("network-container");
+        const network = new vis.Network(container, { nodes, edges }, options);
+
+        // 点击事件处理
+        network.on("click", (params) => {
+            if (params.nodes.length) {
+                const nodeId = params.nodes[0];
+                const entity = dataset.find((e) => e["@id"] === nodeId);
+                const panel = document.getElementById("info-panel");
+
+                let content = `<h3>${entity.名称}</h3>`;
+                Object.entries(entity).forEach(([key, value]) => {
+                    if (!key.startsWith("@") && key !== "名称") {
+                        content += `<p><strong>${key}：</strong>${JSON.stringify(
+                            value
+                        ).replace(/[$$$$"]+/g, "")}</p>`;
+                    }
+                });
+
+                panel.innerHTML = content;
+                panel.style.display = "block";
+            }
+        });
+
+        // 双击隐藏面板
+        network.on("doubleClick", () => {
+            document.getElementById("info-panel").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>

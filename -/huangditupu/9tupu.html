@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <title>知识图谱-朱佑樘</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        * {
+            background-color: #edce65;
+        }
+
+        #network-container {
+            width: 100vw;
+            height: 100vh;
+            border: 1px solid #ccc;
+        }
+
+        .info-panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            max-width: 300px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #8b0000;
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #b38f2b;
+            color: #fff;
+        }
+
+        .btn-return {
+            margin: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-return::after {
+            content: '➔';
+            margin-left: 8px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-return:hover::after {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../content.html" class="btn btn-return">
+        返回人物信息页面
+    </a>
+    <div id="network-container"></div>
+    <div id="info-panel" class="info-panel" style="display: none"></div>
+
+    <script>
+        // 原始数据（朱佑樘相关）
+        const dataset = [
+            {
+                "@context": "https://schema.org",
+                "@id": "#zhuyijun",
+                "@type": "Person",
+                名称: "朱佑樘",
+                别名: ["明孝宗", "弘治帝"],
+                出生日期: "1470-07-30",
+                逝世日期: "1505-05-07",
+                出生地: "北京",
+                陵墓: "北京明十三陵之泰陵",
+                配偶: { "@id": "#xianfei" },
+                子女: [
+                    { "@id": "#zhaoyi", 姓名: "朱厚照", 角色: "皇子（后为正德帝）" },
+                    { "@id": "#zhengde", 姓名: "朱厚炜", 角色: "皇子" },
+                ],
+                职业: {
+                    "@type": "Occupation",
+                    职位名称: "明朝皇帝",
+                    任期开始: "1487",
+                    任期结束: "1505",
+                    主要政绩: ["弘治中兴", "重用贤臣", "轻徭薄赋"],
+                },
+                重要政策: [
+                    { "@id": "#hongzhi_reforms", 类型: "制度改革" },
+                    { "@id": "#reducing_tax", 类型: "经济政策" },
+                ],
+                相关人物: [
+                    { "@id": "#liuxiang", 关系: "内阁首辅" },
+                    { "@id": "#xieqian", 关系: "著名谏臣" },
+                ],
+                所属组织: { "@id": "#ming_dynasty_government" },
+            },
+            {
+                "@id": "#xianfei",
+                "@type": "Person",
+                名称: "张皇后",
+                描述: "明孝宗朱佑樘的皇后，端庄贤淑",
+            },
+            {
+                "@id": "#zhaoyi",
+                "@type": "Person",
+                名称: "朱厚照",
+                封号: "正德帝",
+                重要事件: { "@id": "#zhengde_expedition", 名称: "正德南巡" },
+            },
+            {
+                "@id": "#zhengde",
+                "@type": "Person",
+                名称: "朱厚炜",
+                描述: "明孝宗之子，早逝",
+            },
+            {
+                "@id": "#liuxiang",
+                "@type": "Person",
+                名称: "刘健",
+                官职: "内阁首辅",
+                贡献: ["辅佐弘治中兴", "整顿吏治"],
+            },
+            {
+                "@id": "#xieqian",
+                "@type": "Person",
+                名称: "谢迁",
+                官职: "内阁大臣",
+                贡献: ["直言敢谏", "参与弘治新政"],
+            },
+            {
+                "@id": "#hongzhi_reforms",
+                "@type": "Event",
+                名称: "弘治新政",
+                时间: "1487-1505",
+                内容: ["整顿吏治", "任用贤能", "减轻赋税"],
+            },
+            {
+                "@id": "#reducing_tax",
+                "@type": "Event",
+                名称: "轻徭薄赋政策",
+                时间: "1487-1505",
+                影响: ["促进经济发展", "改善民生"],
+            },
+            {
+                "@id": "#zhengde_expedition",
+                "@type": "Event",
+                名称: "正德南巡",
+                时间: "1517",
+                描述: "明武宗朱厚照南巡的事件，与朱佑樘无直接关系，但作为其子的重要事件列出",
+            },
+            {
+                "@id": "#ming_dynasty_government",
+                "@type": "Organization",
+                名称: "明朝朝廷",
+                成员: [
+                    { "@id": "#zhuyijun", 职务: "皇帝" },
+                    { "@id": "#liuxiang", 职务: "内阁首辅" },
+                    { "@id": "#xieqian", 职务: "内阁大臣" },
+                ],
+                存在时期: "1368-1644",
+            }
+        ];
+
+        // 创建节点和边的容器
+        const nodes = new vis.DataSet([]);
+        const edges = new vis.DataSet([]);
+
+        // 节点样式配置
+        const typeStyles = {
+            Person: { color: "#FFE4B5", shape: "ellipse" },
+            Event: { color: "#98FB98", shape: "box" },
+            Organization: { color: "#B0E0E6", shape: "database" },
+        };
+
+        // 解析数据
+        dataset.forEach((entity) => {
+            // 创建节点
+            const node = {
+                id: entity["@id"],
+                label: entity.名称 || entity.名称,
+                group: entity["@type"],
+                ...(typeStyles[entity["@type"]] || {}),
+            };
+            nodes.add(node);
+
+            // 创建关系边
+            const relations = {
+                配偶: "配偶",
+                子女: "子女",
+                相关人物: "相关",
+                成员: "成员",
+            };
+
+            Object.entries(entity).forEach(([key, value]) => {
+                if (relations[key]) {
+                    const processRelation = (target, relationType) => {
+                        if (target["@id"]) {
+                            edges.add({
+                                from: entity["@id"],
+                                to: target["@id"],
+                                label: relationType,
+                                arrows: "to",
+                            });
+                        }
+                    };
+
+                    if (Array.isArray(value)) {
+                        value.forEach((item) => processRelation(item, relations[key]));
+                    } else {
+                        processRelation(value, relations[key]);
+                    }
+                }
+            });
+        });
+
+        // 网络图配置
+        const options = {
+            nodes: {
+                font: { size: 14 },
+                borderWidth: 2,
+                shadow: true,
+            },
+            edges: {
+                arrows: { to: { scaleFactor: 0.5 } },
+                smooth: { type: "cubicBezier" },
+            },
+            physics: {
+                stabilization: true,
+                barnesHut: {
+                    gravitationalConstant: -2000,
+                    springLength: 200,
+                },
+            },
+        };
+
+        // 创建网络图
+        const container = document.getElementById("network-container");
+        const network = new vis.Network(container, { nodes, edges }, options);
+
+        // 点击事件处理
+        network.on("click", (params) => {
+            if (params.nodes.length) {
+                const nodeId = params.nodes[0];
+                const entity = dataset.find((e) => e["@id"] === nodeId);
+                const panel = document.getElementById("info-panel");
+
+                let content = `<h3>${entity.名称}</h3>`;
+                Object.entries(entity).forEach(([key, value]) => {
+                    if (!key.startsWith("@") && key !== "名称") {
+                        content += `<p><strong>${key}：</strong>${JSON.stringify(
+                            value
+                        ).replace(/[$$$$"]+/g, "")}</p>`;
+                    }
+                });
+
+                panel.innerHTML = content;
+                panel.style.display = "block";
+            }
+        });
+
+        // 双击隐藏面板
+        network.on("doubleClick", () => {
+            document.getElementById("info-panel").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>

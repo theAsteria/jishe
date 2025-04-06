@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <title>知识图谱-朱常洛</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        * {
+            background-color: #edce65;
+        }
+
+        #network-container {
+            width: 100vw;
+            height: 100vh;
+            border: 1px solid #ccc;
+        }
+
+        .info-panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            max-width: 300px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #8b0000;
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #b38f2b;
+            color: #fff;
+        }
+
+        .btn-return {
+            margin: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-return::after {
+            content: '➔';
+            margin-left: 8px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-return:hover::after {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../content.html" class="btn btn-return">
+        返回人物信息页面
+    </a>
+    <div id="network-container"></div>
+    <div id="info-panel" class="info-panel" style="display: none"></div>
+
+    <script>
+        // 原始数据
+        const dataset = [
+            {
+                "@context": "https://schema.org",
+                "@id": "#zhu_changluo",
+                "@type": "Person",
+                名称: "朱常洛",
+                别名: ["明光宗", "泰昌帝"],
+                出生日期: "1582-08-28",
+                逝世日期: "1620-09-26",
+                出生地: "北京紫禁城",
+                陵墓: "北京明十三陵中的庆陵",
+                职业: {
+                    "@type": "Occupation",
+                    职位名称: "明朝第十四位皇帝",
+                    任期开始: "1620-08-28",
+                    任期结束: "1620-09-26",
+                    主要政绩: ["推行新政", "废矿税、榷税及增加赋税的官员"],
+                },
+                配偶: [
+                    { "@id": "#empress_wang", 姓名: "王皇后" },
+                    { "@id": "#empress_yuan", 姓名: "孝端显皇后" },
+                ],
+                子女: [
+                    { "@id": "#zhu_youjiao", 姓名: "朱由校", 角色: "长子，明熹宗" },
+                    { "@id": "#zhu_youxiao", 姓名: "朱由检", 角色: "五子，明思宗" },
+                ],
+                重要事件: [
+                    { "@id": "#wanggong_event", 名称: "红丸案" },
+                    { "@id": "#first_day_rule", 名称: "在位仅一月" },
+                ],
+                相关人物: [
+                    { "@id": "#zhu_xuexiang", 关系: "父亲", 姓名: "朱翊钧" },
+                    { "@id": "#zhu_jing", 关系: "祖父", 姓名: "朱载垕" },
+                    { "@id": "#li_zicheng", 关系: "农民起义领袖，后续影响" },
+                ],
+                所属组织: { "@id": "#ming_dynasty" },
+            },
+            {
+                "@id": "#empress_wang",
+                "@type": "Person",
+                名称: "王皇后",
+                描述: "朱常洛的正妻，谥号孝和太后",
+            },
+            {
+                "@id": "#empress_yuan",
+                "@type": "Person",
+                名称: "孝端显皇后",
+                描述: "朱常洛的另一位皇后，谥号孝端",
+            },
+            {
+                "@id": "#zhu_youjiao",
+                "@type": "Person",
+                名称: "朱由校",
+                描述: "朱常洛长子，即明熹宗，爱好木工",
+            },
+            {
+                "@id": "#zhu_youxiao",
+                "@type": "Person",
+                名称: "朱由检",
+                描述: "朱常洛五子，即明思宗，即崇祯皇帝，明朝亡国之君",
+            },
+            {
+                "@id": "#zhu_xuexiang",
+                "@type": "Person",
+                名称: "朱翊钧",
+                描述: "朱常洛的父亲，即明神宗，万历皇帝",
+            },
+            {
+                "@id": "#zhu_jing",
+                "@type": "Person",
+                名称: "朱载垕",
+                描述: "朱常洛的祖父，即明穆宗，隆庆皇帝",
+            },
+            {
+                "@id": "#li_zicheng",
+                "@type": "Person",
+                名称: "李自成",
+                描述: "明末农民起义领袖，对明朝灭亡有直接影响",
+            },
+            {
+                "@id": "#wanggong_event",
+                "@type": "Event",
+                名称: "红丸案",
+                时间: "1620-09-26",
+                描述: "朱常洛服用红丸后驾崩，引发宫廷争斗",
+            },
+            {
+                "@id": "#first_day_rule",
+                "@type": "Event",
+                名称: "在位仅一月",
+                时间: "1620-08-28至1620-09-26",
+                描述: "朱常洛登基仅一个月便驾崩，史称一月天子",
+            },
+            {
+                "@id": "#ming_dynasty",
+                "@type": "Organization",
+                名称: "明朝",
+                存在时期: "1368-1644",
+            },
+        ];
+
+        // 创建节点和边的容器
+        const nodes = new vis.DataSet([]);
+        const edges = new vis.DataSet([]);
+
+        // 节点样式配置
+        const typeStyles = {
+            Person: { color: "#FFE4B5", shape: "ellipse" },
+            Event: { color: "#98FB98", shape: "box" },
+            Organization: { color: "#B0E0E6", shape: "database" },
+        };
+
+        // 解析数据
+        dataset.forEach((entity) => {
+            // 创建节点
+            const node = {
+                id: entity["@id"],
+                label: entity.名称 || entity.姓名,
+                group: entity["@type"],
+                ...(typeStyles[entity["@type"]] || {}),
+            };
+            nodes.add(node);
+
+            // 创建关系边
+            const relations = {
+                配偶: "配偶",
+                子女: "子女",
+                相关人物: "相关",
+                重要事件: "事件",
+            };
+
+            Object.entries(entity).forEach(([key, value]) => {
+                if (relations[key]) {
+                    const processRelation = (target, relationType) => {
+                        if (target["@id"]) {
+                            edges.add({
+                                from: entity["@id"],
+                                to: target["@id"],
+                                label: relationType,
+                                arrows: "to",
+                            });
+                        }
+                    };
+
+                    if (Array.isArray(value)) {
+                        value.forEach((item) => processRelation(item, relations[key]));
+                    } else {
+                        processRelation(value, relations[key]);
+                    }
+                }
+            });
+        });
+
+        // 网络图配置
+        const options = {
+            nodes: {
+                font: { size: 14 },
+                borderWidth: 2,
+                shadow: true,
+            },
+            edges: {
+                arrows: { to: { scaleFactor: 0.5 } },
+                smooth: { type: "cubicBezier" },
+            },
+            physics: {
+                stabilization: true,
+                barnesHut: {
+                    gravitationalConstant: -2000,
+                    springLength: 200,
+                },
+            },
+        };
+
+        // 创建网络图
+        const container = document.getElementById("network-container");
+        const network = new vis.Network(container, { nodes, edges }, options);
+
+        // 点击事件处理
+        network.on("click", (params) => {
+            if (params.nodes.length) {
+                const nodeId = params.nodes[0];
+                const entity = dataset.find((e) => e["@id"] === nodeId);
+                const panel = document.getElementById("info-panel");
+
+                let content = `<h3>${entity.名称 || entity.姓名}</h3>`;
+                Object.entries(entity).forEach(([key, value]) => {
+                    if (!key.startsWith("@") && key !== "名称" && key !== "姓名") {
+                        content += `<p><strong>${key}：</strong>${JSON.stringify(
+                            value
+                        ).replace(/[$$$$"]+/g, "")}</p>`;
+                    }
+                });
+
+                panel.innerHTML = content;
+                panel.style.display = "block";
+            }
+        });
+
+        // 双击隐藏面板
+        network.on("doubleClick", () => {
+            document.getElementById("info-panel").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>

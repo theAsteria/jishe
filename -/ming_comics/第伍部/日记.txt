@@ -1,0 +1,511 @@
+D:\Anaconda3\envs\4C\python.exe D:\Python项目文件夹\4C\图像生成2.py 
+📂 处理文件中:   0%|          | 0/7 [00:00<?, ?file/s, file=第伍部.json]
+🖼 生成漫画:   0%|          | 0/112 [00:00<?, ?frame/s]
+🖼 生成漫画:   0%|          | 0/112 [00:00<?, ?frame/s, name=严世蕃]
+🖼 生成漫画:   0%|          | 0/112 [00:27<?, ?frame/s, ✅ 已保存: 第1章_致命的正义_严世蕃_嘉...]
+🖼 生成漫画:   1%|          | 1/112 [00:27<51:24, 27.79s/frame, ✅ 已保存: 第1章_致命的正义_严世蕃_嘉...]
+🖼 生成漫画:   1%|          | 1/112 [00:27<51:24, 27.79s/frame, name=鄢懋卿]                             ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:   1%|          | 1/112 [01:31<51:24, 27.79s/frame, ✅ 已保存: 第1章_致命的正义_鄢懋卿_严...]
+🖼 生成漫画:   2%|▏         | 2/112 [01:31<1:29:40, 48.91s/frame, ✅ 已保存: 第1章_致命的正义_鄢懋卿_严...]
+🖼 生成漫画:   2%|▏         | 2/112 [01:31<1:29:40, 48.91s/frame, name=蓝道行]                             
+🖼 生成漫画:   2%|▏         | 2/112 [02:00<1:29:40, 48.91s/frame, ✅ 已保存: 第1章_致命的正义_蓝道行_严...]
+🖼 生成漫画:   3%|▎         | 3/112 [02:00<1:12:32, 39.93s/frame, ✅ 已保存: 第1章_致命的正义_蓝道行_严...]
+🖼 生成漫画:   3%|▎         | 3/112 [02:00<1:12:32, 39.93s/frame, name=徐阶]                               
+🖼 生成漫画:   3%|▎         | 3/112 [02:34<1:12:32, 39.93s/frame, ✅ 已保存: 第1章_致命的正义_徐阶_嘉靖...]
+🖼 生成漫画:   4%|▎         | 4/112 [02:34<1:07:15, 37.37s/frame, ✅ 已保存: 第1章_致命的正义_徐阶_嘉靖...]
+🖼 生成漫画:   4%|▎         | 4/112 [02:34<1:07:15, 37.37s/frame, name=严世蕃]                             
+🖼 生成漫画:   4%|▎         | 4/112 [03:00<1:07:15, 37.37s/frame, ✅ 已保存: 第1章_致命的正义_严世蕃_发...]
+🖼 生成漫画:   4%|▍         | 5/112 [03:00<59:45, 33.51s/frame, ✅ 已保存: 第1章_致命的正义_严世蕃_发...]  
+🖼 生成漫画:   4%|▍         | 5/112 [03:00<59:45, 33.51s/frame, name=罗龙文]                             
+🖼 生成漫画:   4%|▍         | 5/112 [03:32<59:45, 33.51s/frame, ✅ 已保存: 第1章_致命的正义_罗龙文_严...]
+🖼 生成漫画:   5%|▌         | 6/112 [03:32<58:19, 33.02s/frame, ✅ 已保存: 第1章_致命的正义_罗龙文_严...]
+🖼 生成漫画:   5%|▌         | 6/112 [03:32<58:19, 33.02s/frame, name=徐阶]                               ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+❌ 永久失败 [7]
+
+🖼 生成漫画:   6%|▋         | 7/112 [07:38<2:59:27, 102.55s/frame, name=徐阶]
+🖼 生成漫画:   6%|▋         | 7/112 [07:38<2:59:27, 102.55s/frame, name=嘉靖]⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:   6%|▋         | 7/112 [09:15<2:59:27, 102.55s/frame, ✅ 已保存: 第2章_奇怪的人_嘉靖_嘉靖四...]
+🖼 生成漫画:   7%|▋         | 8/112 [09:15<2:54:41, 100.78s/frame, ✅ 已保存: 第2章_奇怪的人_嘉靖_嘉靖四...]
+🖼 生成漫画:   7%|▋         | 8/112 [09:15<2:54:41, 100.78s/frame, name=海瑞]                               ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:   7%|▋         | 8/112 [10:16<2:54:41, 100.78s/frame, ✅ 已保存: 第2章_奇怪的人_海瑞_嘉靖四...]
+🖼 生成漫画:   8%|▊         | 9/112 [10:16<2:31:44, 88.40s/frame, ✅ 已保存: 第2章_奇怪的人_海瑞_嘉靖四...] 
+🖼 生成漫画:   8%|▊         | 9/112 [10:16<2:31:44, 88.40s/frame, name=黄锦]                               
+🖼 生成漫画:   8%|▊         | 9/112 [10:45<2:31:44, 88.40s/frame, ✅ 已保存: 第2章_奇怪的人_黄锦_嘉靖四...]
+🖼 生成漫画:   9%|▉         | 10/112 [10:45<1:59:02, 70.03s/frame, ✅ 已保存: 第2章_奇怪的人_黄锦_嘉靖四...]
+🖼 生成漫画:   9%|▉         | 10/112 [10:45<1:59:02, 70.03s/frame, name=海瑞]                               ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:   9%|▉         | 10/112 [13:50<1:59:02, 70.03s/frame, ✅ 已保存: 第3章_天才的对弈_海瑞_嘉靖...]
+🖼 生成漫画:  10%|▉         | 11/112 [13:50<2:57:15, 105.30s/frame, ✅ 已保存: 第3章_天才的对弈_海瑞_嘉靖...]
+🖼 生成漫画:  10%|▉         | 11/112 [13:50<2:57:15, 105.30s/frame, name=嘉靖帝]                             
+🖼 生成漫画:  10%|▉         | 11/112 [14:20<2:57:15, 105.30s/frame, ✅ 已保存: 第3章_天才的对弈_嘉靖帝_嘉...]
+🖼 生成漫画:  11%|█         | 12/112 [14:20<2:17:00, 82.20s/frame, ✅ 已保存: 第3章_天才的对弈_嘉靖帝_嘉...] 
+🖼 生成漫画:  11%|█         | 12/112 [14:20<2:17:00, 82.20s/frame, name=徐阶]                               ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  12%|█▏        | 13/112 [22:27<5:37:58, 204.83s/frame, name=徐阶]
+🖼 生成漫画:  12%|█▏        | 13/112 [22:27<5:37:58, 204.83s/frame, name=高拱]⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+❌ 永久失败 [13]
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  12%|█▎        | 14/112 [26:29<5:53:03, 216.16s/frame, name=高拱]
+🖼 生成漫画:  12%|█▎        | 14/112 [26:29<5:53:03, 216.16s/frame, name=张居正]⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+❌ 永久失败 [14]
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+❌ 永久失败 [15]
+
+🖼 生成漫画:  13%|█▎        | 15/112 [30:32<6:02:13, 224.06s/frame, name=张居正]
+🖼 生成漫画:  13%|█▎        | 15/112 [30:32<6:02:13, 224.06s/frame, name=张居正]⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  14%|█▍        | 16/112 [34:34<6:07:18, 229.57s/frame, name=张居正]
+🖼 生成漫画:  14%|█▍        | 16/112 [34:34<6:07:18, 229.57s/frame, name=张居正]⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+❌ 永久失败 [16]
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+❌ 永久失败 [17]
+
+🖼 生成漫画:  15%|█▌        | 17/112 [38:36<6:09:34, 233.42s/frame, name=张居正]
+🖼 生成漫画:  15%|█▌        | 17/112 [38:36<6:09:34, 233.42s/frame, name=张居正]⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  16%|█▌        | 18/112 [42:39<6:09:55, 236.12s/frame, name=张居正]
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+❌ 永久失败 [18]
+🖼 生成漫画:  16%|█▌        | 18/112 [42:39<6:09:55, 236.12s/frame, name=张居正]⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  17%|█▋        | 19/112 [46:41<6:08:56, 238.03s/frame, name=张居正]
+🖼 生成漫画:  17%|█▋        | 19/112 [46:41<6:08:56, 238.03s/frame, name=张居正]⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+❌ 永久失败 [19]
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+❌ 永久失败 [20]
+
+🖼 生成漫画:  18%|█▊        | 20/112 [50:43<6:06:58, 239.33s/frame, name=张居正]
+🖼 生成漫画:  18%|█▊        | 20/112 [50:43<6:06:58, 239.33s/frame, name=李时珍]⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  18%|█▊        | 20/112 [52:59<6:06:58, 239.33s/frame, ✅ 已保存: 第4章_成熟_李时珍_嘉靖三十...]
+🖼 生成漫画:  19%|█▉        | 21/112 [52:59<5:15:37, 208.10s/frame, ✅ 已保存: 第4章_成熟_李时珍_嘉靖三十...]
+🖼 生成漫画:  19%|█▉        | 21/112 [52:59<5:15:37, 208.10s/frame, name=吴承恩]                             ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  19%|█▉        | 21/112 [54:03<5:15:37, 208.10s/frame, ✅ 已保存: 第4章_成熟_吴承恩_嘉靖年间...]
+🖼 生成漫画:  20%|█▉        | 22/112 [54:03<4:07:15, 164.84s/frame, ✅ 已保存: 第4章_成熟_吴承恩_嘉靖年间...]
+🖼 生成漫画:  20%|█▉        | 22/112 [54:03<4:07:15, 164.84s/frame, name=朱载垕]                             
+🖼 生成漫画:  20%|█▉        | 22/112 [54:31<4:07:15, 164.84s/frame, ✅ 已保存: 第5章_最终的乱战_朱载垕_1...]
+🖼 生成漫画:  21%|██        | 23/112 [54:31<3:03:54, 123.98s/frame, ✅ 已保存: 第5章_最终的乱战_朱载垕_1...]
+🖼 生成漫画:  21%|██        | 23/112 [54:31<3:03:54, 123.98s/frame, name=郑履淳]                            
+🖼 生成漫画:  21%|██        | 23/112 [55:00<3:03:54, 123.98s/frame, ✅ 已保存: 第5章_最终的乱战_郑履淳_1...]
+🖼 生成漫画:  21%|██▏       | 24/112 [55:00<2:19:41, 95.24s/frame, ✅ 已保存: 第5章_最终的乱战_郑履淳_1...] 
+🖼 生成漫画:  21%|██▏       | 24/112 [55:00<2:19:41, 95.24s/frame, name=詹仰庇]                            
+🖼 生成漫画:  21%|██▏       | 24/112 [55:30<2:19:41, 95.24s/frame, ✅ 已保存: 第5章_最终的乱战_詹仰庇_隆...]
+🖼 生成漫画:  22%|██▏       | 25/112 [55:30<1:49:49, 75.74s/frame, ✅ 已保存: 第5章_最终的乱战_詹仰庇_隆...]
+🖼 生成漫画:  22%|██▏       | 25/112 [55:30<1:49:49, 75.74s/frame, name=徐阶]                               
+🖼 生成漫画:  22%|██▏       | 25/112 [56:05<1:49:49, 75.74s/frame, ✅ 已保存: 第5章_最终的乱战_徐阶_15...]
+🖼 生成漫画:  23%|██▎       | 26/112 [56:05<1:31:06, 63.56s/frame, ✅ 已保存: 第5章_最终的乱战_徐阶_15...]
+🖼 生成漫画:  23%|██▎       | 26/112 [56:05<1:31:06, 63.56s/frame, name=邵大侠]                           
+🖼 生成漫画:  23%|██▎       | 26/112 [56:35<1:31:06, 63.56s/frame, ✅ 已保存: 第5章_最终的乱战_邵大侠_1...]
+🖼 生成漫画:  24%|██▍       | 27/112 [56:35<1:15:57, 53.62s/frame, ✅ 已保存: 第5章_最终的乱战_邵大侠_1...]
+🖼 生成漫画:  24%|██▍       | 27/112 [56:35<1:15:57, 53.62s/frame, name=高拱]                              
+🖼 生成漫画:  24%|██▍       | 27/112 [57:09<1:15:57, 53.62s/frame, ✅ 已保存: 第5章_最终的乱战_高拱_15...]
+🖼 生成漫画:  25%|██▌       | 28/112 [57:09<1:06:30, 47.51s/frame, ✅ 已保存: 第5章_最终的乱战_高拱_15...]
+🖼 生成漫画:  25%|██▌       | 28/112 [57:09<1:06:30, 47.51s/frame, name=欧阳一敬]                         
+🖼 生成漫画:  25%|██▌       | 28/112 [57:38<1:06:30, 47.51s/frame, ✅ 已保存: 第5章_最终的乱战_欧阳一敬_...]
+🖼 生成漫画:  26%|██▌       | 29/112 [57:38<58:16, 42.13s/frame, ✅ 已保存: 第5章_最终的乱战_欧阳一敬_...]  
+🖼 生成漫画:  26%|██▌       | 29/112 [57:38<58:16, 42.13s/frame, name=海瑞]                               
+🖼 生成漫画:  26%|██▌       | 29/112 [58:10<58:16, 42.13s/frame, ✅ 已保存: 第6章_高拱的成就_海瑞_隆庆...]
+🖼 生成漫画:  27%|██▋       | 30/112 [58:10<53:22, 39.05s/frame, ✅ 已保存: 第6章_高拱的成就_海瑞_隆庆...]
+🖼 生成漫画:  27%|██▋       | 30/112 [58:10<53:22, 39.05s/frame, name=徐阶]                               ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  27%|██▋       | 30/112 [59:16<53:22, 39.05s/frame, ✅ 已保存: 第6章_高拱的成就_徐阶_隆庆...]
+🖼 生成漫画:  28%|██▊       | 31/112 [59:16<1:03:27, 47.01s/frame, ✅ 已保存: 第6章_高拱的成就_徐阶_隆庆...]
+🖼 生成漫画:  28%|██▊       | 31/112 [59:16<1:03:27, 47.01s/frame, name=高拱]                               
+🖼 生成漫画:  28%|██▊       | 31/112 [59:45<1:03:27, 47.01s/frame, ✅ 已保存: 第6章_高拱的成就_高拱_隆庆...]
+🖼 生成漫画:  29%|██▊       | 32/112 [59:45<55:40, 41.75s/frame, ✅ 已保存: 第6章_高拱的成就_高拱_隆庆...]  
+🖼 生成漫画:  29%|██▊       | 32/112 [59:45<55:40, 41.75s/frame, name=潘季驯]                             
+🖼 生成漫画:  29%|██▊       | 32/112 [1:00:18<55:40, 41.75s/frame, ✅ 已保存: 第6章_高拱的成就_潘季驯_隆...]
+🖼 生成漫画:  29%|██▉       | 33/112 [1:00:18<51:29, 39.10s/frame, ✅ 已保存: 第6章_高拱的成就_潘季驯_隆...]
+🖼 生成漫画:  29%|██▉       | 33/112 [1:00:18<51:29, 39.10s/frame, name=殷正茂]                             
+❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-nph6mjd4k7"}
+❌ 永久失败 [34]
+🖼 生成漫画:  30%|███       | 34/112 [1:00:23<37:38, 28.96s/frame, name=殷正茂]
+🖼 生成漫画:  30%|███       | 34/112 [1:00:23<37:38, 28.96s/frame, name=王崇古]
+🖼 生成漫画:  30%|███       | 34/112 [1:00:48<37:38, 28.96s/frame, ✅ 已保存: 第6章_高拱的成就_王崇古_隆...]
+🖼 生成漫画:  31%|███▏      | 35/112 [1:00:48<35:38, 27.77s/frame, ✅ 已保存: 第6章_高拱的成就_王崇古_隆...]
+🖼 生成漫画:  31%|███▏      | 35/112 [1:00:48<35:38, 27.77s/frame, name=殷士儋]                             ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  31%|███▏      | 35/112 [1:01:54<35:38, 27.77s/frame, ✅ 已保存: 第7章_死斗_殷士儋_隆庆四年...]
+🖼 生成漫画:  32%|███▏      | 36/112 [1:01:54<49:40, 39.21s/frame, ✅ 已保存: 第7章_死斗_殷士儋_隆庆四年...]
+🖼 生成漫画:  32%|███▏      | 36/112 [1:01:54<49:40, 39.21s/frame, name=张居正]                             ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  32%|███▏      | 36/112 [1:03:32<49:40, 39.21s/frame, ✅ 已保存: 第7章_死斗_张居正_隆庆六年...]
+🖼 生成漫画:  33%|███▎      | 37/112 [1:03:32<1:10:46, 56.62s/frame, ✅ 已保存: 第7章_死斗_张居正_隆庆六年...]
+🖼 生成漫画:  33%|███▎      | 37/112 [1:03:32<1:10:46, 56.62s/frame, name=高拱]                               
+🖼 生成漫画:  33%|███▎      | 37/112 [1:04:04<1:10:46, 56.62s/frame, ✅ 已保存: 第7章_死斗_高拱_隆庆六年_...]
+🖼 生成漫画:  34%|███▍      | 38/112 [1:04:04<1:00:49, 49.32s/frame, ✅ 已保存: 第7章_死斗_高拱_隆庆六年_...]
+🖼 生成漫画:  34%|███▍      | 38/112 [1:04:04<1:00:49, 49.32s/frame, name=冯保]                              
+🖼 生成漫画:  34%|███▍      | 38/112 [1:04:31<1:00:49, 49.32s/frame, ✅ 已保存: 第7章_死斗_冯保_隆庆六年_...]
+🖼 生成漫画:  35%|███▍      | 39/112 [1:04:31<52:00, 42.74s/frame, ✅ 已保存: 第7章_死斗_冯保_隆庆六年_...]  
+🖼 生成漫画:  35%|███▍      | 39/112 [1:04:31<52:00, 42.74s/frame, name=张居正]                            ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  35%|███▍      | 39/112 [1:05:35<52:00, 42.74s/frame, ✅ 已保存: 第7章_死斗_张居正_隆庆六年...]
+🖼 生成漫画:  36%|███▌      | 40/112 [1:05:35<59:00, 49.17s/frame, ✅ 已保存: 第7章_死斗_张居正_隆庆六年...]
+🖼 生成漫画:  36%|███▌      | 40/112 [1:05:35<59:00, 49.17s/frame, name=高拱]                               
+🖼 生成漫画:  36%|███▌      | 40/112 [1:06:04<59:00, 49.17s/frame, ✅ 已保存: 第8章_阴谋_高拱_隆庆六年_...]
+🖼 生成漫画:  37%|███▋      | 41/112 [1:06:04<50:48, 42.94s/frame, ✅ 已保存: 第8章_阴谋_高拱_隆庆六年_...]
+🖼 生成漫画:  37%|███▋      | 41/112 [1:06:04<50:48, 42.94s/frame, name=冯保]                              
+🖼 生成漫画:  37%|███▋      | 41/112 [1:06:33<50:48, 42.94s/frame, ✅ 已保存: 第8章_阴谋_冯保_隆庆六年六...]
+🖼 生成漫画:  38%|███▊      | 42/112 [1:06:33<45:07, 38.68s/frame, ✅ 已保存: 第8章_阴谋_冯保_隆庆六年六...]
+🖼 生成漫画:  38%|███▊      | 42/112 [1:06:33<45:07, 38.68s/frame, name=程文]                               
+🖼 生成漫画:  38%|███▊      | 42/112 [1:07:01<45:07, 38.68s/frame, ✅ 已保存: 第8章_阴谋_程文_隆庆六年六...]
+🖼 生成漫画:  38%|███▊      | 43/112 [1:07:01<40:51, 35.54s/frame, ✅ 已保存: 第8章_阴谋_程文_隆庆六年六...]
+🖼 生成漫画:  38%|███▊      | 43/112 [1:07:01<40:51, 35.54s/frame, name=张居正]                             
+🖼 生成漫画:  38%|███▊      | 43/112 [1:07:35<40:51, 35.54s/frame, ✅ 已保存: 第8章_阴谋_张居正_隆庆六年...]
+🖼 生成漫画:  39%|███▉      | 44/112 [1:07:35<39:46, 35.10s/frame, ✅ 已保存: 第8章_阴谋_张居正_隆庆六年...]
+🖼 生成漫画:  39%|███▉      | 44/112 [1:07:35<39:46, 35.10s/frame, name=冯保]                               
+❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-rhnnug1r1f"}
+❌ 永久失败 [45]
+🖼 生成漫画:  40%|████      | 45/112 [1:07:40<29:04, 26.04s/frame, name=冯保]
+🖼 生成漫画:  40%|████      | 45/112 [1:07:40<29:04, 26.04s/frame, name=高拱]
+🖼 生成漫画:  40%|████      | 45/112 [1:08:12<29:04, 26.04s/frame, ✅ 已保存: 第8章_阴谋_高拱_隆庆六年六...]
+🖼 生成漫画:  41%|████      | 46/112 [1:08:12<30:48, 28.00s/frame, ✅ 已保存: 第8章_阴谋_高拱_隆庆六年六...]
+🖼 生成漫画:  41%|████      | 46/112 [1:08:12<30:48, 28.00s/frame, name=张居正]                             
+🖼 生成漫画:  41%|████      | 46/112 [1:08:45<30:48, 28.00s/frame, ✅ 已保存: 第8章_阴谋_张居正_万历元年...]
+🖼 生成漫画:  42%|████▏     | 47/112 [1:08:45<31:53, 29.43s/frame, ✅ 已保存: 第8章_阴谋_张居正_万历元年...]
+🖼 生成漫画:  42%|████▏     | 47/112 [1:08:45<31:53, 29.43s/frame, name=张居正]                             
+🖼 生成漫画:  42%|████▏     | 47/112 [1:09:16<31:53, 29.43s/frame, ✅ 已保存: 第9章_张居正的缺陷_张居正_...]
+🖼 生成漫画:  43%|████▎     | 48/112 [1:09:16<31:53, 29.91s/frame, ✅ 已保存: 第9章_张居正的缺陷_张居正_...]
+🖼 生成漫画:  43%|████▎     | 48/112 [1:09:16<31:53, 29.91s/frame, name=王大臣]                             
+🖼 生成漫画:  43%|████▎     | 48/112 [1:09:46<31:53, 29.91s/frame, ✅ 已保存: 第9章_张居正的缺陷_王大臣_...]
+🖼 生成漫画:  44%|████▍     | 49/112 [1:09:46<31:27, 29.97s/frame, ✅ 已保存: 第9章_张居正的缺陷_王大臣_...]
+🖼 生成漫画:  44%|████▍     | 49/112 [1:09:46<31:27, 29.97s/frame, name=冯保]                               
+🖼 生成漫画:  44%|████▍     | 49/112 [1:10:17<31:27, 29.97s/frame, ✅ 已保存: 第9章_张居正的缺陷_冯保_万...]
+🖼 生成漫画:  45%|████▍     | 50/112 [1:10:17<31:14, 30.23s/frame, ✅ 已保存: 第9章_张居正的缺陷_冯保_万...]
+🖼 生成漫画:  45%|████▍     | 50/112 [1:10:17<31:14, 30.23s/frame, name=朱希孝]                             ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  45%|████▍     | 50/112 [1:11:18<31:14, 30.23s/frame, ✅ 已保存: 第9章_张居正的缺陷_朱希孝_...]
+🖼 生成漫画:  46%|████▌     | 51/112 [1:11:18<40:04, 39.41s/frame, ✅ 已保存: 第9章_张居正的缺陷_朱希孝_...]
+🖼 生成漫画:  46%|████▌     | 51/112 [1:11:18<40:04, 39.41s/frame, name=刘台]                               
+🖼 生成漫画:  46%|████▌     | 51/112 [1:11:51<40:04, 39.41s/frame, ✅ 已保存: 第9章_张居正的缺陷_刘台_万...]
+🖼 生成漫画:  46%|████▋     | 52/112 [1:11:51<37:24, 37.41s/frame, ✅ 已保存: 第9章_张居正的缺陷_刘台_万...]
+🖼 生成漫画:  46%|████▋     | 52/112 [1:11:51<37:24, 37.41s/frame, name=何心隐]                             
+🖼 生成漫画:  46%|████▋     | 52/112 [1:12:19<37:24, 37.41s/frame, ✅ 已保存: 第9章_张居正的缺陷_何心隐_...]
+🖼 生成漫画:  47%|████▋     | 53/112 [1:12:19<34:13, 34.81s/frame, ✅ 已保存: 第9章_张居正的缺陷_何心隐_...]
+🖼 生成漫画:  47%|████▋     | 53/112 [1:12:19<34:13, 34.81s/frame, name=张居正]                             
+🖼 生成漫画:  47%|████▋     | 53/112 [1:12:52<34:13, 34.81s/frame, ✅ 已保存: 第10章_敌人_张居正_万历五...]
+🖼 生成漫画:  48%|████▊     | 54/112 [1:12:52<32:55, 34.07s/frame, ✅ 已保存: 第10章_敌人_张居正_万历五...]
+🖼 生成漫画:  48%|████▊     | 54/112 [1:12:52<32:55, 34.07s/frame, name=吴中行]                            
+🖼 生成漫画:  48%|████▊     | 54/112 [1:13:20<32:55, 34.07s/frame, ✅ 已保存: 第10章_敌人_吴中行_万历五...]
+🖼 生成漫画:  49%|████▉     | 55/112 [1:13:20<30:36, 32.21s/frame, ✅ 已保存: 第10章_敌人_吴中行_万历五...]
+🖼 生成漫画:  49%|████▉     | 55/112 [1:13:20<30:36, 32.21s/frame, name=赵用贤]                            ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-0nw72dmdk9"}
+❌ 永久失败 [56]
+
+🖼 生成漫画:  50%|█████     | 56/112 [1:14:16<36:56, 39.58s/frame, name=赵用贤]
+🖼 生成漫画:  50%|█████     | 56/112 [1:14:16<36:56, 39.58s/frame, name=赵用贤妻]
+🖼 生成漫画:  50%|█████     | 56/112 [1:14:40<36:56, 39.58s/frame, ✅ 已保存: 第10章_敌人_赵用贤妻_廷杖...]
+🖼 生成漫画:  51%|█████     | 57/112 [1:14:40<31:48, 34.70s/frame, ✅ 已保存: 第10章_敌人_赵用贤妻_廷杖...]
+🖼 生成漫画:  51%|█████     | 57/112 [1:14:40<31:48, 34.70s/frame, name=万历帝]                            
+🖼 生成漫画:  51%|█████     | 57/112 [1:15:08<31:48, 34.70s/frame, ✅ 已保存: 第10章_敌人_万历帝_万历五...]
+🖼 生成漫画:  52%|█████▏    | 58/112 [1:15:08<29:25, 32.70s/frame, ✅ 已保存: 第10章_敌人_万历帝_万历五...]
+🖼 生成漫画:  52%|█████▏    | 58/112 [1:15:08<29:25, 32.70s/frame, name=张居正]                            
+🖼 生成漫画:  52%|█████▏    | 58/112 [1:15:40<29:25, 32.70s/frame, ✅ 已保存: 第11章_千古_唯此一人_张居...]
+🖼 生成漫画:  53%|█████▎    | 59/112 [1:15:40<28:53, 32.71s/frame, ✅ 已保存: 第11章_千古_唯此一人_张居...]
+🖼 生成漫画:  53%|█████▎    | 59/112 [1:15:40<28:53, 32.71s/frame, name=万历帝]                            ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  53%|█████▎    | 59/112 [1:16:41<28:53, 32.71s/frame, ✅ 已保存: 第11章_千古_唯此一人_万历...]
+🖼 生成漫画:  54%|█████▎    | 60/112 [1:16:41<35:41, 41.19s/frame, ✅ 已保存: 第11章_千古_唯此一人_万历...]
+🖼 生成漫画:  54%|█████▎    | 60/112 [1:16:41<35:41, 41.19s/frame, name=李太后]                            
+🖼 生成漫画:  54%|█████▎    | 60/112 [1:17:12<35:41, 41.19s/frame, ✅ 已保存: 第11章_千古_唯此一人_李太...]
+🖼 生成漫画:  54%|█████▍    | 61/112 [1:17:12<32:25, 38.14s/frame, ✅ 已保存: 第11章_千古_唯此一人_李太...]
+🖼 生成漫画:  54%|█████▍    | 61/112 [1:17:12<32:25, 38.14s/frame, name=张四维]                            
+🖼 生成漫画:  54%|█████▍    | 61/112 [1:17:41<32:25, 38.14s/frame, ✅ 已保存: 第11章_千古_唯此一人_张四...]
+🖼 生成漫画:  55%|█████▌    | 62/112 [1:17:41<29:25, 35.30s/frame, ✅ 已保存: 第11章_千古_唯此一人_张四...]
+🖼 生成漫画:  55%|█████▌    | 62/112 [1:17:41<29:25, 35.30s/frame, name=张居正]                            
+🖼 生成漫画:  55%|█████▌    | 62/112 [1:18:11<29:25, 35.30s/frame, ✅ 已保存: 第11章_千古_唯此一人_张居...]
+🖼 生成漫画:  56%|█████▋    | 63/112 [1:18:11<27:28, 33.64s/frame, ✅ 已保存: 第11章_千古_唯此一人_张居...]
+🖼 生成漫画:  56%|█████▋    | 63/112 [1:18:11<27:28, 33.64s/frame, name=万历]                              
+🖼 生成漫画:  56%|█████▋    | 63/112 [1:18:41<27:28, 33.64s/frame, ✅ 已保存: 第12章_谜团_万历_万历十一...]
+🖼 生成漫画:  57%|█████▋    | 64/112 [1:18:41<26:00, 32.51s/frame, ✅ 已保存: 第12章_谜团_万历_万历十一...]
+🖼 生成漫画:  57%|█████▋    | 64/112 [1:18:41<26:00, 32.51s/frame, name=万历]                              
+🖼 生成漫画:  57%|█████▋    | 64/112 [1:19:10<26:00, 32.51s/frame, ✅ 已保存: 第12章_谜团_万历_万历十三...]
+🖼 生成漫画:  58%|█████▊    | 65/112 [1:19:10<24:45, 31.60s/frame, ✅ 已保存: 第12章_谜团_万历_万历十三...]
+🖼 生成漫画:  58%|█████▊    | 65/112 [1:19:10<24:45, 31.60s/frame, name=戚继光]                            
+🖼 生成漫画:  58%|█████▊    | 65/112 [1:19:40<24:45, 31.60s/frame, ✅ 已保存: 第12章_谜团_戚继光_万历十...]
+🖼 生成漫画:  59%|█████▉    | 66/112 [1:19:40<23:46, 31.01s/frame, ✅ 已保存: 第12章_谜团_戚继光_万历十...]
+🖼 生成漫画:  59%|█████▉    | 66/112 [1:19:40<23:46, 31.01s/frame, name=海瑞]                              
+🖼 生成漫画:  59%|█████▉    | 66/112 [1:20:09<23:46, 31.01s/frame, ✅ 已保存: 第12章_谜团_海瑞_万历十五...]
+🖼 生成漫画:  60%|█████▉    | 67/112 [1:20:09<22:45, 30.34s/frame, ✅ 已保存: 第12章_谜团_海瑞_万历十五...]
+🖼 生成漫画:  60%|█████▉    | 67/112 [1:20:09<22:45, 30.34s/frame, name=丰臣秀吉]                          
+🖼 生成漫画:  60%|█████▉    | 67/112 [1:20:43<22:45, 30.34s/frame, ✅ 已保存: 第12章_谜团_丰臣秀吉_万历...]
+🖼 生成漫画:  61%|██████    | 68/112 [1:20:43<23:09, 31.58s/frame, ✅ 已保存: 第12章_谜团_丰臣秀吉_万历...]
+🖼 生成漫画:  61%|██████    | 68/112 [1:20:43<23:09, 31.58s/frame, name=丰臣秀吉]                          
+🖼 生成漫画:  61%|██████    | 68/112 [1:21:06<23:09, 31.58s/frame, ✅ 已保存: 第13章_野心的起始_丰臣秀吉...]
+🖼 生成漫画:  62%|██████▏   | 69/112 [1:21:06<20:40, 28.84s/frame, ✅ 已保存: 第13章_野心的起始_丰臣秀吉...]
+🖼 生成漫画:  62%|██████▏   | 69/112 [1:21:06<20:40, 28.84s/frame, name=织田信长]                           
+🖼 生成漫画:  62%|██████▏   | 69/112 [1:21:31<20:40, 28.84s/frame, ✅ 已保存: 第13章_野心的起始_织田信长...]
+🖼 生成漫画:  62%|██████▎   | 70/112 [1:21:31<19:26, 27.77s/frame, ✅ 已保存: 第13章_野心的起始_织田信长...]
+🖼 生成漫画:  62%|██████▎   | 70/112 [1:21:31<19:26, 27.77s/frame, name=羽柴秀吉]                           ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  62%|██████▎   | 70/112 [1:24:34<19:26, 27.77s/frame, ✅ 已保存: 第13章_野心的起始_羽柴秀吉...]
+🖼 生成漫画:  63%|██████▎   | 71/112 [1:24:34<50:45, 74.27s/frame, ✅ 已保存: 第13章_野心的起始_羽柴秀吉...]
+🖼 生成漫画:  63%|██████▎   | 71/112 [1:24:34<50:45, 74.27s/frame, name=李舜臣]                             
+🖼 生成漫画:  64%|██████▍   | 72/112 [1:24:39<35:38, 53.47s/frame, name=李舜臣]
+🖼 生成漫画:  64%|██████▍   | 72/112 [1:24:39<35:38, 53.47s/frame, name=丰臣秀吉]❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-etuijeudsf"}
+❌ 永久失败 [72]
+
+🖼 生成漫画:  65%|██████▌   | 73/112 [1:24:45<25:33, 39.33s/frame, name=丰臣秀吉]
+🖼 生成漫画:  65%|██████▌   | 73/112 [1:24:45<25:33, 39.33s/frame, name=小西行长]❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-2mkhgixfkc"}
+❌ 永久失败 [73]
+
+🖼 生成漫画:  66%|██████▌   | 74/112 [1:24:51<18:40, 29.50s/frame, name=小西行长]
+🖼 生成漫画:  66%|██████▌   | 74/112 [1:24:51<18:40, 29.50s/frame, name=万历]    ❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-s1sk5u4xir"}
+❌ 永久失败 [74]
+
+🖼 生成漫画:  66%|██████▌   | 74/112 [1:25:22<18:40, 29.50s/frame, ✅ 已保存: 第14章_明朝的愤怒_万历_1...]
+🖼 生成漫画:  67%|██████▋   | 75/112 [1:25:22<18:22, 29.79s/frame, ✅ 已保存: 第14章_明朝的愤怒_万历_1...]
+🖼 生成漫画:  67%|██████▋   | 75/112 [1:25:22<18:22, 29.79s/frame, name=祖承训]                           
+🖼 生成漫画:  67%|██████▋   | 75/112 [1:25:55<18:22, 29.79s/frame, ✅ 已保存: 第14章_明朝的愤怒_祖承训_...]
+🖼 生成漫画:  68%|██████▊   | 76/112 [1:25:55<18:27, 30.76s/frame, ✅ 已保存: 第14章_明朝的愤怒_祖承训_...]
+🖼 生成漫画:  68%|██████▊   | 76/112 [1:25:55<18:27, 30.76s/frame, name=沈惟敬]                            
+🖼 生成漫画:  69%|██████▉   | 77/112 [1:26:00<13:22, 22.94s/frame, name=沈惟敬]
+🖼 生成漫画:  69%|██████▉   | 77/112 [1:26:00<13:22, 22.94s/frame, name=李如松]❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-cwytwc0w68"}
+❌ 永久失败 [77]
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  69%|██████▉   | 77/112 [1:27:08<13:22, 22.94s/frame, ✅ 已保存: 第14章_明朝的愤怒_李如松_...]
+🖼 生成漫画:  70%|██████▉   | 78/112 [1:27:08<20:46, 36.67s/frame, ✅ 已保存: 第14章_明朝的愤怒_李如松_...]
+🖼 生成漫画:  70%|██████▉   | 78/112 [1:27:08<20:46, 36.67s/frame, name=李如松]                            ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  70%|██████▉   | 78/112 [1:28:47<20:46, 36.67s/frame, ✅ 已保存: 第15章_兵不厌诈_李如松_万...]
+🖼 生成漫画:  71%|███████   | 79/112 [1:28:47<30:21, 55.19s/frame, ✅ 已保存: 第15章_兵不厌诈_李如松_万...]
+🖼 生成漫画:  71%|███████   | 79/112 [1:28:47<30:21, 55.19s/frame, name=沈惟敬]                            ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  71%|███████   | 79/112 [1:29:49<30:21, 55.19s/frame, ✅ 已保存: 第15章_兵不厌诈_沈惟敬_万...]
+🖼 生成漫画:  71%|███████▏  | 80/112 [1:29:49<30:33, 57.30s/frame, ✅ 已保存: 第15章_兵不厌诈_沈惟敬_万...]
+🖼 生成漫画:  71%|███████▏  | 80/112 [1:29:49<30:33, 57.30s/frame, name=吴惟忠]                            
+🖼 生成漫画:  71%|███████▏  | 80/112 [1:30:13<30:33, 57.30s/frame, ✅ 已保存: 第15章_兵不厌诈_吴惟忠_万...]
+🖼 生成漫画:  72%|███████▏  | 81/112 [1:30:13<24:29, 47.42s/frame, ✅ 已保存: 第15章_兵不厌诈_吴惟忠_万...]
+🖼 生成漫画:  72%|███████▏  | 81/112 [1:30:13<24:29, 47.42s/frame, name=李如松]                            ❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-tannr8hqa7"}
+❌ 永久失败 [82]
+
+🖼 生成漫画:  73%|███████▎  | 82/112 [1:30:18<17:16, 34.57s/frame, name=李如松]
+🖼 生成漫画:  73%|███████▎  | 82/112 [1:30:18<17:16, 34.57s/frame, name=李如松]
+🖼 生成漫画:  73%|███████▎  | 82/112 [1:30:51<17:16, 34.57s/frame, ✅ 已保存: 第15章_兵不厌诈_李如松_万...]
+🖼 生成漫画:  74%|███████▍  | 83/112 [1:30:51<16:32, 34.22s/frame, ✅ 已保存: 第15章_兵不厌诈_李如松_万...]
+🖼 生成漫画:  74%|███████▍  | 83/112 [1:30:51<16:32, 34.22s/frame, name=李如松]                            
+🖼 生成漫画:  74%|███████▍  | 83/112 [1:31:23<16:32, 34.22s/frame, ✅ 已保存: 第16章_平壤_血战_李如松_...]
+🖼 生成漫画:  75%|███████▌  | 84/112 [1:31:23<15:41, 33.61s/frame, ✅ 已保存: 第16章_平壤_血战_李如松_...]
+🖼 生成漫画:  75%|███████▌  | 84/112 [1:31:23<15:41, 33.61s/frame, name=小西行长]                         
+🖼 生成漫画:  76%|███████▌  | 85/112 [1:31:27<11:07, 24.73s/frame, name=小西行长]
+🖼 生成漫画:  76%|███████▌  | 85/112 [1:31:27<11:07, 24.73s/frame, name=吴惟忠]  ❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-i65gutqgxa"}
+❌ 永久失败 [85]
+
+🖼 生成漫画:  77%|███████▋  | 86/112 [1:31:34<08:19, 19.22s/frame, name=吴惟忠]
+🖼 生成漫画:  77%|███████▋  | 86/112 [1:31:34<08:19, 19.22s/frame, name=祖承训]❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-skfwvdnrca"}
+❌ 永久失败 [86]
+
+🖼 生成漫画:  77%|███████▋  | 86/112 [1:32:07<08:19, 19.22s/frame, ✅ 已保存: 第16章_平壤_血战_祖承训_...]
+🖼 生成漫画:  78%|███████▊  | 87/112 [1:32:07<09:46, 23.47s/frame, ✅ 已保存: 第16章_平壤_血战_祖承训_...]
+🖼 生成漫画:  78%|███████▊  | 87/112 [1:32:07<09:46, 23.47s/frame, name=李如松]                           
+🖼 生成漫画:  78%|███████▊  | 87/112 [1:32:38<09:46, 23.47s/frame, ✅ 已保存: 第16章_平壤_血战_李如松_...]
+🖼 生成漫画:  79%|███████▊  | 88/112 [1:32:38<10:14, 25.59s/frame, ✅ 已保存: 第16章_平壤_血战_李如松_...]
+🖼 生成漫画:  79%|███████▊  | 88/112 [1:32:38<10:14, 25.59s/frame, name=小西行长]                         
+🖼 生成漫画:  79%|███████▊  | 88/112 [1:33:04<10:14, 25.59s/frame, ✅ 已保存: 第16章_平壤_血战_小西行长...]
+🖼 生成漫画:  79%|███████▉  | 89/112 [1:33:04<09:52, 25.77s/frame, ✅ 已保存: 第16章_平壤_血战_小西行长...]
+🖼 生成漫画:  79%|███████▉  | 89/112 [1:33:04<09:52, 25.77s/frame, name=查大受]                            
+❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-ac3krwvezg"}
+❌ 永久失败 [90]
+🖼 生成漫画:  80%|████████  | 90/112 [1:33:08<07:01, 19.16s/frame, name=查大受]
+🖼 生成漫画:  80%|████████  | 90/112 [1:33:08<07:01, 19.16s/frame, name=李如松]
+❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-schqsww9jc"}
+❌ 永久失败 [91]
+🖼 生成漫画:  81%|████████▏ | 91/112 [1:33:14<05:22, 15.36s/frame, name=李如松]
+🖼 生成漫画:  81%|████████▏ | 91/112 [1:33:14<05:22, 15.36s/frame, name=李如松]
+❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-vxaa3fzwh6"}
+❌ 永久失败 [92]
+🖼 生成漫画:  82%|████████▏ | 92/112 [1:33:21<04:13, 12.66s/frame, name=李如松]
+🖼 生成漫画:  82%|████████▏ | 92/112 [1:33:21<04:13, 12.66s/frame, name=李如松]
+❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-qcv4pi7pum"}
+❌ 永久失败 [93]
+🖼 生成漫画:  83%|████████▎ | 93/112 [1:33:27<03:23, 10.69s/frame, name=李如松]
+🖼 生成漫画:  83%|████████▎ | 93/112 [1:33:27<03:23, 10.69s/frame, name=李如松]⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  83%|████████▎ | 93/112 [1:34:31<03:23, 10.69s/frame, ✅ 已保存: 第17章_不世出之名将_李如松...]
+🖼 生成漫画:  84%|████████▍ | 94/112 [1:34:31<07:59, 26.66s/frame, ✅ 已保存: 第17章_不世出之名将_李如松...]
+🖼 生成漫画:  84%|████████▍ | 94/112 [1:34:31<07:59, 26.66s/frame, name=李如如柏]                           ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  84%|████████▍ | 94/112 [1:35:31<07:59, 26.66s/frame, ✅ 已保存: 第17章_不世出之名将_李如如...]
+🖼 生成漫画:  85%|████████▍ | 95/112 [1:35:31<10:27, 36.92s/frame, ✅ 已保存: 第17章_不世出之名将_李如如...]
+🖼 生成漫画:  85%|████████▍ | 95/112 [1:35:31<10:27, 36.92s/frame, name=沈惟敬]                             
+🖼 生成漫画:  85%|████████▍ | 95/112 [1:35:58<10:27, 36.92s/frame, ✅ 已保存: 第18章_二次摊牌_沈惟敬_万...]
+🖼 生成漫画:  86%|████████▌ | 96/112 [1:35:58<08:59, 33.70s/frame, ✅ 已保存: 第18章_二次摊牌_沈惟敬_万...]
+🖼 生成漫画:  86%|████████▌ | 96/112 [1:35:58<08:59, 33.70s/frame, name=石星]                              ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  86%|████████▌ | 96/112 [1:37:03<08:59, 33.70s/frame, ✅ 已保存: 第18章_二次摊牌_石星_万历...]
+🖼 生成漫画:  87%|████████▋ | 97/112 [1:37:03<10:46, 43.08s/frame, ✅ 已保存: 第18章_二次摊牌_石星_万历...]
+🖼 生成漫画:  87%|████████▋ | 97/112 [1:37:03<10:46, 43.08s/frame, name=小西飞]                            
+🖼 生成漫画:  87%|████████▋ | 97/112 [1:37:26<10:46, 43.08s/frame, ✅ 已保存: 第18章_二次摊牌_小西飞_万...]
+🖼 生成漫画:  88%|████████▊ | 98/112 [1:37:26<08:41, 37.23s/frame, ✅ 已保存: 第18章_二次摊牌_小西飞_万...]
+🖼 生成漫画:  88%|████████▊ | 98/112 [1:37:26<08:41, 37.23s/frame, name=丰臣秀吉]                          
+🖼 生成漫画:  88%|████████▊ | 98/112 [1:38:00<08:41, 37.23s/frame, ✅ 已保存: 第18章_二次摊牌_丰臣秀吉_...]
+🖼 生成漫画:  88%|████████▊ | 99/112 [1:38:00<07:49, 36.10s/frame, ✅ 已保存: 第18章_二次摊牌_丰臣秀吉_...]
+🖼 生成漫画:  88%|████████▊ | 99/112 [1:38:00<07:49, 36.10s/frame, name=麻贵]                              
+🖼 生成漫画:  88%|████████▊ | 99/112 [1:38:34<07:49, 36.10s/frame, ✅ 已保存: 第18章_二次摊牌_麻贵_万历...]
+🖼 生成漫画:  89%|████████▉ | 100/112 [1:38:34<07:07, 35.62s/frame, ✅ 已保存: 第18章_二次摊牌_麻贵_万历...]
+🖼 生成漫画:  89%|████████▉ | 100/112 [1:38:34<07:07, 35.62s/frame, name=加藤清正]                          
+🖼 生成漫画:  89%|████████▉ | 100/112 [1:38:57<07:07, 35.62s/frame, ✅ 已保存: 第18章_二次摊牌_加藤清正_...]
+🖼 生成漫画:  90%|█████████ | 101/112 [1:38:57<05:49, 31.75s/frame, ✅ 已保存: 第18章_二次摊牌_加藤清正_...]
+🖼 生成漫画:  90%|█████████ | 101/112 [1:38:57<05:49, 31.75s/frame, name=杨镐]                              ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  90%|█████████ | 101/112 [1:40:36<05:49, 31.75s/frame, ✅ 已保存: 第18章_二次摊牌_杨镐_万历...]
+🖼 生成漫画:  91%|█████████ | 102/112 [1:40:36<08:38, 51.85s/frame, ✅ 已保存: 第18章_二次摊牌_杨镐_万历...]
+🖼 生成漫画:  91%|█████████ | 102/112 [1:40:36<08:38, 51.85s/frame, name=刘綎]                              
+🖼 生成漫画:  92%|█████████▏| 103/112 [1:40:40<05:37, 37.51s/frame, name=刘綎]
+🖼 生成漫画:  92%|█████████▏| 103/112 [1:40:40<05:37, 37.51s/frame, name=董一元]❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-uahjg725qx"}
+❌ 永久失败 [103]
+
+🖼 生成漫画:  92%|█████████▏| 103/112 [1:41:12<05:37, 37.51s/frame, ✅ 已保存: 第19章_胜算_董一元_159...]
+🖼 生成漫画:  93%|█████████▎| 104/112 [1:41:12<04:48, 36.03s/frame, ✅ 已保存: 第19章_胜算_董一元_159...]
+🖼 生成漫画:  93%|█████████▎| 104/112 [1:41:12<04:48, 36.03s/frame, name=岛津义弘]                       ⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  93%|█████████▎| 104/112 [1:42:16<04:48, 36.03s/frame, ✅ 已保存: 第19章_胜算_岛津义弘_15...]
+🖼 生成漫画:  94%|█████████▍| 105/112 [1:42:16<05:10, 44.41s/frame, ✅ 已保存: 第19章_胜算_岛津义弘_15...]
+🖼 生成漫画:  94%|█████████▍| 105/112 [1:42:16<05:10, 44.41s/frame, name=陈璘]                            
+🖼 生成漫画:  95%|█████████▍| 106/112 [1:42:20<03:13, 32.18s/frame, name=陈璘]
+🖼 生成漫画:  95%|█████████▍| 106/112 [1:42:20<03:13, 32.18s/frame, name=李舜臣]❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-v236q53qti"}
+❌ 永久失败 [106]
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+⚠️ 网络异常：HTTPSConnectionPool(host='qianfan.baidubce.com', port=443): Read timed out. (read timeout=30)
+
+🖼 生成漫画:  95%|█████████▍| 106/112 [1:44:00<03:13, 32.18s/frame, ✅ 已保存: 第19章_胜算_李舜臣_159...]
+🖼 生成漫画:  96%|█████████▌| 107/112 [1:44:00<04:22, 52.55s/frame, ✅ 已保存: 第19章_胜算_李舜臣_159...]
+🖼 生成漫画:  96%|█████████▌| 107/112 [1:44:00<04:22, 52.55s/frame, name=岛津义弘]                       
+🖼 生成漫画:  96%|█████████▋| 108/112 [1:44:04<02:31, 37.91s/frame, name=岛津义弘]
+🖼 生成漫画:  96%|█████████▋| 108/112 [1:44:04<02:31, 37.91s/frame, name=邓子龙]  ❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-31emiwzp4z"}
+❌ 永久失败 [108]
+
+🖼 生成漫画:  97%|█████████▋| 109/112 [1:44:10<01:25, 28.34s/frame, name=邓子龙]
+🖼 生成漫画:  97%|█████████▋| 109/112 [1:44:10<01:25, 28.34s/frame, name=李舜臣]❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-xqm29bqhbu"}
+❌ 永久失败 [109]
+❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-9dgwib6zzd"}
+❌ 永久失败 [110]
+
+🖼 生成漫画:  98%|█████████▊| 110/112 [1:44:16<00:43, 21.64s/frame, name=李舜臣]
+🖼 生成漫画:  98%|█████████▊| 110/112 [1:44:16<00:43, 21.64s/frame, name=陈璘]  
+❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-fhgjibrdy1"}
+❌ 永久失败 [111]
+🖼 生成漫画:  99%|█████████▉| 111/112 [1:44:22<00:16, 16.94s/frame, name=陈璘]
+🖼 生成漫画:  99%|█████████▉| 111/112 [1:44:22<00:16, 16.94s/frame, name=陈九经]
+🖼 生成漫画: 100%|██████████| 112/112 [1:44:28<00:00, 13.61s/frame, name=陈九经]
+📂 处理文件中:  14%|█▍        | 1/7 [1:44:28<10:26:48, 6268.01s/file, file=第叁部.json]     
+🖼 生成漫画:   0%|          | 0/116 [00:00<?, ?frame/s]
+🖼 生成漫画:   0%|          | 0/116 [00:00<?, ?frame/s, name=朱祁镇]❌ 请求失败：500 - {"error":{"code":"image_internal_error","message":"image internal error","type":"internal_error"},"id":"as-jw014sxfwv"}
+❌ 永久失败 [112]
+文件 第伍部.json 处理完成：成功82张，失败30张
+
+📂 处理文件中:  14%|█▍        | 1/7 [1:45:02<10:30:17, 6302.89s/file, file=第叁部.json]
+Traceback (most recent call last):
+  File "D:\Python项目文件夹\4C\图像生成2.py", line 363, in <module>
+    generator.generate_comics(data_folder)
+  File "D:\Python项目文件夹\4C\图像生成2.py", line 201, in generate_comics
+    success, failure = self._process_single_file(json_file, output_dir)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python项目文件夹\4C\图像生成2.py", line 305, in _process_single_file
+    response = self._api_request(payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python项目文件夹\4C\图像生成2.py", line 44, in _api_request
+    response = requests.post(
+               ^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\site-packages\requests\adapters.py", line 667, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\site-packages\urllib3\connection.py", line 516, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\http\client.py", line 1395, in getresponse
+    response.begin()
+  File "D:\Anaconda3\envs\4C\Lib\http\client.py", line 325, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\http\client.py", line 286, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\socket.py", line 718, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\ssl.py", line 1314, in recv_into
+    return self.read(nbytes, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\4C\Lib\ssl.py", line 1166, in read
+    return self._sslobj.read(len, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+
+进程已结束，退出代码为 -1073741510 (0xC000013A: interrupted by Ctrl+C)

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <title>知识图谱-朱载垕‌</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        * {
+            background-color: #edce65;
+        }
+
+        #network-container {
+            width: 100vw;
+            height: 100vh;
+            border: 1px solid #ccc;
+        }
+
+        .info-panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            max-width: 300px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #8b0000;
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #b38f2b;
+            color: #fff;
+        }
+
+        .btn-return {
+            margin: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-return::after {
+            content: '➔';
+            margin-left: 8px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-return:hover::after {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../content.html" class="btn btn-return">
+        返回人物信息页面
+    </a>
+    <div id="network-container"></div>
+    <div id="info-panel" class="info-panel" style="display: none"></div>
+
+    <script>
+        // 原始数据替换为朱载垕相关数据
+        const dataset = [
+            {
+                "@context": "https://schema.org",
+                "@id": "#zhaidaihou",
+                "@type": "Person",
+                名称: "朱载垕",
+                别名: ["明穆宗"],
+                出生日期: "1537-03-04",
+                逝世日期: "1572-07-05",
+                出生地: "北京",
+                陵墓: "昭陵",
+                配偶: [
+                    { "@id": "#chenfei", 姓名: "陈皇后" },
+                    { "@id": "#liifei", 姓名: "李皇后" },
+                ],
+                子女: [
+                    { "@id": "#zhanggao", 姓名: "朱翊钧", 角色: "皇太子→明神宗" },
+                    { "@id": "#zhuying", 姓名: "朱翊镠", 角色: "潞王" },
+                ],
+                职业: {
+                    "@type": "Occupation",
+                    职位名称: "明朝皇帝",
+                    任期开始: "1567",
+                    任期结束: "1572",
+                    主要政绩: ["隆庆开关", "俺答封贡"],
+                },
+                相关人物: [
+                    { "@id": "#gaocheng", 关系: "内阁首辅" },
+                    { "@id": "#yuejin", 关系: "著名将领" },
+                ],
+                所属组织: { "@id": "#mingdynasty" },
+            },
+            {
+                "@id": "#chenfei",
+                "@type": "Person",
+                名称: "陈皇后",
+                描述: "明穆宗第一位皇后，早逝",
+            },
+            {
+                "@id": "#liifei",
+                "@type": "Person",
+                名称: "李皇后",
+                描述: "明穆宗继室皇后",
+            },
+            {
+                "@id": "#zhanggao",
+                "@type": "Person",
+                名称: "朱翊钧",
+                封号: "皇太子",
+                后续称号: "明神宗",
+            },
+            {
+                "@id": "#zhuying",
+                "@type": "Person",
+                名称: "朱翊镠",
+                封号: "潞王",
+            },
+            {
+                "@id": "#gaocheng",
+                "@type": "Person",
+                名称: "高拱",
+                职务: "内阁首辅",
+                贡献: ["推行考成法", "改革吏治"],
+            },
+            {
+                "@id": "#yuejin",
+                "@type": "Person",
+                名称: "戚继光",
+                职务: "蓟镇总兵",
+                贡献: ["抗击倭寇", "加强北方边防"],
+            },
+            {
+                "@id": "#mingdynasty",
+                "@type": "Organization",
+                名称: "明朝",
+                存在时期: "1368-1644",
+            },
+            {
+                "@id": "#longqing_reform",
+                "@type": "Event",
+                名称: "隆庆新政",
+                时间: "1567-1572",
+                内容: ["改革弊政", "开放海禁", "加强边防"],
+            }
+        ];
+
+        // 创建节点和边的容器
+        const nodes = new vis.DataSet([]);
+        const edges = new vis.DataSet([]);
+
+        // 节点样式配置
+        const typeStyles = {
+            Person: { color: "#FFE4B5", shape: "ellipse" },
+            Event: { color: "#98FB98", shape: "box" },
+            Organization: { color: "#B0E0E6", shape: "database" },
+        };
+
+        // 解析数据
+        dataset.forEach((entity) => {
+            // 创建节点
+            const node = {
+                id: entity["@id"],
+                label: entity.名称 || entity.名称,
+                group: entity["@type"],
+                ...(typeStyles[entity["@type"]] || {}),
+            };
+            nodes.add(node);
+
+            // 创建关系边
+            const relations = {
+                配偶: "配偶",
+                子女: "子女",
+                相关人物: "相关",
+                所属组织: "所属",
+            };
+
+            Object.entries(entity).forEach(([key, value]) => {
+                if (relations[key]) {
+                    const processRelation = (target, relationType) => {
+                        if (target["@id"]) {
+                            edges.add({
+                                from: entity["@id"],
+                                to: target["@id"],
+                                label: relationType,
+                                arrows: "to",
+                            });
+                        }
+                    };
+
+                    if (Array.isArray(value)) {
+                        value.forEach((item) => processRelation(item, relations[key]));
+                    } else {
+                        processRelation(value, relations[key]);
+                    }
+                }
+            });
+        });
+
+        // 网络图配置
+        const options = {
+            nodes: {
+                font: { size: 14 },
+                borderWidth: 2,
+                shadow: true,
+            },
+            edges: {
+                arrows: { to: { scaleFactor: 0.5 } },
+                smooth: { type: "cubicBezier" },
+            },
+            physics: {
+                stabilization: true,
+                barnesHut: {
+                    gravitationalConstant: -2000,
+                    springLength: 200,
+                },
+            },
+        };
+
+        // 创建网络图
+        const container = document.getElementById("network-container");
+        const network = new vis.Network(container, { nodes, edges }, options);
+
+        // 点击事件处理
+        network.on("click", (params) => {
+            if (params.nodes.length) {
+                const nodeId = params.nodes[0];
+                const entity = dataset.find((e) => e["@id"] === nodeId);
+                const panel = document.getElementById("info-panel");
+
+                let content = `<h3>${entity.名称}</h3>`;
+                Object.entries(entity).forEach(([key, value]) => {
+                    if (!key.startsWith("@") && key !== "名称") {
+                        content += `<p><strong>${key}：</strong>${JSON.stringify(
+                            value
+                        ).replace(/[$$$$"]+/g, "")}</p>`;
+                    }
+                });
+
+                panel.innerHTML = content;
+                panel.style.display = "block";
+            }
+        });
+
+        // 双击隐藏面板
+        network.on("doubleClick", () => {
+            document.getElementById("info-panel").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>

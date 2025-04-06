@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="icon" href="../favicon.png" type="image/png">
+  <title>知识图谱-朱元璋</title>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <style>
+    * {
+      background-color: #edce65;
+    }
+
+    #network-container {
+      width: 100vw;
+      height: 100vh;
+      border: 1px solid #ccc;
+    }
+
+    .info-panel {
+      position: fixed;
+      right: 20px;
+      top: 20px;
+      background: white;
+      padding: 15px;
+      border: 1px solid #ddd;
+      max-width: 300px;
+    }
+
+
+    .btn {
+      display: inline-block;
+      background: #8b0000;
+      color: #ffffff;
+      padding: 0.8rem 1.5rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-family: 'Noto Serif SC', serif;
+      text-align: center;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #b38f2b;
+      color: #fff;
+    }
+
+    .btn-return {
+      margin: 20px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .btn-return::after {
+      content: '➔';
+      margin-left: 8px;
+      font-size: 1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .btn-return:hover::after {
+      transform: translateX(4px);
+    }
+  </style>
+</head>
+
+<body>
+  <a href="../content.html" class="btn btn-return">
+    返回人物信息页面
+  </a>
+  <div id="network-container"></div>
+  <div id="info-panel" class="info-panel" style="display: none"></div>
+
+  <script>
+    // 原始数据
+    const dataset = [
+      {
+        "@context": "https://schema.org",
+        "@id": "#mingtaizu",
+        "@type": "Person",
+        名称: "朱元璋",
+        别名: ["明太祖", "洪武帝"],
+        出生日期: "1328-10-21",
+        逝世日期: "1398-06-24",
+        出生地: "濠州钟离（今安徽凤阳）",
+        陵墓: "南京明孝陵",
+        配偶: { "@id": "#empress_ma" },
+        子女: [
+          { "@id": "#zhubiao", 姓名: "朱标", 角色: "皇太子" },
+          { "@id": "#zhudi", 姓名: "朱棣", 角色: "燕王→明成祖" },
+        ],
+        职业: {
+          "@type": "Occupation",
+          职位名称: "明朝开国皇帝",
+          任期开始: "1368",
+          任期结束: "1398",
+          主要政绩: ["推翻元朝", "恢复汉制", "整顿吏治"],
+        },
+        军事成就: [
+          { "@id": "#battle_poyang", 角色: "总指挥" },
+          { "@id": "#northern_expedition", 角色: "统帅" },
+        ],
+        重要政策: [
+          { "@id": "#hongwu_reforms", 类型: "制度改革" },
+          { "@id": "#imperial_exams", 类型: "科举制度" },
+        ],
+        相关人物: [
+          { "@id": "#liubowen", 关系: "首席谋士" },
+          { "@id": "#chenyouliang", 关系: "主要对手" },
+          { "@id": "#xuda", 关系: "开国名将" },
+        ],
+        所属组织: { "@id": "#hongwu_group" },
+      },
+      {
+        "@id": "#empress_ma",
+        "@type": "Person",
+        名称: "马皇后",
+        描述: "明太祖结发妻子，以贤德著称",
+        历史贡献: ["劝阻朱元璋减免刑罚", "维持后宫节俭风气"],
+      },
+      {
+        "@id": "#zhubiao",
+        "@type": "Person",
+        名称: "朱标",
+        封号: "懿文太子",
+        逝世原因: "早逝未继位",
+        子嗣: { "@id": "#jianwen", 姓名: "朱允炆" },
+      },
+      {
+        "@id": "#zhudi",
+        "@type": "Person",
+        名称: "朱棣",
+        庙号: "明成祖",
+        重要事件: { "@id": "#jingnan", 名称: "靖难之役" },
+        迁都: { "@id": "#beijing", 名称: "北京" },
+      },
+      {
+        "@id": "#liubowen",
+        "@type": "Person",
+        名称: "刘伯温",
+        官职: "御史中丞",
+        贡献: ["制定《大明律》", "筹划灭元战略"],
+        结局: "遭胡惟庸毒害",
+      },
+      {
+        "@id": "#chenyouliang",
+        "@type": "Person",
+        名称: "陈友谅",
+        政权: "大汉",
+        控制区域: "长江中游",
+        覆灭: { "@id": "#battle_poyang", 结果: "战败身亡" },
+      },
+      {
+        "@id": "#xuda",
+        "@type": "Person",
+        名称: "徐达",
+        官职: "魏国公",
+        战功: ["攻破元大都", "北伐蒙古"],
+      },
+      {
+        "@id": "#hongwu_group",
+        "@type": "Organization",
+        名称: "洪武政权核心集团",
+        成员: [
+          { "@id": "#mingtaizu", 职务: "君主" },
+          { "@id": "#liubowen", 职务: "首席顾问" },
+          { "@id": "#xuda", 职务: "军事统帅" },
+        ],
+        存在时期: "1352-1398",
+      },
+      {
+        "@id": "#battle_poyang",
+        "@type": "Event",
+        名称: "鄱阳湖之战",
+        时间: "1363-08-30至1363-10-04",
+        参战方: [
+          { "@id": "#mingtaizu", 阵营: "明军" },
+          { "@id": "#chenyouliang", 阵营: "汉军" },
+        ],
+        结果: "陈友谅中箭身亡，朱元璋确立江南霸权",
+      },
+      {
+        "@id": "#northern_expedition",
+        "@type": "Event",
+        名称: "北伐中原",
+        时间: "1367-1368",
+        成果: ["驱逐元顺帝", "收复燕云十六州"],
+      },
+      {
+        "@id": "#hongwu_reforms",
+        "@type": "Event",
+        名称: "洪武新政",
+        时间: "1368-1398",
+        内容: ["废除丞相制", "设立三司分权", "推行卫所制度"],
+      },
+      {
+        "@id": "#huyuyong_case",
+        "@type": "Event",
+        名称: "胡惟庸案",
+        时间: "1380",
+        影响: ["终结千年丞相制度", "株连三万余人"],
+      },
+      {
+        "@id": "#imperial_exams",
+        "@type": "Event",
+        名称: "科举改革",
+        时间: "1370",
+        特点: ["确立八股取士", "三年大比制"],
+      },
+      {
+        "@id": "#brocade_guard",
+        "@type": "Organization",
+        名称: "锦衣卫",
+        创立时间: "1382",
+        职能: ["皇帝直属情报机构", "掌诏狱事务"],
+      },
+    ];
+    // 创建节点和边的容器
+    const nodes = new vis.DataSet([]);
+    const edges = new vis.DataSet([]);
+
+    // 节点样式配置
+    const typeStyles = {
+      Person: { color: "#FFE4B5", shape: "ellipse" },
+      Event: { color: "#98FB98", shape: "box" },
+      Organization: { color: "#B0E0E6", shape: "database" },
+    };
+
+    // 解析数据
+    dataset.forEach((entity) => {
+      // 创建节点
+      const node = {
+        id: entity["@id"],
+        label: entity.名称 || entity.名称,
+        group: entity["@type"],
+        ...(typeStyles[entity["@type"]] || {}),
+      };
+      nodes.add(node);
+
+      // 创建关系边
+      const relations = {
+        配偶: "配偶",
+        子女: "子女",
+        相关人物: "相关",
+        参战方: "参战",
+        成员: "成员",
+        迁都: "迁都",
+      };
+
+      Object.entries(entity).forEach(([key, value]) => {
+        if (relations[key]) {
+          const processRelation = (target, relationType) => {
+            if (target["@id"]) {
+              edges.add({
+                from: entity["@id"],
+                to: target["@id"],
+                label: relationType,
+                arrows: "to",
+              });
+            }
+          };
+
+          if (Array.isArray(value)) {
+            value.forEach((item) => processRelation(item, relations[key]));
+          } else {
+            processRelation(value, relations[key]);
+          }
+        }
+      });
+    });
+
+    // 网络图配置
+    const options = {
+      nodes: {
+        font: { size: 14 },
+        borderWidth: 2,
+        shadow: true,
+      },
+      edges: {
+        arrows: { to: { scaleFactor: 0.5 } },
+        smooth: { type: "cubicBezier" },
+      },
+      physics: {
+        stabilization: true,
+        barnesHut: {
+          gravitationalConstant: -2000,
+          springLength: 200,
+        },
+      },
+    };
+
+    // 创建网络图
+    const container = document.getElementById("network-container");
+    const network = new vis.Network(container, { nodes, edges }, options);
+
+    // 点击事件处理
+    network.on("click", (params) => {
+      if (params.nodes.length) {
+        const nodeId = params.nodes[0];
+        const entity = dataset.find((e) => e["@id"] === nodeId);
+        const panel = document.getElementById("info-panel");
+
+        let content = `<h3>${entity.名称}</h3>`;
+        Object.entries(entity).forEach(([key, value]) => {
+          if (!key.startsWith("@") && key !== "名称") {
+            content += `<p><strong>${key}：</strong>${JSON.stringify(
+              value
+            ).replace(/[$$$$"]+/g, "")}</p>`;
+          }
+        });
+
+        panel.innerHTML = content;
+        panel.style.display = "block";
+      }
+    });
+
+    // 双击隐藏面板
+    network.on("doubleClick", () => {
+      document.getElementById("info-panel").style.display = "none";
+    });
+  </script>
+</body>
+
+</html>

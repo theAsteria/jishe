@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <title>知识图谱-朱厚熜</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        * {
+            background-color: #edce65;
+        }
+
+        #network-container {
+            width: 100vw;
+            height: 100vh;
+            border: 1px solid #ccc;
+        }
+
+        .info-panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            max-width: 300px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #8b0000;
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #b38f2b;
+            color: #fff;
+        }
+
+        .btn-return {
+            margin: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-return::after {
+            content: '➔';
+            margin-left: 8px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-return:hover::after {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../content.html" class="btn btn-return">
+        返回人物信息页面
+    </a>
+    <div id="network-container"></div>
+    <div id="info-panel" class="info-panel" style="display: none"></div>
+
+    <script>
+        // 原始数据
+        const dataset = [
+            {
+                "@context": "https://schema.org",
+                "@id": "#zhuhouzong",
+                "@type": "Person",
+                名称: "朱厚熜",
+                别名: ["明世宗", "嘉靖帝"],
+                出生日期: "1507-09-16",
+                逝世日期: "1567-01-23",
+                出生地: "湖广安陆（今湖北钟祥）",
+                陵墓: "北京十三陵之永陵",
+                职业: {
+                    "@type": "Occupation",
+                    职位名称: "明朝皇帝",
+                    任期开始: "1521",
+                    任期结束: "1567",
+                    主要政绩: ["大礼议事件", "推行一条鞭法", "重用张居正改革前期准备"],
+                },
+                重要政策: [
+                    { "@id": "#jiajing_reforms", 类型: "制度改革" },
+                    { "@id": "#dao_xin", 类型: "宗教活动" },
+                ],
+                相关人物: [
+                    { "@id": "#xu_jing", 关系: "首辅大臣" },
+                    { "@id": "#yan_song", 关系: "权臣" },
+                    { "@id": "#zhang_juzheng", 关系: "改革先驱（后期重用）" },
+                ],
+                所属组织: { "@id": "#ming_dynasty_government" },
+            },
+            {
+                "@id": "#xu_jing",
+                "@type": "Person",
+                名称: "徐阶",
+                官职: "内阁首辅",
+                贡献: ["扳倒严嵩，整顿朝纲"],
+            },
+            {
+                "@id": "#yan_song",
+                "@type": "Person",
+                名称: "严嵩",
+                官职: "内阁首辅",
+                描述: "权倾朝野的大奸臣",
+                影响: ["专权乱政，导致朝廷腐败"],
+            },
+            {
+                "@id": "#zhang_juzheng",
+                "@type": "Person",
+                名称: "张居正",
+                官职: "内阁次辅（后为首辅）",
+                贡献: ["为万历改革奠定基础"],
+                关系: { "@id": "#zhuhouzong", 角色: "后期得到重用" },
+            },
+            {
+                "@id": "#jiajing_reforms",
+                "@type": "Event",
+                名称: "嘉靖新政",
+                时间: "1521-1567",
+                内容: ["改革吏治", "清丈土地", "推行一条鞭法的雏形"],
+            },
+            {
+                "@id": "#dao_xin",
+                "@type": "Event",
+                名称: "大礼议事件",
+                时间: "1524",
+                影响: ["确立嘉靖帝在朝廷的绝对权威，打击旧势力"],
+            },
+            {
+                "@id": "#ming_dynasty_government",
+                "@type": "Organization",
+                名称: "明朝朝廷",
+                成员: [
+                    { "@id": "#zhuhouzong", 职务: "君主" },
+                    { "@id": "#xu_jing", 职务: "内阁首辅" },
+                    { "@id": "#yan_song", 职务: "内阁首辅" },
+                    { "@id": "#zhang_juzheng", 职务: "内阁次辅" },
+                ],
+                存在时期: "1368-1644",
+            }
+        ];
+
+        // 创建节点和边的容器
+        const nodes = new vis.DataSet([]);
+        const edges = new vis.DataSet([]);
+
+        // 节点样式配置
+        const typeStyles = {
+            Person: { color: "#FFE4B5", shape: "ellipse" },
+            Event: { color: "#98FB98", shape: "box" },
+            Organization: { color: "#B0E0E6", shape: "database" },
+        };
+
+        // 解析数据
+        dataset.forEach((entity) => {
+            // 创建节点
+            const node = {
+                id: entity["@id"],
+                label: entity.名称 || entity.名称,
+                group: entity["@type"],
+                ...(typeStyles[entity["@type"]] || {}),
+            };
+            nodes.add(node);
+
+            // 创建关系边
+            const relations = {
+                首辅大臣: "任职",
+                权臣: "任职",
+                改革先驱: "任职",
+                相关人物: "相关",
+                成员: "成员",
+            };
+
+            Object.entries(entity).forEach(([key, value]) => {
+                if (relations[key]) {
+                    const processRelation = (target, relationType) => {
+                        if (target["@id"]) {
+                            edges.add({
+                                from: entity["@id"],
+                                to: target["@id"],
+                                label: relationType,
+                                arrows: "to",
+                            });
+                        }
+                    };
+
+                    if (Array.isArray(value)) {
+                        value.forEach((item) => processRelation(item, relations[key]));
+                    } else if (key === "重要政策" || key === "@type" || key === "所属组织") return;
+                    else {
+                        processRelation(value, relations[key]);
+                    }
+                }
+            });
+        });
+
+        // 网络图配置
+        const options = {
+            nodes: {
+                font: { size: 14 },
+                borderWidth: 2,
+                shadow: true,
+            },
+            edges: {
+                arrows: { to: { scaleFactor: 0.5 } },
+                smooth: { type: "cubicBezier" },
+            },
+            physics: {
+                stabilization: true,
+                barnesHut: {
+                    gravitationalConstant: -2000,
+                    springLength: 200,
+                },
+            },
+        };
+
+        // 创建网络图
+        const container = document.getElementById("network-container");
+        const network = new vis.Network(container, { nodes, edges }, options);
+
+        // 点击事件处理
+        network.on("click", (params) => {
+            if (params.nodes.length) {
+                const nodeId = params.nodes[0];
+                const entity = dataset.find((e) => e["@id"] === nodeId);
+                const panel = document.getElementById("info-panel");
+
+                let content = `<h3>${entity.名称}</h3>`;
+                Object.entries(entity).forEach(([key, value]) => {
+                    if (!key.startsWith("@") && key !== "名称") {
+                        content += `<p><strong>${key}：</strong>${JSON.stringify(
+                            value
+                        ).replace(/[$$$$"]+/g, "")}</p>`;
+                    }
+                });
+
+                panel.innerHTML = content;
+                panel.style.display = "block";
+            }
+        });
+
+        // 双击隐藏面板
+        network.on("doubleClick", () => {
+            document.getElementById("info-panel").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>

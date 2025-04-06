@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <title>明画说————大语言模型驱动的明朝数字叙事平台</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #610000;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b54646;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            line-height: 1.6;
+            color: #3e2723;
+            background-color: #f4e9d8;
+        }
+
+        .top-nav {
+            background-color: #8b0000;
+            color: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid #d4af37;
+            position: fixed;
+            width: 100%;
+            z-index: 10000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-family: 'Ma Shan Zheng', cursive;
+            color: #d4af37;
+            margin: 0;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #d4af37;
+        }
+
+        .nav-links a.active {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .nav-links i {
+            margin-right: 5px;
+        }
+
+        .hero-section {
+            position: relative;
+            text-align: center;
+            color: #fff;
+            padding: 5rem 1rem;
+        }
+
+        .hero-section .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-section h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Ma Shan Zheng', cursive;
+            color: #800000;
+            text-shadow:
+                0 0 5px #ffff00,
+                0 0 10px #ffff00,
+                0 0 15px #ffff00,
+                0 0 20px #ffff00;
+        }
+
+        .hero-section p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #800000;
+        }
+
+        .hero-section .buttons .btn {
+            background: #d4af37;
+            color: #8b0000;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .hero-section .buttons .btn:hover {
+            background: #b38f2b;
+        }
+
+        .hero-section .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .features-section {
+            padding: 3rem 1rem;
+            text-align: center;
+            background-color: #fffaf0;
+            border-radius: 8px;
+            margin: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #d4af37;
+        }
+
+        .features-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #8b0000;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-item {
+            background: #f4e9d8;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #d4af37;
+        }
+
+        .feature-item img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+        }
+
+        .feature-item h3 {
+            color: #8b0000;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .feature-item p {
+            color: #3e2723;
+        }
+
+        .about-section {
+            padding: 3rem 1rem;
+            text-align: center;
+            background-color: #fffaf0;
+            border-radius: 8px;
+            margin: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #d4af37;
+        }
+
+        .about-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #8b0000;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .about-item {
+            background: #f4e9d8;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #d4af37;
+        }
+
+        .about-item h3 {
+            color: #8b0000;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .about-item p {
+            color: #3e2723;
+        }
+
+        .footer {
+            background: #8b0000;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            border-top: 3px solid #d4af37;
+        }
+
+        .footer p {
+            margin: 0;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        /* 置顶按钮样式 */
+        #back-to-top {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            background-color: #8b0000;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        #back-to-top:hover {
+            background-color: #d4af37;
+            transform: scale(1.1);
+
+        }
+
+        #back-to-top:active {
+            background-color: #b38f2b;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="top-nav">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="./logo.png" alt="明朝那些事儿 Logo" class="logo">
+                <p class="nav-logo">明朝那些事儿</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="./home.html"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="./content.html"><i class="fas fa-user"></i> 皇帝详情</a></li>
+                <li><a href="./QA.html"><i class="fas fa-question-circle"></i> 问答页面</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <section id="home" class="hero-section">
+        <div class="hero-content">
+            <h1>明画说<br>大语言模型驱动的明朝数字叙事平台</h1>
+            <p>探索明朝的关键人物与重大事件</p>
+            <div class="buttons">
+                <a href="./content.html" class="btn">了解皇帝详情</a>
+                <a href="./QA.html" class="btn">参与问答互动</a>
+            </div>
+        </div>
+        <img src="./background.jpg" alt="明朝背景图" class="hero-bg">
+    </section>
+
+
+    <section id="features" class="features-section">
+        <h2>项目功能</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <img src="./shouye1.png" alt="皇帝档案">
+                <h3>皇帝档案</h3>
+                <p>查看每位皇帝的生平事迹与重要贡献</p>
+            </div>
+            <div class="feature-item">
+                <img src="./shouye2.png" alt="关键事件">
+                <h3>事件连环画</h3>
+                <p>以图片形式梳理明朝历史中的重大事件与发展脉络</p>
+            </div>
+            <div class="feature-item">
+                <img src="./shouye3.png" alt="问答互动">
+                <h3>问答互动</h3>
+                <p>测试你的明朝知识，参与趣味问答</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <h2>为什么选择我们？</h2>
+        <div class="about-content">
+            <div class="about-item">
+                <h3>数据驱动</h3>
+                <p>基于《明朝那些事儿》的文本分析，精准提取关键信息。</p>
+            </div>
+            <div class="about-item">
+                <h3>交互体验</h3>
+                <p>通过可视化与问答形式，让历史学习更有趣。</p>
+            </div>
+            <div class="about-item">
+                <h3>全面覆盖</h3>
+                <p>涵盖明朝所有皇帝及相关事件，内容详实丰富。</p>
+            </div>
+        </div>
+    </section>
+    <!-- 置顶按钮 -->
+    <button id="back-to-top" title="返回顶部">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    <footer class="footer">
+        <p>&copy; 2025 南京农业大学 信息管理学院 明画说————语言模型驱动的明朝数字叙事平台团队. 版权所有.</p>
+    </footer>
+    <script>
+        const backToTopButton = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+
+</html>

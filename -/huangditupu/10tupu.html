@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <title>知识图谱-朱厚照</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        * {
+            background-color: #edce65;
+        }
+
+        #network-container {
+            width: 100vw;
+            height: 100vh;
+            border: 1px solid #ccc;
+        }
+
+        .info-panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            max-width: 300px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #8b0000;
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #b38f2b;
+            color: #fff;
+        }
+
+        .btn-return {
+            margin: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-return::after {
+            content: '➔';
+            margin-left: 8px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-return:hover::after {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../content.html" class="btn btn-return">
+        返回人物信息页面
+    </a>
+    <div id="network-container"></div>
+    <div id="info-panel" class="info-panel" style="display: none"></div>
+
+    <script>
+        // 原始数据
+        const dataset = [
+            {
+                "@context": "https://schema.org",
+                "@id": "#zhuhaozhao",
+                "@type": "Person",
+                名称: "朱厚照",
+                别名: ["明武宗", "正德帝"],
+                出生日期: "1491-10-27",
+                逝世日期: "1521-04-20",
+                出生地: "北京",
+                陵墓: "康陵",
+                职业: {
+                    "@type": "Occupation",
+                    职位名称: "明朝皇帝",
+                    任期开始: "1505",
+                    任期结束: "1521",
+                    主要政绩: ["设立豹房", "亲征宁王之乱"],
+                },
+                配偶: { "@id": "#xianfei" },
+                子女: [
+                    { "@id": "#zhuying", 姓名: "朱厚照子嗣（未命名）" },
+                ],
+                重要事件: [
+                    { "@id": "#ningwangzhiluan", 名称: "宁王之乱" },
+                    { "@id": "#hongzhi_jingnan", 名称: "应州大捷" },
+                ],
+                相关人物: [
+                    { "@id": "#yangtinghe", 关系: "内阁首辅" },
+                    { "@id": "#xieqian", 关系: "宠臣" },
+                ],
+                所属组织: { "@id": "#mingchao_government" },
+            },
+            {
+                "@id": "#xianfei",
+                "@type": "Person",
+                名称: "夏皇后",
+                描述: "朱厚照的正妻",
+            },
+            {
+                "@id": "#zhuying",
+                "@type": "Person",
+                名称: "朱厚照子嗣（未命名）",
+                描述: "朱厚照的子女（史书未明确记载其姓名）",
+            },
+            {
+                "@id": "#yangtinghe",
+                "@type": "Person",
+                名称: "杨廷和",
+                职务: "内阁首辅",
+                主要贡献: ["辅佐朱厚照处理朝政", "主持大礼议事件"],
+            },
+            {
+                "@id": "#xieqian",
+                "@type": "Person",
+                名称: "钱宁",
+                角色: "宠臣",
+                描述: "朱厚照的亲信，后因叛乱被杀",
+            },
+            {
+                "@id": "#ningwangzhiluan",
+                "@type": "Event",
+                名称: "宁王之乱",
+                时间: "1519",
+                参战方: [
+                    { "@id": "#zhuhaozhao", 阵营: "明军" },
+                    { "@id": "#ningwang", 阵营: "宁王军" },
+                ],
+                结果: "朱厚照亲征，宁王朱宸濠兵败被俘",
+            },
+            {
+                "@id": "#hongzhi_jingnan",
+                "@type": "Event",
+                名称: "应州大捷",
+                时间: "1517",
+                参战方: [
+                    { "@id": "#zhuhaozhao", 阵营: "明军" },
+                    { "@id": "#mongolia", 阵营: "蒙古军队" },
+                ],
+                结果: "明军击败蒙古军队，朱厚照亲征凯旋",
+            },
+            {
+                "@id": "#mingchao_government",
+                "@type": "Organization",
+                名称: "明朝朝廷",
+                成员: [
+                    { "@id": "#zhuhaozhao", 职务: "皇帝" },
+                    { "@id": "#yangtinghe", 职务: "内阁首辅" },
+                ],
+                存在时期: "1368-1644",
+            },
+        ];
+
+        // 创建节点和边的容器
+        const nodes = new vis.DataSet([]);
+        const edges = new vis.DataSet([]);
+
+        // 节点样式配置
+        const typeStyles = {
+            Person: { color: "#FFE4B5", shape: "ellipse" },
+            Event: { color: "#98FB98", shape: "box" },
+            Organization: { color: "#B0E0E6", shape: "database" },
+        };
+
+        // 解析数据
+        dataset.forEach((entity) => {
+            // 创建节点
+            const node = {
+                id: entity["@id"],
+                label: entity.名称 || entity.名称,
+                group: entity["@type"],
+                ...(typeStyles[entity["@type"]] || {}),
+            };
+            nodes.add(node);
+
+            // 创建关系边
+            const relations = {
+                配偶: "配偶",
+                子女: "子女",
+                相关人物: "相关",
+                参战方: "参战",
+                重要事件: "参与",
+            };
+
+            Object.entries(entity).forEach(([key, value]) => {
+                if (relations[key]) {
+                    const processRelation = (target, relationType) => {
+                        if (target["@id"]) {
+                            edges.add({
+                                from: entity["@id"],
+                                to: target["@id"],
+                                label: relationType,
+                                arrows: "to",
+                            });
+                        }
+                    };
+
+                    if (Array.isArray(value)) {
+                        value.forEach((item) => processRelation(item, relations[key]));
+                    } else {
+                        processRelation(value, relations[key]);
+                    }
+                }
+            });
+        });
+
+        // 网络图配置
+        const options = {
+            nodes: {
+                font: { size: 14 },
+                borderWidth: 2,
+                shadow: true,
+            },
+            edges: {
+                arrows: { to: { scaleFactor: 0.5 } },
+                smooth: { type: "cubicBezier" },
+            },
+            physics: {
+                stabilization: true,
+                barnesHut: {
+                    gravitationalConstant: -2000,
+                    springLength: 200,
+                },
+            },
+        };
+
+        // 创建网络图
+        const container = document.getElementById("network-container");
+        const network = new vis.Network(container, { nodes, edges }, options);
+
+        // 点击事件处理
+        network.on("click", (params) => {
+            if (params.nodes.length) {
+                const nodeId = params.nodes[0];
+                const entity = dataset.find((e) => e["@id"] === nodeId);
+                const panel = document.getElementById("info-panel");
+
+                let content = `<h3>${entity.名称}</h3>`;
+                Object.entries(entity).forEach(([key, value]) => {
+                    if (!key.startsWith("@") && key !== "名称") {
+                        content += `<p><strong>${key}：</strong>${JSON.stringify(
+                            value
+                        ).replace(/[$$$$"]+/g, "")}</p>`;
+                    }
+                });
+
+                panel.innerHTML = content;
+                panel.style.display = "block";
+            }
+        });
+
+        // 双击隐藏面板
+        network.on("doubleClick", () => {
+            document.getElementById("info-panel").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>
