@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <title>知识图谱-朱元璋</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Serif SC', serif;
+            background-color: #f8f4e3;
+            color: #333;
+            overflow: hidden;
+        }
+
+        #network-container {
+            width: 100vw;
+            height: 100vh;
+            background-image: linear-gradient(to bottom right, #f8f4e3, #f0e6c0);
+            border: none;
+        }
+
+        .info-panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 350px;
+            border-left: 4px solid #8b0000;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .info-panel h3 {
+            margin-top: 0;
+            color: #8b0000;
+            font-size: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .info-panel p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .info-panel strong {
+            color: #555;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #8b0000;
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            position: relative;
+        }
+
+        .btn:hover {
+            background: #b38f2b;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-return {
+            margin: 20px;
+            display: inline-flex;
+            align-items: center;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+        }
+
+        .btn-return::after {
+            content: '➔';
+            margin-left: 8px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-return:hover::after {
+            transform: translateX(4px);
+        }
+
+        .title-overlay {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.5rem;
+            color: #8b0000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 900;
+        }
+
+        /* 加载动画 */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1001;
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: #8b0000;
+            margin-top: 15px;
+        }
+
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid #8b0000;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../content.html" class="btn btn-return">
+        返回人物信息页面
+    </a>
+    <div id="network-container"></div>
+    <div id="info-panel" class="info-panel" style="display: none"></div>
+    <div class="title-overlay">朱元璋关系知识图谱</div>
+
+    <!-- 加载动画 -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div class="loading-text">正在构建知识图谱...</div>
+    </div>
+
+    <script>
+        // 原始数据
+        const dataset = [
+            {
+                "@id": "#mingtaizu",
+                "@type": "Person",
+                "名称": "朱元璋",
+                "年号": "洪武",
+                "生卒": "1328-1398",
+                "庙号": "太祖",
+                "陵寝": "明孝陵",
+                "配偶": { "@id": "#empress_ma", "关系": "原配" },
+                "子女": [
+                    { "@id": "#zhubiao", "排行": "长子" },
+                    { "@id": "#zhudi", "排行": "四子" }
+                ],
+                "相关人物": [
+                    { "@id": "#liubowen", "关系": "谋士" },
+                    { "@id": "#xuda", "关系": "大将" },
+                    { "@id": "#lishanchang", "关系": "丞相" }
+                ],
+                "重要事件": [
+                    { "@id": "#battle_poyang", "年份": "1363" },
+                    { "@id": "#founding_ming", "年份": "1368" },
+                    { "@id": "#hongwu_lv", "年份": "1374" }
+                ]
+            },
+            {
+                "@id": "#empress_ma",
+                "@type": "Person",
+                "名称": "马皇后",
+                "生卒": "1332-1382",
+                "谥号": "孝慈高皇后",
+                "陵寝": "明孝陵",
+                "配偶": { "@id": "#mingtaizu", "关系": "丈夫" },
+                "慈善事迹": ["设立养济院", "劝谏减免刑罚"]
+            },
+            {
+                "@id": "#zhubiao",
+                "@type": "Person",
+                "名称": "朱标",
+                "生卒": "1355-1392",
+                "谥号": "懿文太子",
+                "陵寝": "明孝陵",
+                "相关人物": [
+                    { "@id": "#mingtaizu", "关系": "父亲" },
+                    { "@id": "#songlian", "关系": "老师" }
+                ]
+            },
+            {
+                "@id": "#zhudi",
+                "@type": "Person",
+                "名称": "朱棣",
+                "生卒": "1360-1424",
+                "封号": "燕王",
+                "相关人物": { "@id": "#mingtaizu", "关系": "父亲" },
+                "军事行动": { "@id": "#jingnan", "角色": "统帅" }
+            },
+            {
+                "@id": "#liubowen",
+                "@type": "Person",
+                "名称": "刘伯温",
+                "生卒": "1311-1375",
+                "官职": "御史中丞",
+                "贡献": ["制定《大明律》", "设计南京城墙"],
+                "结局": "遭胡惟庸毒害",
+                "预言": { "@id": "#huweiyong_case", "警示": "胡党必乱政" }
+            },
+            {
+                "@id": "#xuda",
+                "@type": "Person",
+                "名称": "徐达",
+                "生卒": "1332-1385",
+                "谥号": "中山武宁王",
+                "战功": [
+                    { "@id": "#capture_dadu", "战役": "攻破元大都" },
+                    { "@id": "#northern_expedition", "战役": "北伐蒙古" }
+                ],
+                "结局": "背疽病逝"
+            },
+            {
+                "@id": "#lishanchang",
+                "@type": "Person",
+                "名称": "李善长",
+                "生卒": "1314-1390",
+                "官职": "左丞相",
+                "贡献": ["制定鱼鳞图册", "整顿赋税"],
+                "结局": "受胡惟庸案牵连被诛"
+            },
+            {
+                "@id": "#huweiyong",
+                "@type": "Person",
+                "名称": "胡惟庸",
+                "生卒": "?－1380",
+                "官职": "右丞相",
+                "罪名": "专权结党",
+                "相关事件": { "@id": "#huweiyong_case", "角色": "主谋" }
+            },
+            {
+                "@id": "#changyuchun",
+                "@type": "Person",
+                "名称": "常遇春",
+                "生卒": "1330-1369",
+                "谥号": "忠武",
+                "战绩": { "@id": "#battle_poyang", "结果": "大破汉军" },
+                "特点": "自言能将十万众横行天下"
+            },
+            {
+                "@id": "#tanghe",
+                "@type": "Person",
+                "名称": "汤和",
+                "生卒": "1326-1395",
+                "封爵": "信国公",
+                "功绩": ["平定浙东", "筹建海防"],
+                "结局": "唯一善终的开国功臣"
+            },
+            {
+                "@id": "#kongyin_case",
+                "@type": "Event",
+                "名称": "空印案",
+                "时间": "1376",
+                "性质": "反腐大案",
+                "涉及人员": [
+                    { "@id": "#mingtaizu", "角色": "发起者" },
+                    { "@id": "#lishanchang", "角色": "督办官员" }
+                ],
+                "影响": "处死数百名地方官员"
+            },
+            {
+                "@id": "#hongwu_lv",
+                "@type": "Event",
+                "名称": "颁布《大明律》",
+                "时间": "1374",
+                "主编": { "@id": "#liubowen", "职务": "总纂官" },
+                "特点": ["严惩贪污", "增设奸党罪"],
+                "历史地位": "东亚最后一部传统法典"
+            },
+            {
+                "@id": "#battle_poyang",
+                "@type": "Event",
+                "名称": "鄱阳湖之战",
+                "时间": "1363",
+                "战术创新": "火攻破连环船",
+                "参战方": [
+                    { "@id": "#mingtaizu", "兵力": "20万" },
+                    { "@id": "#chenyouliang", "兵力": "60万" }
+                ],
+                "结果": "奠定朱元璋江南霸权"
+            },
+            {
+                "@id": "#founding_ming",
+                "@type": "Event",
+                "名称": "明朝建国",
+                "时间": "1368-01-23",
+                "都城": { "@id": "#yingtianfu", "现状": "今南京" },
+                "仪式": ["祭天典礼", "颁布即位诏"]
+            },
+            {
+                "@id": "#huweiyong_case",
+                "@type": "Event",
+                "名称": "胡惟庸案",
+                "时间": "1380",
+                "持续时间": "持续十年",
+                "株连人数": "三万余人",
+                "政治影响": "废除丞相制"
+            },
+            {
+                "@id": "#jingnan",
+                "@type": "Event",
+                "名称": "靖难之役",
+                "时间": "1399-1402",
+                "双方": [
+                    { "@id": "#zhudi", "阵营": "燕军" },
+                    { "@id": "#jianwen", "阵营": "朝廷军" }
+                ],
+                "转折点": { "@id": "#baigouhe", "战役": "白沟河大捷" }
+            },
+            {
+                "@id": "#northern_expedition",
+                "@type": "Event",
+                "名称": "北伐残元",
+                "时间": "1367-1370",
+                "统帅": { "@id": "#xuda", "副将": "#changyuchun" },
+                "战果": "收复燕云十六州"
+            },
+            {
+                "@id": "#yingtianfu",
+                "@type": "Place",
+                "名称": "应天府",
+                "别名": "南京",
+                "建设": [
+                    { "@id": "#mingtaizu", "作为": "都城" },
+                    { "@id": "#liubowen", "贡献": "城市规划" }
+                ],
+                "防御体系": ["周长96里城墙", "13座城门"]
+            },
+            {
+                "@id": "#hongwu_group",
+                "@type": "Organization",
+                "名称": "淮西勋贵集团",
+                "相关人物": [
+                    { "@id": "#mingtaizu", "地位": "领袖" },
+                    { "@id": "#xuda", "地位": "军事首领" },
+                    { "@id": "#lishanchang", "地位": "文官代表" }
+                ],
+                "政治影响": "主导洪武朝政局"
+            },
+            {
+                "@id": "#jinyiwei",
+                "@type": "Organization",
+                "名称": "锦衣卫",
+                "成立时间": "1382",
+                "职能": ["监察百官", "秘密侦查"],
+                "首任指挥使": { "@id": "#maoying", "任期": "1382-1390" }
+            },
+            {
+                "@id": "#taixue",
+                "@type": "Organization",
+                "名称": "国子监",
+                "地点": { "@id": "#yingtianfu", "位置": "城北" },
+                "学生规模": "洪武末达八千余人",
+                "教育改革": { "@id": "#mingtaizu", "政策": "优养士人" }
+            },
+            {
+                "@id": "#chenyouliang",
+                "@type": "Person",
+                "名称": "陈友谅",
+                "生卒": "1320-1363",
+                "政权": "汉",
+                "称帝时间": "1360",
+                "覆灭": { "@id": "#battle_poyang", "结果": "中流矢亡" }
+            },
+            {
+                "@id": "#zhangshicheng",
+                "@type": "Person",
+                "名称": "张士诚",
+                "生卒": "1321-1367",
+                "政权": "周",
+                "统治区": "苏松地区",
+                "结局": { "@id": "#pingjiang_war", "结果": "自缢身亡" }
+            },
+            {
+                "@id": "#jianwen",
+                "@type": "Person",
+                "名称": "朱允炆",
+                "生卒": "1377-1402?",
+                "年号": "建文",
+                "相关事件": [
+                    { "@id": "#jingnan", "角色": "被推翻者" },
+                    { "@id": "#huweiyong_case", "影响": "削藩导火索" }
+                ]
+            },
+            {
+                "@id": "#songlian",
+                "@type": "Person",
+                "名称": "宋濂",
+                "生卒": "1310-1381",
+                "身份": "太子师",
+                "著作": ["《元史》总纂", "《送东阳马生序》"],
+                "结局": "因孙子涉胡案被流放"
+            },
+            {
+                "@id": "#lanyu",
+                "@type": "Person",
+                "名称": "蓝玉",
+                "生卒": "?－1393",
+                "战功": "捕鱼儿海大破北元",
+                "结局": { "@id": "#lanyu_case", "结果": "剥皮实草" }
+            },
+            {
+                "@id": "#baigouhe",
+                "@type": "Event",
+                "名称": "白沟河之战",
+                "时间": "1400",
+                "战术特点": "火器与骑兵配合",
+                "结果": "燕军击溃李景隆部"
+            },
+            {
+                "@id": "#pingjiang_war",
+                "@type": "Event",
+                "名称": "平江围城战",
+                "时间": "1367",
+                "持续时间": "十个月",
+                "攻城武器": ["襄阳炮", "火铳队"],
+                "结果": "张士诚政权覆灭"
+            },
+            {
+                "@id": "#lanyu_case",
+                "@type": "Event",
+                "名称": "蓝玉案",
+                "时间": "1393",
+                "牵连人数": "一万五千人",
+                "罪名": "谋反",
+                "历史评价": "洪武四大案终章"
+            },
+            {
+                "@id": "#maoying",
+                "@type": "Person",
+                "名称": "毛骧",
+                "生卒": "?－1383",
+                "职务": "首任锦衣卫指挥使",
+                "经办大案": { "@id": "#huweiyong_case", "角色": "直接执行者" }
+            },
+            {
+                "@id": "#yumuchuan",
+                "@type": "Location",
+                "名称": "捕鱼儿海",
+                "今属": "内蒙古贝尔湖",
+                "相关人物": { "@id": "#lanyu", "战役": "歼灭北元主力" }
+            },
+            {
+                "@id": "#zhengyu_case",
+                "@type": "Event",
+                "名称": "郭桓案",
+                "时间": "1385",
+                "涉案金额": "七百万石粮",
+                "处置方式": "六部侍郎以下皆处死",
+                "反腐措施": { "@id": "#mingtaizu", "政策": "允许百姓绑赃官进京" }
+            },
+            {
+                "@id": "#yunnan_conquest",
+                "@type": "Event",
+                "名称": "平定云南",
+                "时间": "1381-1382",
+                "统帅": [
+                    { "@id": "#muying", "职务": "征南将军" },
+                    { "@id": "#fuyoude", "职务": "副将" }
+                ],
+                "结果": "梁王自尽，云南归附"
+            },
+            {
+                "@id": "#muying",
+                "@type": "Person",
+                "名称": "沐英",
+                "生卒": "1345-1392",
+                "封爵": "黔宁王",
+                "镇守地": { "@id": "#yunnan", "时间": "1383-1392" }
+            },
+            {
+                "@id": "#yunnan",
+                "@type": "Location",
+                "名称": "云南布政使司",
+                "设立时间": "1382",
+                "首任长官": { "@id": "#muying", "职务": "世袭镇守" }
+            },
+            {
+                "@id": "#fuyoude",
+                "@type": "Person",
+                "名称": "傅友德",
+                "生卒": "?－1394",
+                "战绩": [
+                    { "@id": "#yunnan_conquest", "角色": "主将" },
+                    { "@id": "#northern_expedition", "角色": "北伐将领" }
+                ],
+                "结局": "被赐死"
+            },
+            {
+                "@id": "#hukou_system",
+                "@type": "Event",
+                "名称": "编订黄册",
+                "时间": "1381",
+                "制度设计": { "@id": "#mingtaizu", "目的": "控制人口流动" },
+                "实施周期": "每十年重编"
+            },
+            {
+                "@id": "#lijia_system",
+                "@type": "Event",
+                "名称": "里甲制推行",
+                "时间": "1370",
+                "组织结构": "110户为一里",
+                "功能": ["催征赋税", "维护治安"]
+            },
+            {
+                "@id": "#zhenglongbao",
+                "@type": "Location",
+                "名称": "郑龙保",
+                "类型": "军屯据点",
+                "位置": "江淮地区",
+                "功能": { "@id": "#tuntian", "政策": "寓兵于农" }
+            },
+            {
+                "@id": "#tuntian",
+                "@type": "Event",
+                "名称": "屯田制复兴",
+                "时间": "1368-1398",
+                "成效": "洪武末年军粮自给率90%",
+                "相关制度": { "@id": "#lijia_system", "关联": "户籍管理" }
+            }
+        ];
+
+        // 创建节点和边的容器
+        const nodes = new vis.DataSet([]);
+        const edges = new vis.DataSet([]);
+
+        // 节点样式配置 - 更新样式
+        const typeStyles = {
+            Person: {
+                color: {
+                    background: "radial-gradient(circle, #FFE4B5 0%, #E6C27A 100%)",
+                    border: "#d4a76a",
+                    highlight: { background: "#FFD700", border: "#DAA520" }
+                },
+                shape: "circle",
+                borderWidth: 3,
+                size: 30,
+                font: {
+                    color: "#5D4037",
+                    size: 18,
+                    face: 'Ma Shan Zheng',
+                    strokeWidth: 2,
+                    strokeColor: "#ffffff"
+                },
+                shadow: { enabled: true, color: 'rgba(0,0,0,0.3)', size: 10, x: 5, y: 5 }
+            },
+            Event: {
+                color: {
+                    background: "radial-gradient(circle, #98FB98 0%, #2E8B57 100%)",
+                    border: "#3cb371",
+                    highlight: { background: "#7CFC00", border: "#228B22" }
+                },
+                shape: "hexagon",
+                borderWidth: 2,
+                size: 35,
+                font: {
+                    color: "#1B5E20",
+                    size: 16,
+                    face: 'Ma Shan Zheng',
+                    strokeWidth: 2,
+                    strokeColor: "#ffffff"
+                },
+                shadow: { enabled: true, color: 'rgba(0,0,0,0.2)', size: 8 }
+            },
+            Organization: {
+                color: {
+                    background: "radial-gradient(circle, #B0E0E6 0%, #4682B4 100%)",
+                    border: "#4682b4",
+                    highlight: { background: "#87CEEB", border: "#4169E1" }
+                },
+                shape: "diamond",
+                borderWidth: 2,
+                size: 35,
+                font: {
+                    color: "#0D47A1",
+                    size: 16,
+                    face: 'Ma Shan Zheng',
+                    strokeWidth: 2,
+                    strokeColor: "#ffffff"
+                },
+                shadow: { enabled: true, color: 'rgba(0,0,0,0.2)', size: 8 }
+            },
+        };
+
+        // 预设位置映射
+
+        // 解析数据
+        dataset.forEach((entity) => {
+            // 创建节点
+            const style = typeStyles[entity["@type"]] || {};
+            const node = {
+                id: entity["@id"],
+                label: entity.名称 || entity.名称,
+                group: entity["@type"],
+                title: `${entity.名称}${entity.生卒 ? `<br>生卒: ${entity.生卒}` : ''}`,
+                ...style
+            };
+
+
+            nodes.add(node);
+
+            const relations = {
+                涉及人员: "涉及",
+                制度设计: "制定",
+                结局: "结局",
+                出生地: "出生地",
+                陵墓: "陵墓",
+                主要政绩: "政绩",
+                相关人物: "相关",
+                关系: "关系",
+                相关事件: "关联事件",
+                军事力量: "统领",
+                官职: "担任",
+                政策主张: "主张",
+                身份: "身份",
+                策划事件: "策划",
+                宗教背景: "信仰",
+                事件: "涉及事件",
+                战役: "参战",
+                战术特点: "战术",
+                结果: "结果",
+                影响: "影响",
+                执行者: "执行",
+                罪名: "指控",
+                地点: "发生地",
+                参战方: "阵营",
+                相关制度: "相关",
+                关键战役: "关键战役",
+                内容: "内容",
+                反对者: "反对",
+                被废藩王: "废除",
+                后果: "导致",
+                兵力: "兵力",
+                驻地: "驻地",
+                职能: "职责",
+                改革措施: "实施",
+                状态: "状态",
+                恢复者: "恢复",
+                今属: "今属",
+                地位: "地位",
+                功能: "功能",
+                墓主: "安葬",
+                关联人物: "关联",
+                藩王驻地: "封地",
+                防御漏洞: "漏洞",
+                叛将: "叛变",
+                评价: "评价",
+                谜团: "谜团",
+                考古证据: "证据",
+                重要事件: "关联事件",
+                父亲: "父亲",
+                同母弟: "兄弟",
+                配偶: "配偶",
+                子女: "子女",
+                相关人物: "相关",
+                重要事件: "重要事件",
+                陵寝: "陵寝",
+                父亲: "父亲",
+                老师: "老师",
+                预言: "预言",
+                战功: "战功",
+                战绩: "战绩",
+                涉及: "涉及",
+                统帅: "统帅",
+                副将: "副将",
+                镇守: "镇守",
+                首任长官: "首任长官",
+                参与: "参与",
+                制定: "制定",
+                实施: "实施",
+                影响: "影响",
+                首任指挥使: "首任指挥使",
+                战役: "战役",
+                关联: "关联",
+                建设: "建设",
+                成员: "成员",
+                政策: "政策",
+                导致: "导致",
+                参战: "参战",
+                主编: "主编",
+                经办大案: "经办",
+                角色: "角色",
+                慈善事迹: "慈善",
+                军事行动: "军事",
+                贡献: "贡献",
+                教育改革: "教育",
+                防御体系: "防御",
+                学生规模: "规模",
+                建设周期: "周期",
+                政治影响: "政治",
+                职能: "职能",
+                相关事件: "事件",
+                慈善事迹: "慈善",
+                军事行动: "军事",
+                贡献: "贡献",
+                教育改革: "教育",
+                防御体系: "防御",
+                学生规模: "规模",
+                建设周期: "周期",
+                政治影响: "政治",
+                职能: "职能",
+            };
+
+            Object.entries(entity).forEach(([key, value]) => {
+                if (relations[key]) {
+                    const processRelation = (target, relationType) => {
+                        if (target["@id"]) {
+                            edges.add({
+                                from: entity["@id"],
+                                to: target["@id"],
+                                label: relationType,
+                                arrows: "to",
+                                color: { color: "#8b0000", highlight: "#b38f2b" },
+                                font: { color: "#555", size: 12 },
+                                smooth: { type: "curvedCW", roundness: 0.2 }
+                            });
+                        }
+                    };
+
+                    if (Array.isArray(value)) {
+                        value.forEach((item) => processRelation(item, relations[key]));
+                    } else {
+                        processRelation(value, relations[key]);
+                    }
+                }
+            });
+        });
+        const options = {
+            nodes: {
+                font: {
+                    size: 16,
+                    face: 'Noto Serif SC'
+                },
+                borderWidth: 2,
+                shadow: true,
+                scaling: {
+                    label: {
+                        enabled: true,
+                        min: 14,
+                        max: 24
+                    }
+                }
+            },
+            edges: {
+                arrows: { to: { scaleFactor: 0.5, enabled: true } },
+                smooth: { type: "cubicBezier", forceDirection: "horizontal" },
+                color: { inherit: false },
+                width: 1.5
+            },
+            physics: {
+                enabled: true,
+                stabilization: {
+                    enabled: true,
+                    iterations: 200,
+                    updateInterval: 25,
+                    fit: true
+                },
+                barnesHut: {
+                    gravitationalConstant: -3000,  // 增加绝对值使节点间斥力更大
+                    springLength: 200,  // 增加弹簧长度
+                    springConstant: 0.02,  // 减小弹簧常数
+                    damping: 0.09,
+                    avoidOverlap: 0.8  // 增加避免重叠系数
+                },
+                minVelocity: 0.5,
+                maxVelocity: 50
+            },
+            layout: {
+                improvedLayout: true,
+                hierarchical: {
+                    enabled: false
+                }
+            }
+        };
+
+
+        // 创建网络图
+        const container = document.getElementById("network-container");
+        const network = new vis.Network(container, { nodes, edges }, options);
+
+        // 隐藏加载动画并停止物理引擎
+        network.on("stabilizationIterationsDone", function () {
+            document.getElementById("loading").style.display = "none";
+            // 稳定后停止物理引擎以提高性能
+            setTimeout(() => {
+                network.setOptions({ physics: { enabled: false } });
+            }, 1000);
+        });
+
+        // 添加稳定进度显示
+        network.on("stabilizationProgress", function (params) {
+            const loadingText = document.querySelector('.loading-text');
+            const progress = Math.round((params.iterations / params.total) * 100);
+            loadingText.innerHTML = `正在构建知识图谱...${progress}%`;
+        });
+        network.on("click", (params) => {
+            if (params.nodes.length) {
+                const nodeId = params.nodes[0];
+                const entity = dataset.find((e) => e["@id"] === nodeId);
+                const panel = document.getElementById("info-panel");
+
+                let content = `<h3>${entity.名称 || '未命名节点'}</h3>`;
+
+                // 获取实体名称的辅助函数
+                const getEntityName = (id) => {
+                    const refEntity = dataset.find(e => e["@id"] === id);
+                    return refEntity ? refEntity.名称 : id;
+                };
+
+                // 格式化显示属性
+                Object.entries(entity).forEach(([key, value]) => {
+                    if (!key.startsWith("@") && key !== "名称") {
+                        // 递归格式化函数
+                        const formatValue = (val) => {
+                            if (Array.isArray(val)) {
+                                return val.map(item => formatValue(item)).join('、');
+                            } else if (typeof val === 'object' && val !== null) {
+                                if (val["@id"]) {
+                                    const entityName = getEntityName(val["@id"]);
+                                    const otherProps = Object.entries(val)
+                                        .filter(([k]) => !k.startsWith('@'))
+                                        .map(([k, v]) => `${k}: ${formatValue(v)}`)
+                                        .join(', ');
+                                    return `${entityName}${otherProps ? ` (${otherProps})` : ''}`;
+                                }
+                                return Object.entries(val)
+                                    .filter(([k]) => !k.startsWith('@'))
+                                    .map(([k, v]) => `${k}: ${formatValue(v)}`)
+                                    .join(', ');
+                            }
+                            return val;
+                        };
+
+                        content += `<p><strong>${key}：</strong>${formatValue(value)}</p>`;
+                    }
+                });
+
+                panel.innerHTML = content;
+                panel.style.display = "block";
+
+                // 高亮显示选中节点及其连接
+                network.selectNodes([nodeId]);
+                const connectedNodeIds = new Set([nodeId]);
+                const connectedEdgeIds = network.getConnectedEdges(nodeId);
+
+                connectedEdgeIds.forEach(edgeId => {
+                    const edge = edges.get(edgeId);
+                    connectedNodeIds.add(edge.from);
+                    connectedNodeIds.add(edge.to);
+                });
+                const allNodes = nodes.get();
+                const updates = allNodes.map(node => {
+                    return {
+                        id: node.id,
+                        opacity: connectedNodeIds.has(node.id) ? 1 : 0.2,
+                        color: undefined // 确保不修改颜色
+                    };
+                });
+                nodes.update(updates);
+            } else {
+                // 点击空白处，取消选择
+                network.unselectAll();
+            }
+        });
+
+        // 双击隐藏面板
+        network.on("doubleClick", () => {
+            document.getElementById("info-panel").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>
