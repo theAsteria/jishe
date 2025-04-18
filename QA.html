@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <title>AI问答页面</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/openai@4.0.0/dist/openai.min.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #610000;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b54646;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Noto Serif SC', serif;
+            background-color: #f4e9d8;
+            color: #3e2723;
+        }
+
+        .top-nav {
+            background-color: #8b0000;
+            color: white;
+            padding: 7px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid #d4af37;
+            position: fixed;
+            z-index: 100000;
+            width: 100%;
+            top: 0px;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-family: 'Ma Shan Zheng', cursive;
+            color: #d4af37;
+            margin: 0;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #d4af37;
+        }
+
+        .nav-links a.active {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .nav-links i {
+            margin-right: 5px;
+        }
+
+        .qa-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 40px;
+            background-color: #fffaf0;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #d4af37;
+        }
+
+        .qa-container h1 {
+            color: #8b0000;
+            font-size: 32px;
+            text-align: center;
+            font-family: 'Ma Shan Zheng', cursive;
+            margin-bottom: 20px;
+        }
+
+        .chat-box {
+            position: relative;
+            height: 600px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f4e9d8;
+            border-radius: 8px;
+            border: 1px solid #d4af37;
+            margin-bottom: 0;
+            background-image: url("pic5.png");
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+            background-position: center bottom;
+
+            @media (max-width: 768px) {
+                height: 400px;
+            }
+
+            @media (max-width: 480px) {
+                height: 300px;
+            }
+        }
+
+        .chat-box::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(244, 233, 216, 0.5);
+            border-radius: 8px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .message,
+        .ai-message,
+        .user-message {
+            position: relative;
+            z-index: 1;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .message .avatar img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+
+        .message .text {
+            max-width: 70%;
+            min-width: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* AI消息样式 */
+        .ai-message {
+            justify-content: flex-start;
+        }
+
+        .ai-message .text {
+            background-color: #d4af37;
+            color: white;
+            min-width: 20px;
+
+        }
+
+        .ai-message .avatar {
+            margin-right: 10px;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .user-message .text {
+            background-color: #8b0000;
+            color: white;
+        }
+
+        .user-message .avatar {
+            margin-left: 10px;
+            order: 1;
+        }
+
+        .input-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-box input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #d4af37;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .input-box button {
+            padding: 10px 20px;
+            background-color: #8b0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-box button:hover {
+            background-color: #6b0000;
+        }
+
+        .message .avatar img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            /* 圆形头像 */
+            object-fit: cover;
+            /* 确保图片比例正确 */
+            border: 2px solid #d4af37;
+            /* 添加边框以突出显示 */
+        }
+
+        /* AI消息头像样式 */
+        .ai-message .avatar img {
+            margin-right: 12px;
+        }
+
+        /* 用户消息头像样式 */
+        .user-message .avatar img {
+            margin-left: 12px;
+        }
+
+        /* 置顶按钮样式 */
+        #back-to-top {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            background-color: #8b0000;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        #back-to-top:hover {
+            background-color: #d4af37;
+            transform: scale(1.1);
+
+        }
+
+        #back-to-top:active {
+            background-color: #b38f2b;
+        }
+
+        .pic-1-box img {
+            position: fixed;
+            right: 20px;
+            top: 55%;
+            width: 180px;
+            height: auto;
+        }
+
+        .pic-2-box img {
+            position: fixed;
+            right: 1px;
+            top: 10%;
+            width: 215px;
+            height: auto;
+        }
+
+        .pic-3-box img {
+            position: fixed;
+            left: 60px;
+            top: 27%;
+            width: auto;
+            height: 500px;
+            transform: rotate(15deg);
+            transform-origin: left top;
+            z-index: -100000;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="top-nav">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="./picture/content/home/logo.png" alt="明朝那些事儿 Logo" class="logo">
+                <p class="nav-logo">明朝那些事儿</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="./home.html"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="./content.html"><i class="fas fa-user"></i> 皇帝详情</a></li>
+                <li><a href="./QA.html"><i class="fas fa-question-circle"></i> 问答页面</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="pic-1-box">
+        <img src="picture\content\QA\pic1.png">
+    </div>
+    <div class="pic-2-box">
+        <img src="picture\content\QA\pic3.png">
+    </div>
+    <div class="pic-3-box">
+        <img src="picture\content\QA\pic4.png">
+    </div>
+    <div class="qa-container">
+        <h1>AI问答</h1>
+        <div class="chat-box" id="chat-box">
+            <div class="message ai-message">
+                <div class="avatar">
+                    <img src="picture/content/QA/ai.jpg" alt="AI头像">
+                </div>
+                <p class="text">
+                    您好！我是AI助手，请问有什么可以帮您的吗？
+                </p>
+            </div>
+
+        </div>
+        <div class="input-box">
+            <input type="text" id="user-input" placeholder="请输入您的问题...">
+            <button onclick="askQuestion()" id="send-button"><i class="fas fa-paper-plane"></i> 发送</button>
+        </div>
+    </div>
+    <!-- 置顶按钮 -->
+    <button id="back-to-top" title="返回顶部">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    <script>
+        // 定义头像路径
+        const AVATAR = {
+            ai: 'picture/content/QA/ai.jpg',      // AI头像路径
+            user: 'picture/content/QA/user.jpg'   // 用户头像路径
+        };
+
+        // 获取DOM元素
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const chatBox = document.getElementById('chat-box');
+
+        // 当前是否正在等待回复
+        let isWaitingForResponse = false;
+
+        async function askQuestion() {
+            // 防止重复提交
+            if (isWaitingForResponse) return;
+
+            const userQuestion = userInput.value.trim();
+
+            if (!userQuestion) {
+                alert('请输入有效问题');
+                return;
+            }
+
+            // 设置等待状态
+            isWaitingForResponse = true;
+            userInput.disabled = true;
+            sendButton.disabled = true;
+
+            // 添加用户消息
+            addMessage('user', userQuestion);
+            userInput.value = '';
+
+            // 添加加载中消息
+            const thinkingMsg = addMessage('ai', '正在思考中...', true);
+
+            try {
+                const aiMessage = document.createElement('div');
+                aiMessage.className = 'message ai-message';
+
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'avatar';
+                avatarDiv.innerHTML = `<img src="${AVATAR.ai}" alt="AI头像">`;
+
+                const textDiv = document.createElement('div');
+                textDiv.className = 'text typing-effect';
+                textDiv.textContent = '';
+
+                aiMessage.appendChild(avatarDiv);
+                aiMessage.appendChild(textDiv);
+
+                // 不要在这里移除加载中消息
+                // thinkingMsg.remove();
+                // chatBox.appendChild(aiMessage);
+
+                // 使用EventSource连接流式API
+                const eventSource = new EventSource(`http://localhost:3000/api/ask?question=${encodeURIComponent(userQuestion)}`);
+
+                // 处理流式数据
+                let fullResponse = '';
+                let responseReceived = false;
+
+                // 模拟流式输出的函数
+                function simulateStreamingOutput(text, textDiv) {
+                    // 在这里移除加载中消息并添加新消息
+                    if (!responseReceived) {
+                        thinkingMsg.remove();
+                        chatBox.appendChild(aiMessage);
+                        responseReceived = true;
+                    }
+
+                    return new Promise((resolve) => {
+                        let index = 0;
+                        const totalLength = text.length;
+
+                        // 随机生成每批次输出的字符数量(1-5个字符)
+                        function getRandomChunkSize() {
+                            return Math.floor(Math.random() * 5) + 1;
+                        }
+
+                        // 随机生成每次输出的时间间隔(30-100ms)
+                        function getRandomDelay() {
+                            return Math.floor(Math.random() * 70) + 30;
+                        }
+
+                        function typeNextChunk() {
+                            if (index >= totalLength) {
+                                resolve();
+                                return;
+                            }
+
+                            // 计算本次要输出的字符数
+                            const chunkSize = Math.min(getRandomChunkSize(), totalLength - index);
+                            const chunk = text.substring(index, index + chunkSize);
+
+                            // 更新显示内容
+                            fullResponse += chunk;
+                            textDiv.textContent = fullResponse;
+
+                            // 自动滚动到底部
+                            chatBox.scrollTop = chatBox.scrollHeight;
+
+                            // 更新索引
+                            index += chunkSize;
+
+                            // 设置下一次输出的延迟
+                            setTimeout(typeNextChunk, getRandomDelay());
+                        }
+
+                        // 开始模拟输出
+                        typeNextChunk();
+                    });
+                }
+
+                eventSource.onmessage = (event) => {
+                    try {
+                        console.log('收到原始数据:', event.data);
+
+                        // 尝试解析数据
+                        let chunk = '';
+                        const rawData = event.data;
+
+                        try {
+                            // 解析外层JSON
+                            const outerJson = JSON.parse(rawData);
+
+                            // 检查是否是结束信号
+                            if (outerJson.success === true && outerJson.done === true) {
+                                console.log('收到结束信号');
+                                eventSource.close();
+                                if (responseReceived) {
+                                    textDiv.classList.remove('typing-effect');
+                                } else {
+                                    // 如果从未收到实际响应但收到了结束信号
+                                    thinkingMsg.remove();
+                                    addMessage('ai', '抱歉，未能获取到回答。');
+                                }
+                                resetInputState();
+                                return;
+                            }
+
+                            // 处理嵌套的SSE格式数据
+                            if (outerJson.data && typeof outerJson.data === 'string') {
+                                if (outerJson.data.startsWith('data:')) {
+                                    const innerDataStr = outerJson.data.replace(/^data:\s*/, '');
+
+                                    try {
+                                        const innerJson = JSON.parse(innerDataStr);
+                                        if (innerJson.data !== undefined) {
+                                            chunk = innerJson.data;
+                                        }
+                                    } catch (innerError) {
+                                        console.warn('内层JSON解析失败:', innerError);
+                                        chunk = innerDataStr;
+                                    }
+                                } else {
+                                    chunk = outerJson.data;
+                                }
+                                if (chunk) {
+                                    eventSource.close();
+                                    simulateStreamingOutput(chunk, textDiv).then(() => {
+                                        textDiv.classList.remove('typing-effect');
+                                        resetInputState();
+                                    });
+                                }
+                            }
+                        } catch (outerError) {
+                            console.warn('外层JSON解析失败:', outerError);
+                            // 如果外层解析失败，尝试直接处理
+                            chunk = rawData;
+
+                            // 使用模拟流式输出
+                            if (chunk) {
+                                eventSource.close();
+                                simulateStreamingOutput(chunk, textDiv).then(() => {
+                                    textDiv.classList.remove('typing-effect');
+                                    resetInputState();
+                                });
+                            }
+                        }
+                    } catch (error) {
+                        console.error('数据处理错误:', error);
+                    }
+                };
+
+                // 完成事件处理
+                eventSource.addEventListener('done', () => {
+                    console.log('收到done事件');
+                    eventSource.close();
+                    if (responseReceived) {
+                        textDiv.classList.remove('typing-effect');
+                    } else {
+                        // 如果从未收到实际响应但收到了done事件
+                        thinkingMsg.remove();
+                        addMessage('ai', '抱歉，未能获取到回答。');
+                    }
+                    resetInputState();
+                });
+
+                // 错误处理
+                eventSource.onerror = (error) => {
+                    console.error('SSE连接错误:', error);
+                    eventSource.close();
+
+                    if (!responseReceived) {
+                        // 如果从未收到响应就发生错误
+                        thinkingMsg.remove();
+                        addMessage('ai', '连接中断，请重试');
+                    } else {
+                        textDiv.classList.remove('typing-effect');
+                        if (textDiv.textContent === '') {
+                            textDiv.textContent = '连接中断，请重试';
+                        }
+                    }
+
+                    resetInputState();
+                };
+            } catch (error) {
+                console.error('请求失败:', error);
+                thinkingMsg.remove();
+                addMessage('ai', `请求失败: ${error.message}`);
+                resetInputState();
+            }
+        }
+
+        // 重置输入状态
+        function resetInputState() {
+            isWaitingForResponse = false;
+            userInput.disabled = false;
+            sendButton.disabled = false;
+            userInput.focus();
+        }
+
+        // 通用消息添加函数
+        function addMessage(type, content, isTemp = false) {
+            const message = document.createElement('div');
+            message.className = `message ${type}-message`;
+            if (isTemp) message.classList.add('thinking');
+
+            // 根据消息类型选择头像
+            const avatarSrc = type === 'user' ? AVATAR.user : AVATAR.ai;
+            message.innerHTML = `
+                <div class="avatar">
+                    <img src="${avatarSrc}" alt="${type === 'ai' ? 'AI' : '用户'}头像">
+                </div>
+                <p class="text">${escapeHtml(content)}</p>
+            `;
+
+            chatBox.appendChild(message);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return message;
+        }
+
+        // 转义函数
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 回车事件
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !isWaitingForResponse) {
+                askQuestion();
+            }
+        });
+
+        // 置顶按钮
+        const backToTopButton = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+    <style>
+        /* 添加加载中动画 */
+        .thinking .text::after {
+            content: '...';
+            animation: dots 1s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+
+            0%,
+            20% {
+                content: '.';
+            }
+
+            40% {
+                content: '..';
+            }
+
+            60% {
+                content: '...';
+            }
+
+            80%,
+            100% {
+                content: '';
+            }
+        }
+    </style>
+
+</body>
+
+</html>

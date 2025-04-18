@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <title>知识图谱-朱祁镇</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Serif SC', serif;
+            background-color: #f8f4e3;
+            color: #333;
+            overflow: hidden;
+        }
+
+        #network-container {
+            width: 100vw;
+            height: 100vh;
+            background-image: linear-gradient(to bottom right, #f8f4e3, #f0e6c0);
+            border: none;
+        }
+
+        .info-panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 350px;
+            border-left: 4px solid #8b0000;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .info-panel h3 {
+            margin-top: 0;
+            color: #8b0000;
+            font-size: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .info-panel p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .info-panel strong {
+            color: #555;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #8b0000;
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            position: relative;
+        }
+
+        .btn:hover {
+            background: #b38f2b;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-return {
+            margin: 20px;
+            display: inline-flex;
+            align-items: center;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+        }
+
+        .btn-return::after {
+            content: '➔';
+            margin-left: 8px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-return:hover::after {
+            transform: translateX(4px);
+        }
+
+        .title-overlay {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.5rem;
+            color: #8b0000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 900;
+        }
+
+        /* 加载动画 */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1001;
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: #8b0000;
+            margin-top: 15px;
+        }
+
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid #8b0000;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../content.html" class="btn btn-return">
+        返回人物信息页面
+    </a>
+    <div id="network-container"></div>
+    <div id="info-panel" class="info-panel" style="display: none"></div>
+    <div class="title-overlay">朱祁镇关系知识图谱</div>
+
+    <!-- 加载动画 -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div class="loading-text">正在构建知识图谱...</div>
+    </div>
+
+    <script>
+        // 原始数据
+        const dataset = [
+            {
+                "@context": "https://schema.org",
+                "@id": "#zhengtong",
+                "@type": "Person",
+                名称: "朱祁镇",
+                别名: ["明英宗"],
+                出生日期: "1427-11-29",
+                逝世日期: "1464-02-19",
+                出生地: "北京",
+                陵墓: "北京明十三陵中的裕陵",
+                职业: {
+                    "@type": "Occupation",
+                    职位名称: "明朝皇帝",
+                    任期开始: "1435",
+                    任期结束: "1449",
+                    再任: { "@id": "#zhengtong_restored", 时间: "1457" },
+                },
+                军事成就: [
+                    { "@id": "#tumu_crisis", 角色: "皇帝（被俘）" },
+                    { "@id": "#restoration_war", 角色: "复位后平乱" },
+                ],
+                重要政策: [
+                    { "@id": "#zhengtong_policy", 类型: "政治改革" },
+                    { "@id": "#huangce_restore", 类型: "恢复旧制" }
+                ],
+                相关人物: [
+                    { "@id": "#wangzhen", 关系: "太监" },
+                    { "@id": "#yuqian", 关系: "将领" },
+                    { "@id": "#sun_taihou", 关系: "母亲" },
+                    { "@id": "#shiheng", 关系: "复位功臣" },
+                    { "@id": "#xuyouzhen", 关系: "谋士" }
+                ]
+            },
+            {
+                "@id": "#wangzhen",
+                "@type": "Person",
+                名称: "王振",
+                描述: "正统朝司礼监掌印太监",
+                影响: ["土木堡之变导火索"],
+                死亡时间: "1449"
+            },
+            {
+                "@id": "#yuqian",
+                "@type": "Person",
+                名称: "于谦",
+                职位: "兵部尚书",
+                历史贡献: ["北京保卫战总指挥"],
+                死亡原因: { "@id": "#restoration_war", 描述: "被处决" }
+            },
+            {
+                "@id": "#sun_taihou",
+                "@type": "Person",
+                名称: "孙太后",
+                身份: "皇太后",
+                历史贡献: ["主持立朱祁钰为帝", "支持夺门之变"]
+            },
+            {
+                "@id": "#shiheng",
+                "@type": "Person",
+                名称: "石亨",
+                职位: "武清侯",
+                军事成就: [
+                    { "@id": "#beijing_defense", 角色: "主将" },
+                    { "@id": "#restoration_war", 角色: "政变核心" }
+                ]
+            },
+            {
+                "@id": "#xuyouzhen",
+                "@type": "Person",
+                名称: "徐有贞",
+                职位: "内阁首辅",
+                重要政策: [
+                    { "@id": "#huangce_restore", 类型: "政策制定" }
+                ]
+            },
+            {
+                "@id": "#tumu_crisis",
+                "@type": "Event",
+                名称: "土木堡之变",
+                时间: "1449",
+                参战方: [
+                    { "@id": "#zhengtong", 阵营: "明军" },
+                    { "@id": "#wala", 阵营: "瓦剌" }
+                ],
+                结果: "明军全军覆没"
+            },
+            {
+                "@id": "#restoration_war",
+                "@type": "Event",
+                名称: "夺门之变",
+                时间: "1457",
+                关键人物: [
+                    { "@id": "#shiheng", 角色: "主谋" },
+                    { "@id": "#caojixiang", 角色: "宦官支持" }
+                ]
+            },
+            {
+                "@id": "#beijing_defense",
+                "@type": "Event",
+                名称: "北京保卫战",
+                时间: "1449-10",
+                防御体系: ["德胜门外壕沟", "西直门瓮城"],
+                参战将领: [
+                    { "@id": "#yuqian", 职位: "总指挥" },
+                    { "@id": "#fanguang", 职位: "副将" }
+                ]
+            },
+            {
+                "@id": "#wala",
+                "@type": "Organization",
+                名称: "瓦剌",
+                首领: "也先",
+                军事行动: [
+                    { "@id": "#tumu_crisis", 类型: "突袭" },
+                    { "@id": "#xuanfu_battle", 类型: "边境侵扰" }
+                ]
+            },
+            {
+                "@id": "#huangce_restore",
+                "@type": "Policy",
+                名称: "恢复旧制",
+                时间: "1457",
+                内容: ["废除景泰年号", "恢复正统官制"],
+                执行者: { "@id": "#xuyouzhen" }
+            },
+            {
+                "@id": "#caojixiang",
+                "@type": "Person",
+                名称: "曹吉祥",
+                身份: "司礼监太监",
+                参与事件: [
+                    { "@id": "#restoration_war", 角色: "内应" },
+                    { "@id": "#caoshi_rebellion", 角色: "主谋" }
+                ]
+            },
+            {
+                "@id": "#fanguang",
+                "@type": "Person",
+                名称: "范广",
+                职位: "都督佥事",
+                军事成就: [
+                    { "@id": "#beijing_defense", 战绩: "击退也先先锋" }
+                ],
+                结局: { "@id": "#restoration_war", 结果: "被处决" }
+            },
+            {
+                "@id": "#zhu_qiyu",
+                "@type": "Person",
+                名称: "朱祁钰",
+                别名: ["明代宗"],
+                在位时间: "1449-1457",
+                重要事件: [
+                    { "@id": "#beijing_defense", 角色: "监国" },
+                    { "@id": "#restoration_war", 角色: "被废黜" }
+                ]
+            },
+            {
+                "@id": "#xuanfu_battle",
+                "@type": "Event",
+                名称: "宣府之战",
+                时间: "1449-08",
+                地理位置: "宣府镇",
+                结果: "瓦剌突破长城防线"
+            },
+            {
+                "@id": "#caoshi_rebellion",
+                "@type": "Event",
+                名称: "曹石之变",
+                时间: "1461",
+                主谋: [
+                    { "@id": "#caojixiang" },
+                    { "@id": "#shiheng" }
+                ],
+                结果: "兵变失败被诛"
+            },
+            {
+                "@id": "#ming_army",
+                "@type": "Organization",
+                名称: "京营",
+                建制时间: "永乐年间",
+                重要事件: [
+                    { "@id": "#tumu_crisis", 结果: "建制崩溃" },
+                    { "@id": "#beijing_defense", 作用: "重组防御" }
+                ]
+            },
+            {
+                "@id": "#yuxuan",
+                "@type": "Person",
+                名称: "俞铉",
+                职位: "工部尚书",
+                贡献: ["改良北京城防工事"],
+                相关事件: { "@id": "#beijing_defense" }
+            },
+            {
+                "@id": "#li_xian",
+                "@type": "Person",
+                名称: "李贤",
+                职位: "翰林学士",
+                著作: ["天顺日录"],
+                政治立场: { "@id": "#zhengtong", 支持度: "谨慎拥护" }
+            },
+            {
+                "@id": "#yanshen",
+                "@type": "Person",
+                名称: "也先",
+                身份: "瓦剌太师",
+                军事行动: [
+                    { "@id": "#tumu_crisis", 角色: "统帅" },
+                    { "@id": "#beijing_defense", 结果: "败退" }
+                ]
+            },
+            {
+                "@id": "#zijingguan",
+                "@type": "Place",
+                名称: "紫荆关",
+                地理位置: "河北易县",
+                战略意义: [
+                    { "@id": "#tumu_crisis", 事件: "失守导致京城暴露" }
+                ]
+            },
+            {
+                "@id": "#yu_cemetery",
+                "@type": "Place",
+                名称: "裕陵",
+                类型: "帝王陵寝",
+                埋葬人物: { "@id": "#zhengtong" },
+                建筑特色: ["单檐歇山顶明楼"]
+            },
+            {
+                "@id": "#neige",
+                "@type": "Organization",
+                名称: "内阁",
+                职能: "皇帝秘书机构",
+                重要成员: [
+                    { "@id": "#xuyouzhen", 时间: "天顺年间" },
+                    { "@id": "#chenxun", 时间: "景泰年间" }
+                ]
+            },
+            {
+                "@id": "#chenxun",
+                "@type": "Person",
+                名称: "陈循",
+                职位: "内阁首辅",
+                政治立场: { "@id": "#zhu_qiyu", 支持度: "坚定" },
+                结局: { "@id": "#restoration_war", 结果: "被流放" }
+            },
+            {
+                "@id": "#dongchang",
+                "@type": "Organization",
+                名称: "东厂",
+                成立时间: "1420",
+                职能: "特务机构",
+                掌权太监: [
+                    { "@id": "#wangzhen" },
+                    { "@id": "#caojixiang" }
+                ]
+            },
+            {
+                "@id": "#jin_yiwei",
+                "@type": "Organization",
+                名称: "锦衣卫",
+                职能: "皇帝亲军",
+                重要任务: [
+                    { "@id": "#restoration_war", 作用: "控制宫门" }
+                ]
+            },
+            {
+                "@id": "#yuanbin",
+                "@type": "Person",
+                名称: "袁彬",
+                身份: "锦衣卫校尉",
+                事迹: [
+                    { "@id": "#tumu_crisis", 描述: "随侍英宗北狩" },
+                    { "@id": "#zhengtong", 关系: "贴身护卫" }
+                ]
+            },
+            {
+                "@id": "#wara_camp",
+                "@type": "Place",
+                名称: "瓦剌大营",
+                地理位置: "漠北",
+                相关事件: [
+                    { "@id": "#zhengtong", 时间: "1449-1450", 描述: "被囚禁地" }
+                ]
+            },
+            {
+                "@id": "#ming_fortifications",
+                "@type": "Policy",
+                名称: "九边防御体系",
+                实施时间: "正统年间",
+                内容: ["加固长城", "增设卫所"],
+                相关人物: { "@id": "#yuqian" }
+            },
+            {
+                "@id": "#shuangguan",
+                "@type": "Event",
+                名称: "南宫复辟",
+                时间: "1457",
+                地点: { "@id": "#nangong" },
+                参与者: [
+                    { "@id": "#shiheng" },
+                    { "@id": "#caojixiang" }
+                ]
+            },
+            {
+                "@id": "#nangong",
+                "@type": "Place",
+                名称: "南宫",
+                别名: ["崇质宫"],
+                历史事件: [
+                    { "@id": "#zhengtong", 时间: "1450-1457", 描述: "软禁地" }
+                ]
+            },
+            {
+                "@id": "#wang_yue",
+                "@type": "Person",
+                名称: "王越",
+                职位: "御史",
+                事迹: [
+                    { "@id": "#caoshi_rebellion", 角色: "平定者" }
+                ]
+            },
+            {
+                "@id": "#zheng_money",
+                "@type": "Policy",
+                名称: "开中法改革",
+                时间: "正统十年",
+                内容: ["调整盐引制度"],
+                影响: ["边境粮储危机"]
+            },
+            {
+                "@id": "#salt_monopoly",
+                "@type": "Organization",
+                名称: "盐运司",
+                职能: "食盐专卖",
+                相关政策: [
+                    { "@id": "#zheng_money" }
+                ]
+            },
+            {
+                "@id": "#liujian",
+                "@type": "Person",
+                名称: "刘瑾",
+                身份: "宦官",
+                所属机构: { "@id": "#dongchang" },
+                活跃时期: "天顺年间"
+            },
+            {
+                "@id": "#meng_gu",
+                "@type": "Organization",
+                名称: "鞑靼",
+                与瓦剌关系: "敌对",
+                活跃时期: "正统至天顺年间"
+            },
+            {
+                "@id": "#hequ_water",
+                "@type": "Event",
+                名称: "治理黄河",
+                时间: "景泰五年",
+                负责人: { "@id": "#yuqian" },
+                成果: "修筑堤防四百余里"
+            },
+            {
+                "@id": "#mubiao",
+                "@type": "Artifact",
+                名称: "英宗北狩图",
+                类型: "宫廷绘画",
+                内容: "描绘朱祁镇在蒙古的生活",
+                现存地: "台北故宫博物院"
+            },
+            {
+                "@id": "#yongle_dadian",
+                "@type": "Artifact",
+                名称: "永乐大典",
+                编纂时期: "永乐年间",
+                相关事件: [
+                    { "@id": "#zhengtong", 描述: "正统年间抄录副本" }
+                ]
+            },
+            {
+                "@id": "#three_judiciaries",
+                "@type": "Organization",
+                名称: "三法司",
+                组成: ["刑部", "都察院", "大理寺"],
+                重要案件: [
+                    { "@id": "#yuqian", 案件类型: "谋逆案" }
+                ]
+            },
+            {
+                "@id": "#jinshi_exam",
+                "@type": "Event",
+                名称: "天顺元年科举",
+                时间: "1457",
+                特点: "复辟后首次科举",
+                状元: "黎淳"
+            },
+            {
+                "@id": "#liangfang",
+                "@type": "Organization",
+                名称: "两厂一卫",
+                组成: [
+                    { "@id": "#dongchang" },
+                    { "@id": "#jin_yiwei" }
+                ],
+                权力巅峰期: "天顺年间"
+            },
+            {
+                "@id": "#zhengtong_money",
+                "@type": "Artifact",
+                名称: "正统通宝",
+                铸造时期: "1436-1449",
+                特点: "明朝早期铜钱",
+                现存数量: "稀少"
+            },
+            {
+                "@id": "#tumu_memorial",
+                "@type": "Artifact",
+                名称: "土木堡纪念碑",
+                建立时间: "1988",
+                位置: { "@id": "#tumu_location" },
+                碑文内容: "铭记历史教训"
+            },
+            {
+                "@id": "#tumu_location",
+                "@type": "Place",
+                名称: "土木堡遗址",
+                现代地址: "河北怀来县",
+                坐标: "40°19'N 115°31'E"
+            },
+            {
+                "@id": "#ming_shilu",
+                "@type": "Document",
+                名称: "英宗实录",
+                编纂时间: "成化年间",
+                内容特点: [
+                    "记载两次登基经历",
+                    "避讳土木堡细节"
+                ]
+            },
+            {
+                "@id": "#sun_empress",
+                "@type": "Person",
+                名称: "钱皇后",
+                身份: "英宗皇后",
+                事迹: [
+                    { "@id": "#zhengtong", 描述: "为夫哭瞎双眼" },
+                    { "@id": "#wara_camp", 描述: "寄送御寒衣物" }
+                ]
+            },
+            {
+                "@id": "#zhengtong_armor",
+                "@type": "Artifact",
+                名称: "锁子甲",
+                现存地: "故宫博物院",
+                历史事件: [
+                    { "@id": "#tumu_crisis", 描述: "被俘时穿戴" }
+                ]
+            },
+            {
+                "@id": "#zhengjue_temple",
+                "@type": "Place",
+                名称: "正觉寺",
+                历史事件: [
+                    { "@id": "#zhengtong", 描述: "返京后暂居地" }
+                ]
+            },
+            {
+                "@id": "#five_armies",
+                "@type": "Organization",
+                名称: "五军都督府",
+                职能: "军事管理机构",
+                改革事件: [
+                    { "@id": "#huangce_restore", 内容: "恢复旧制" }
+                ]
+            },
+            {
+                "@id": "#hanlin_academy",
+                "@type": "Organization",
+                名称: "翰林院",
+                职能: "文化机构",
+                相关人物: [
+                    { "@id": "#xuyouzhen", 职位: "学士" }
+                ]
+            },
+            {
+                "@id": "#border_market",
+                "@type": "Policy",
+                名称: "边境马市",
+                实施时间: "天顺年间",
+                内容: ["开放大同马市"],
+                影响: "缓解蒙汉矛盾"
+            },
+            {
+                "@id": "#ming_code",
+                "@type": "Document",
+                名称: "大明律",
+                修订时期: "正统年间",
+                特点: [
+                    { "@id": "#zhengtong", 描述: "强调皇权至上" }
+                ]
+            },
+            {
+                "@id": "#shipu",
+                "@type": "Document",
+                名称: "石谱",
+                作者: { "@id": "#yuqian" },
+                创作时间: "景泰年间",
+                内容: "军事防御专著"
+            },
+            {
+                "@id": "#qianqing_gate",
+                "@type": "Place",
+                名称: "乾清门",
+                历史事件: [
+                    { "@id": "#restoration_war", 描述: "政变突破口" }
+                ]
+            },
+            {
+                "@id": "#mourning_change",
+                "@type": "Policy",
+                名称: "丧制改革",
+                时间: "天顺元年",
+                内容: ["缩短守孝期"],
+                反对者: { "@id": "#li_xian" }
+            },
+        ];
+
+        // 创建节点和边的容器
+        const nodes = new vis.DataSet([]);
+        const edges = new vis.DataSet([]);
+
+        // 节点样式配置 - 更新样式
+        const typeStyles = {
+            Person: {
+                color: {
+                    background: "radial-gradient(circle, #FFE4B5 0%, #E6C27A 100%)",
+                    border: "#d4a76a",
+                    highlight: { background: "#FFD700", border: "#DAA520" }
+                },
+                shape: "circle",
+                borderWidth: 3,
+                size: 30,
+                font: {
+                    color: "#5D4037",
+                    size: 18,
+                    face: 'Ma Shan Zheng',
+                    strokeWidth: 2,
+                    strokeColor: "#ffffff"
+                },
+                shadow: { enabled: true, color: 'rgba(0,0,0,0.3)', size: 10, x: 5, y: 5 }
+            },
+            Event: {
+                color: {
+                    background: "radial-gradient(circle, #98FB98 0%, #2E8B57 100%)",
+                    border: "#3cb371",
+                    highlight: { background: "#7CFC00", border: "#228B22" }
+                },
+                shape: "hexagon",
+                borderWidth: 2,
+                size: 35,
+                font: {
+                    color: "#1B5E20",
+                    size: 16,
+                    face: 'Ma Shan Zheng',
+                    strokeWidth: 2,
+                    strokeColor: "#ffffff"
+                },
+                shadow: { enabled: true, color: 'rgba(0,0,0,0.2)', size: 8 }
+            },
+            Organization: {
+                color: {
+                    background: "radial-gradient(circle, #B0E0E6 0%, #4682B4 100%)",
+                    border: "#4682b4",
+                    highlight: { background: "#87CEEB", border: "#4169E1" }
+                },
+                shape: "diamond",
+                borderWidth: 2,
+                size: 35,
+                font: {
+                    color: "#0D47A1",
+                    size: 16,
+                    face: 'Ma Shan Zheng',
+                    strokeWidth: 2,
+                    strokeColor: "#ffffff"
+                },
+                shadow: { enabled: true, color: 'rgba(0,0,0,0.2)', size: 8 }
+            },
+        };
+
+        // 预设位置映射
+        const presetPositions = {
+            "#mingtaizu": { x: 0, y: 0 },  // 朱元璋为中心
+            "#empress_ma": { x: -150, y: -100 },  // 马皇后在左上
+            "#zhubiao": { x: 150, y: -100 },  // 朱标在右上
+            "#zhudi": { x: 200, y: 50 },  // 朱棣在右侧
+            "#liubowen": { x: -200, y: 50 },  // 刘伯温在左侧
+            "#chenyouliang": { x: 0, y: 200 },  // 陈友谅在下方
+            "#xuda": { x: -150, y: 150 },  // 徐达在左下
+        };
+
+        // 解析数据
+        dataset.forEach((entity) => {
+            // 创建节点
+            const style = typeStyles[entity["@type"]] || {};
+            const node = {
+                id: entity["@id"],
+                label: entity.名称 || entity.名称,
+                group: entity["@type"],
+                title: `${entity.名称}${entity.生卒 ? `<br>生卒: ${entity.生卒}` : ''}`,
+                ...style
+            };
+
+            // 添加预设位置（如果有）
+            if (presetPositions[entity["@id"]]) {
+                node.x = presetPositions[entity["@id"]].x;
+                node.y = presetPositions[entity["@id"]].y;
+                node.fixed = true;  // 固定重要节点位置
+            }
+
+            nodes.add(node);
+
+            // 创建关系边
+            const relations = {
+                相关人物: "相关",
+                参战方: "参战",
+                执行者: "执行",
+                成员: "成员",
+                母亲: "母亲",
+                职位: "职位",
+                参与事件: "参与",
+                埋葬: "埋葬",
+                角色: "角色",
+                发起: "发起",
+                死亡原因: "死亡原因",
+                主谋: "主谋",
+                关键人物: "关键人物",
+                战略意义: "战略意义",
+                重要成员: "成员",
+                参战将领: "参战",
+                军事行动: "军事行动",
+                掌权者: "掌权者",
+                支持: "支持",
+                制定: "制定",
+                所属机构: "所属",
+                著作: "著作",
+                负责: "负责",
+                描绘: "描绘",
+                审理: "审理",
+                位于: "位于",
+                记载: "记载",
+                护卫: "护卫",
+                配偶: "配偶",
+                改革: "改革",
+                组成: "组成",
+                反对: "反对",
+                相关事件: "相关事件",
+                政策制定: "政策制定",
+                恢复旧制: "恢复旧制",
+                陵墓: "陵墓",
+                结局: "结局",
+                防御体系: "防御体系",
+                重要任务: "重要任务",
+                埋葬人物: "埋葬",
+                活跃时期: "活跃时期",
+                相关战役: "相关战役",
+                建筑特色: "建筑特色",
+                职能: "职能",
+                历史贡献: "历史贡献",
+                影响: "影响",
+                战绩: "战绩",
+                成果: "成果",
+                现存地: "现存地",
+                参与者: "参与",
+                内容: "内容",
+                别名: "别名",
+                政治立场: "政治立场",
+                类型: "类型",
+                地理位置: "地理位置",
+                相关: "相关",
+                事件: "事件",
+                战役: "战役",
+                统治: "统治",
+                部下: "部下",
+                父亲: "父亲",
+                子女: "子女",
+                重要事件: "重要事件",
+            };
+
+            Object.entries(entity).forEach(([key, value]) => {
+                if (relations[key]) {
+                    const processRelation = (target, relationType) => {
+                        if (target["@id"]) {
+                            edges.add({
+                                from: entity["@id"],
+                                to: target["@id"],
+                                label: relationType,
+                                arrows: "to",
+                                color: { color: "#8b0000", highlight: "#b38f2b" },
+                                font: { color: "#555", size: 12 },
+                                smooth: { type: "curvedCW", roundness: 0.2 }
+                            });
+                        }
+                    };
+
+                    if (Array.isArray(value)) {
+                        value.forEach((item) => processRelation(item, relations[key]));
+                    } else {
+                        processRelation(value, relations[key]);
+                    }
+                }
+            });
+        });
+
+        const options = {
+            nodes: {
+                font: {
+                    size: 16,
+                    face: 'Noto Serif SC'
+                },
+                borderWidth: 2,
+                shadow: true,
+                scaling: {
+                    label: {
+                        enabled: true,
+                        min: 14,
+                        max: 24
+                    }
+                }
+            },
+            edges: {
+                arrows: { to: { scaleFactor: 0.5, enabled: true } },
+                smooth: { type: "cubicBezier", forceDirection: "horizontal" },
+                color: { inherit: false },
+                width: 1.5
+            },
+            physics: {
+                enabled: true,
+                stabilization: {
+                    enabled: true,
+                    iterations: 200,
+                    updateInterval: 25,
+                    fit: true
+                },
+                barnesHut: {
+                    gravitationalConstant: -3000,  // 增加绝对值使节点间斥力更大
+                    springLength: 200,  // 增加弹簧长度
+                    springConstant: 0.02,  // 减小弹簧常数
+                    damping: 0.09,
+                    avoidOverlap: 0.8  // 增加避免重叠系数
+                },
+                minVelocity: 0.5,
+                maxVelocity: 50
+            },
+            layout: {
+                improvedLayout: true,
+                hierarchical: {
+                    enabled: false
+                }
+            }
+        };
+
+        // 创建网络图
+        const container = document.getElementById("network-container");
+        const network = new vis.Network(container, { nodes, edges }, options);
+
+        // 隐藏加载动画并停止物理引擎
+        network.on("stabilizationIterationsDone", function () {
+            document.getElementById("loading").style.display = "none";
+            // 稳定后停止物理引擎以提高性能
+            setTimeout(() => {
+                network.setOptions({ physics: { enabled: false } });
+            }, 1000);
+        });
+
+        // 添加稳定进度显示
+        network.on("stabilizationProgress", function (params) {
+            const loadingText = document.querySelector('.loading-text');
+            const progress = Math.round((params.iterations / params.total) * 100);
+            loadingText.innerHTML = `正在构建知识图谱...${progress}%`;
+        });
+        network.on("click", (params) => {
+            if (params.nodes.length) {
+                const nodeId = params.nodes[0];
+                const entity = dataset.find((e) => e["@id"] === nodeId);
+                const panel = document.getElementById("info-panel");
+
+                let content = `<h3>${entity.名称 || '未命名节点'}</h3>`;
+
+                // 获取实体名称的辅助函数
+                const getEntityName = (id) => {
+                    const refEntity = dataset.find(e => e["@id"] === id);
+                    return refEntity ? refEntity.名称 : id;
+                };
+
+                // 格式化显示属性
+                Object.entries(entity).forEach(([key, value]) => {
+                    if (!key.startsWith("@") && key !== "名称") {
+                        // 递归格式化函数
+                        const formatValue = (val) => {
+                            if (Array.isArray(val)) {
+                                return val.map(item => formatValue(item)).join('、');
+                            } else if (typeof val === 'object' && val !== null) {
+                                if (val["@id"]) {
+                                    const entityName = getEntityName(val["@id"]);
+                                    const otherProps = Object.entries(val)
+                                        .filter(([k]) => !k.startsWith('@'))
+                                        .map(([k, v]) => `${k}: ${formatValue(v)}`)
+                                        .join(', ');
+                                    return `${entityName}${otherProps ? ` (${otherProps})` : ''}`;
+                                }
+                                return Object.entries(val)
+                                    .filter(([k]) => !k.startsWith('@'))
+                                    .map(([k, v]) => `${k}: ${formatValue(v)}`)
+                                    .join(', ');
+                            }
+                            return val;
+                        };
+
+                        content += `<p><strong>${key}：</strong>${formatValue(value)}</p>`;
+                    }
+                });
+
+                panel.innerHTML = content;
+                panel.style.display = "block";
+
+                // 高亮显示选中节点及其连接
+                network.selectNodes([nodeId]);
+                const connectedNodeIds = new Set([nodeId]);
+                const connectedEdgeIds = network.getConnectedEdges(nodeId);
+
+                connectedEdgeIds.forEach(edgeId => {
+                    const edge = edges.get(edgeId);
+                    connectedNodeIds.add(edge.from);
+                    connectedNodeIds.add(edge.to);
+                });
+                const allNodes = nodes.get();
+                const updates = allNodes.map(node => {
+                    return {
+                        id: node.id,
+                        opacity: connectedNodeIds.has(node.id) ? 1 : 0.2,
+                        color: undefined // 确保不修改颜色
+                    };
+                });
+                nodes.update(updates);
+            } else {
+                // 点击空白处，取消选择
+                network.unselectAll();
+            }
+        });
+
+        // 双击隐藏面板
+        network.on("doubleClick", () => {
+            document.getElementById("info-panel").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>

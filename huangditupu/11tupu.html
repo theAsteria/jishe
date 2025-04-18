@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <title>知识图谱-朱厚熜</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Serif SC', serif;
+            background-color: #f8f4e3;
+            color: #333;
+            overflow: hidden;
+        }
+
+        #network-container {
+            width: 100vw;
+            height: 100vh;
+            background-image: linear-gradient(to bottom right, #f8f4e3, #f0e6c0);
+            border: none;
+        }
+
+        .info-panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 350px;
+            border-left: 4px solid #8b0000;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .info-panel h3 {
+            margin-top: 0;
+            color: #8b0000;
+            font-size: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .info-panel p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .info-panel strong {
+            color: #555;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #8b0000;
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            position: relative;
+        }
+
+        .btn:hover {
+            background: #b38f2b;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-return {
+            margin: 20px;
+            display: inline-flex;
+            align-items: center;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+        }
+
+        .btn-return::after {
+            content: '➔';
+            margin-left: 8px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-return:hover::after {
+            transform: translateX(4px);
+        }
+
+        .title-overlay {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.5rem;
+            color: #8b0000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 900;
+        }
+
+        /* 加载动画 */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1001;
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: #8b0000;
+            margin-top: 15px;
+        }
+
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid #8b0000;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../content.html" class="btn btn-return">
+        返回人物信息页面
+    </a>
+    <div id="network-container"></div>
+    <div id="info-panel" class="info-panel" style="display: none"></div>
+    <div class="title-overlay">朱厚熜关系知识图谱</div>
+
+    <!-- 加载动画 -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div class="loading-text">正在构建知识图谱...</div>
+    </div>
+
+    <script>
+        // 原始数据
+        const dataset = [
+            {
+                "@context": "https://schema.org",
+                "@id": "#zhuhouzong",
+                "@type": "Person",
+                名称: "朱厚熜",
+                别名: ["明世宗", "嘉靖帝"],
+                出生日期: "1507-09-16",
+                逝世日期: "1567-01-23",
+                出生地: "湖广安陆（今湖北钟祥）",
+                陵墓: "北京十三陵之永陵",
+                职业: {
+                    "@type": "Occupation",
+                    职位名称: "明朝皇帝",
+                    任期开始: "1521",
+                    任期结束: "1567",
+                    主要政绩: ["大礼议事件", "推行一条鞭法", "崇信道教"],
+                },
+                重要政策: [
+                    { "@id": "#jiajing_reforms", 类型: "制度改革" },
+                    { "@id": "#daoli_event", 类型: "宗教活动" },
+                    { "@id": "#wokou_defense", 类型: "军事部署" }
+                ],
+                相关人物: [
+                    { "@id": "#xia_yan", 关系: "首辅大臣" },
+                    { "@id": "#yan_song", 关系: "权臣" },
+                    { "@id": "#qi_jiguang", 关系: "抗倭名将" },
+                    { "@id": "#tao_zhongwen", 关系: "道教方士" }
+                ],
+                所属组织: { "@id": "#ming_dynasty_government" }
+            },
+            // 人物类
+            {
+                "@id": "#xia_yan",
+                "@type": "Person",
+                名称: "夏言",
+                官职: "内阁首辅",
+                贡献: ["整顿吏治", "主张收复河套"],
+                结局: "被严嵩构陷处死"
+            },
+            {
+                "@id": "#qi_jiguang",
+                "@type": "Person",
+                名称: "戚继光",
+                官职: "蓟镇总兵",
+                军事成就: ["组建戚家军", "平定东南倭患"],
+                相关战役: { "@id": "#jiaxing_battle" }
+            },
+            {
+                "@id": "#hai_rui",
+                "@type": "Person",
+                名称: "海瑞",
+                官职: "户部主事",
+                著名事件: { "@id": "#shangshu_an" },
+                评价: "刚正不阿的清官"
+            },
+            {
+                "@id": "#tao_zhongwen",
+                "@type": "Person",
+                名称: "陶仲文",
+                身份: "道教真人",
+                影响: ["引导嘉靖帝修道炼丹", "获封礼部尚书"]
+            },
+
+            // 事件类
+            {
+                "@id": "#daoli_event",
+                "@type": "Event",
+                名称: "大礼议事件",
+                时间: "1524",
+                结果: "强化皇权，打压文官集团"
+            },
+            {
+                "@id": "#renyin_plot",
+                "@type": "Event",
+                名称: "壬寅宫变",
+                时间: "1542",
+                内容: "宫女刺杀嘉靖未遂事件",
+                影响: ["移居西苑", "开始长期不上朝"]
+            },
+            {
+                "@id": "#gengxu_incident",
+                "@type": "Event",
+                名称: "庚戌之变",
+                时间: "1550",
+                参战方: ["俺答汗", "明朝守军"],
+                结果: "蒙古军队兵临北京城下"
+            },
+            {
+                "@id": "#jiaxing_battle",
+                "@type": "Event",
+                名称: "嘉兴抗倭之战",
+                时间: "1555",
+                指挥官: { "@id": "#qi_jiguang" },
+                意义: "倭寇势力衰退转折点"
+            },
+
+            // 组织/机构类
+            {
+                "@id": "#neige",
+                "@type": "Organization",
+                名称: "内阁",
+                职能: "中央决策机构",
+                著名首辅: [
+                    { "@id": "#xia_yan" },
+                    { "@id": "#yan_song" }
+                ]
+            },
+            {
+                "@id": "#dongchang",
+                "@type": "Organization",
+                名称: "东厂",
+                职能: "特务机构",
+                掌权者: { "@id": "#lu_bing" }
+            },
+            {
+                "@id": "#wanshou_gong",
+                "@type": "Place",
+                名称: "万寿宫",
+                类型: "道教建筑",
+                相关事件: ["嘉靖帝修道场所", "火灾后重建"]
+            },
+
+            // 军事相关
+            {
+                "@id": "#wokou_defense",
+                "@type": "MilitaryAction",
+                名称: "抗倭防线",
+                时间: "1550-1565",
+                防区: ["浙江", "福建"],
+                战略: ["沿海筑城", "组建水师"]
+            },
+            {
+                "@id": "#hu_zongxian",
+                "@type": "Person",
+                名称: "胡宗宪",
+                官职: "浙直总督",
+                贡献: ["统筹抗倭", "招降王直"]
+            },
+
+            // 宗教相关
+            {
+                "@id": "#qingci_docs",
+                "@type": "CulturalHeritage",
+                名称: "青词",
+                类型: "道教祭文",
+                创作者: [
+                    { "@id": "#yan_song" },
+                    { "@id": "#xu_jie" }
+                ]
+            },
+            {
+                "@id": "#tian_shi",
+                "@type": "Organization",
+                名称: "天师府",
+                职能: "道教管理机构",
+                关联人物: { "@id": "#tao_zhongwen" }
+            },
+
+            // 文化/科技
+            {
+                "@id": "#bencao_gangmu",
+                "@type": "Book",
+                名称: "本草纲目",
+                作者: "李时珍",
+                编纂时期: "嘉靖-万历年间"
+            },
+            {
+                "@id": "#yitiaobianfa",
+                "@type": "Policy",
+                名称: "一条鞭法",
+                推行时间: "1581（酝酿于嘉靖）",
+                内容: ["赋役合并", "白银征收"]
+            },
+
+            // 边疆事务
+            {
+                "@id": "#anda_han",
+                "@type": "Person",
+                名称: "俺答汗",
+                身份: "蒙古土默特部首领",
+                相关事件: { "@id": "#gengxu_incident" }
+            },
+            {
+                "@id": "#hetao_plan",
+                "@type": "MilitaryAction",
+                名称: "收复河套计划",
+                提议者: { "@id": "#xia_yan" },
+                结果: "因严嵩阻挠失败"
+            },
+
+            // 司法案件
+            {
+                "@id": "#shangshu_an",
+                "@type": "Event",
+                名称: "海瑞上疏案",
+                时间: "1565",
+                内容: "《治安疏》批评皇帝修道误国",
+                结果: "海瑞下诏狱"
+            },
+
+            // 建筑遗产
+            {
+                "@id": "#yongling",
+                "@type": "Place",
+                名称: "永陵",
+                类型: "帝王陵墓",
+                建筑特色: ["明楼保留完整", "祾恩殿遗址"]
+            },
+            {
+                "@id": "#chaoyang_dong",
+                "@type": "Place",
+                名称: "朝阳洞",
+                位置: "西苑",
+                用途: "嘉靖帝炼丹密室"
+            },
+
+            // 重要文书
+            {
+                "@id": "#zuozhi_yaolue",
+                "@type": "Document",
+                名称: "《左志要略》",
+                作者: { "@id": "#zhang_juzheng" },
+                内容: "早期改革思想文集"
+            },
+
+            // 军事技术
+            {
+                "@id": "#huo_long",
+                "@type": "Technology",
+                名称: "火龙出水",
+                类型: "二级火箭",
+                应用: "抗倭海战武器"
+            },
+
+            // 关联补充实体
+            {
+                "@id": "#lu_bing",
+                "@type": "Person",
+                名称: "陆炳",
+                官职: "锦衣卫指挥使",
+                事迹: ["执掌诏狱", "壬寅宫变救驾"]
+            },
+            {
+                "@id": "#wang_zhi",
+                "@type": "Person",
+                名称: "王直",
+                身份: "倭寇首领",
+                结局: "被胡宗宪诱杀"
+            },
+            {
+                "@id": "#zhang_juzheng",
+                "@type": "Person",
+                名称: "张居正",
+                官职: "翰林院编修（嘉靖时期）",
+                早期经历: "撰写《论时政疏》"
+            }
+        ];
+
+        // 创建节点和边的容器
+        const nodes = new vis.DataSet([]);
+        const edges = new vis.DataSet([]);
+
+        // 节点样式配置 - 更新样式
+        const typeStyles = {
+            Person: {
+                color: {
+                    background: "radial-gradient(circle, #FFE4B5 0%, #E6C27A 100%)",
+                    border: "#d4a76a",
+                    highlight: { background: "#FFD700", border: "#DAA520" }
+                },
+                shape: "circle",
+                borderWidth: 3,
+                size: 30,
+                font: {
+                    color: "#5D4037",
+                    size: 18,
+                    face: 'Ma Shan Zheng',
+                    strokeWidth: 2,
+                    strokeColor: "#ffffff"
+                },
+                shadow: { enabled: true, color: 'rgba(0,0,0,0.3)', size: 10, x: 5, y: 5 }
+            },
+            Event: {
+                color: {
+                    background: "radial-gradient(circle, #98FB98 0%, #2E8B57 100%)",
+                    border: "#3cb371",
+                    highlight: { background: "#7CFC00", border: "#228B22" }
+                },
+                shape: "hexagon",
+                borderWidth: 2,
+                size: 35,
+                font: {
+                    color: "#1B5E20",
+                    size: 16,
+                    face: 'Ma Shan Zheng',
+                    strokeWidth: 2,
+                    strokeColor: "#ffffff"
+                },
+                shadow: { enabled: true, color: 'rgba(0,0,0,0.2)', size: 8 }
+            },
+            Organization: {
+                color: {
+                    background: "radial-gradient(circle, #B0E0E6 0%, #4682B4 100%)",
+                    border: "#4682b4",
+                    highlight: { background: "#87CEEB", border: "#4169E1" }
+                },
+                shape: "diamond",
+                borderWidth: 2,
+                size: 35,
+                font: {
+                    color: "#0D47A1",
+                    size: 16,
+                    face: 'Ma Shan Zheng',
+                    strokeWidth: 2,
+                    strokeColor: "#ffffff"
+                },
+                shadow: { enabled: true, color: 'rgba(0,0,0,0.2)', size: 8 }
+            },
+        };
+
+        // 预设位置映射
+        const presetPositions = {
+            "#mingtaizu": { x: 0, y: 0 },  // 朱元璋为中心
+            "#empress_ma": { x: -150, y: -100 },  // 马皇后在左上
+            "#zhubiao": { x: 150, y: -100 },  // 朱标在右上
+            "#zhudi": { x: 200, y: 50 },  // 朱棣在右侧
+            "#liubowen": { x: -200, y: 50 },  // 刘伯温在左侧
+            "#chenyouliang": { x: 0, y: 200 },  // 陈友谅在下方
+            "#xuda": { x: -150, y: 150 },  // 徐达在左下
+        };
+
+        // 解析数据
+        dataset.forEach((entity) => {
+            // 创建节点
+            const style = typeStyles[entity["@type"]] || {};
+            const node = {
+                id: entity["@id"],
+                label: entity.名称 || entity.名称,
+                group: entity["@type"],
+                title: `${entity.名称}${entity.生卒 ? `<br>生卒: ${entity.生卒}` : ''}`,
+                ...style
+            };
+
+            // 添加预设位置（如果有）
+            if (presetPositions[entity["@id"]]) {
+                node.x = presetPositions[entity["@id"]].x;
+                node.y = presetPositions[entity["@id"]].y;
+                node.fixed = true;  // 固定重要节点位置
+            }
+
+            nodes.add(node);
+
+            // 创建关系边
+            const relations = {
+                首辅大臣: "首辅大臣",
+                权臣: "权臣",
+                抗倭名将: "抗倭名将",
+                道教方士: "道教方士",
+                所属组织: "所属组织",
+                著名首辅: "著名首辅",
+                掌权者: "掌权者",
+                相关战役: "相关战役",
+                指挥官: "指挥官",
+                参战方: "参战方",
+                创作者: "创作者",
+                关联人物: "关联人物",
+                提议者: "提议者",
+                著名事件: "著名事件",
+                陵墓: "陵墓",
+                作者: "作者",
+                招降: "招降",
+                重要政策: "重要政策",
+                相关事件: "相关事件",
+                军事成就: "军事成就",
+                参战: "参战",
+                职能: "职能",
+                成员: "成员",
+                部下: "部下",
+                统治: "统治",
+                历史事件: "历史事件",
+                重要政绩: "重要政绩",
+                相关人物: "相关人物",
+                结局: "结局",
+                军事部署: "军事部署",
+                宗教活动: "宗教活动",
+                制度改革: "制度改革"
+            };
+            Object.entries(entity).forEach(([key, value]) => {
+                if (relations[key]) {
+                    const processRelation = (target, relationType) => {
+                        if (target["@id"]) {
+                            edges.add({
+                                from: entity["@id"],
+                                to: target["@id"],
+                                label: relationType,
+                                arrows: "to",
+                                color: { color: "#8b0000", highlight: "#b38f2b" },
+                                font: { color: "#555", size: 12 },
+                                smooth: { type: "curvedCW", roundness: 0.2 }
+                            });
+                        }
+                    };
+
+                    if (Array.isArray(value)) {
+                        value.forEach((item) => processRelation(item, relations[key]));
+                    } else {
+                        processRelation(value, relations[key]);
+                    }
+                }
+            });
+        });
+
+        // 网络图配置 - 优化配置
+        const options = {
+            nodes: {
+                font: {
+                    size: 16,
+                    face: 'Noto Serif SC'
+                },
+                borderWidth: 2,
+                shadow: true,
+                scaling: {
+                    label: {
+                        enabled: true,
+                        min: 14,
+                        max: 24
+                    }
+                }
+            },
+            edges: {
+                arrows: { to: { scaleFactor: 0.5, enabled: true } },
+                smooth: { type: "cubicBezier", forceDirection: "horizontal" },
+                color: { inherit: false },
+                width: 1.5
+            },
+            physics: {
+                enabled: true,
+                stabilization: {
+                    enabled: true,
+                    iterations: 200,
+                    updateInterval: 25,
+                    fit: true
+                },
+                barnesHut: {
+                    gravitationalConstant: -3000,  // 增加绝对值使节点间斥力更大
+                    springLength: 200,  // 增加弹簧长度
+                    springConstant: 0.02,  // 减小弹簧常数
+                    damping: 0.09,
+                    avoidOverlap: 0.8  // 增加避免重叠系数
+                },
+                minVelocity: 0.5,
+                maxVelocity: 50
+            },
+            layout: {
+                improvedLayout: true,
+                hierarchical: {
+                    enabled: false
+                }
+            }
+        };
+
+
+        // 创建网络图
+        const container = document.getElementById("network-container");
+        const network = new vis.Network(container, { nodes, edges }, options);
+
+        // 隐藏加载动画并停止物理引擎
+        network.on("stabilizationIterationsDone", function () {
+            document.getElementById("loading").style.display = "none";
+            // 稳定后停止物理引擎以提高性能
+            setTimeout(() => {
+                network.setOptions({ physics: { enabled: false } });
+            }, 1000);
+        });
+
+        // 添加稳定进度显示
+        network.on("stabilizationProgress", function (params) {
+            const loadingText = document.querySelector('.loading-text');
+            const progress = Math.round((params.iterations / params.total) * 100);
+            loadingText.innerHTML = `正在构建知识图谱...${progress}%`;
+        });
+        network.on("click", (params) => {
+            if (params.nodes.length) {
+                const nodeId = params.nodes[0];
+                const entity = dataset.find((e) => e["@id"] === nodeId);
+                const panel = document.getElementById("info-panel");
+
+                let content = `<h3>${entity.名称 || '未命名节点'}</h3>`;
+
+                // 获取实体名称的辅助函数
+                const getEntityName = (id) => {
+                    const refEntity = dataset.find(e => e["@id"] === id);
+                    return refEntity ? refEntity.名称 : id;
+                };
+
+                // 格式化显示属性
+                Object.entries(entity).forEach(([key, value]) => {
+                    if (!key.startsWith("@") && key !== "名称") {
+                        // 递归格式化函数
+                        const formatValue = (val) => {
+                            if (Array.isArray(val)) {
+                                return val.map(item => formatValue(item)).join('、');
+                            } else if (typeof val === 'object' && val !== null) {
+                                if (val["@id"]) {
+                                    const entityName = getEntityName(val["@id"]);
+                                    const otherProps = Object.entries(val)
+                                        .filter(([k]) => !k.startsWith('@'))
+                                        .map(([k, v]) => `${k}: ${formatValue(v)}`)
+                                        .join(', ');
+                                    return `${entityName}${otherProps ? ` (${otherProps})` : ''}`;
+                                }
+                                return Object.entries(val)
+                                    .filter(([k]) => !k.startsWith('@'))
+                                    .map(([k, v]) => `${k}: ${formatValue(v)}`)
+                                    .join(', ');
+                            }
+                            return val;
+                        };
+
+                        content += `<p><strong>${key}：</strong>${formatValue(value)}</p>`;
+                    }
+                });
+
+                panel.innerHTML = content;
+                panel.style.display = "block";
+
+                // 高亮显示选中节点及其连接
+                network.selectNodes([nodeId]);
+                const connectedNodeIds = new Set([nodeId]);
+                const connectedEdgeIds = network.getConnectedEdges(nodeId);
+
+                connectedEdgeIds.forEach(edgeId => {
+                    const edge = edges.get(edgeId);
+                    connectedNodeIds.add(edge.from);
+                    connectedNodeIds.add(edge.to);
+                });
+                const allNodes = nodes.get();
+                const updates = allNodes.map(node => {
+                    return {
+                        id: node.id,
+                        opacity: connectedNodeIds.has(node.id) ? 1 : 0.2,
+                        color: undefined // 确保不修改颜色
+                    };
+                });
+                nodes.update(updates);
+            } else {
+                // 点击空白处，取消选择
+                network.unselectAll();
+            }
+        });
+
+        // 双击隐藏面板
+        network.on("doubleClick", () => {
+            document.getElementById("info-panel").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <title>明朝皇帝信息</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* 原有样式保持不变 */
+        .comic-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px;
+            background-color: #f4e9d8;
+            border-radius: 8px;
+            border: 2px solid #d4af37;
+            position: relative;
+        }
+
+        .comic-group {
+            display: none;
+            /* 默认隐藏所有动画组 */
+            flex-shrink: 0;
+        }
+
+        .comic-group img {
+            width: 300px;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #d4af37;
+        }
+
+        .comic-group.active {
+            display: flex;
+            /* 显示当前激活的动画组 */
+        }
+
+        /* 置顶按钮样式 */
+        #back-to-top {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            background-color: #8b0000;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        #back-to-top:hover {
+            background-color: #d4af37;
+            transform: scale(1.1);
+        }
+
+        #back-to-top:active {
+            background-color: #b38f2b;
+        }
+
+        /* 原有样式保持不变 */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #610000;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b54646;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: 'Noto Serif SC', serif;
+            background-color: #f4e9d8;
+            color: #3e2723;
+        }
+
+        .top-nav {
+            background-color: #8b0000;
+            color: white;
+            padding: 5px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid #d4af37;
+            position: fixed;
+            width: 100%;
+            z-index: 10000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-family: 'Ma Shan Zheng', cursive;
+            color: #d4af37;
+            margin: 0;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #d4af37;
+        }
+
+        .nav-links a.active {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .nav-links i {
+            margin-right: 5px;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: calc(100vh - 60px);
+            background-color: #8b0000;
+            color: white;
+            overflow-y: auto;
+            transition: width 0.3s ease;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            border-right: 5px solid #d4af37;
+            position: fixed;
+            top: 60px;
+            left: 0;
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .toggle-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #6b0000;
+            color: #d4af37;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .sidebar.collapsed .toggle-btn {
+            left: 20px;
+            /* 侧边栏宽度为60px时，按钮靠左 */
+        }
+
+        .toggle-btn:hover {
+            background-color: #4b0000;
+        }
+
+        .avatar-container {
+            padding: 60px;
+        }
+
+        .avatar {
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .avatar img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid #d4af37;
+        }
+
+        .avatar p {
+            margin: 5px 0 0;
+            font-size: 24px;
+            color: #f4e9d8;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: white;
+            margin-left: 260px;
+            margin-top: 60px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fffaf0;
+            border: 2px solid #d4af37;
+        }
+
+        h1 {
+            color: #8b0000;
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-family: 'Ma Shan Zheng', cursive;
+            text-align: center;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #6b0000;
+            font-size: 24px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 5px;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        #relationship-graph img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #d4af37;
+        }
+
+        #events-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #events-list li {
+            cursor: pointer;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f4e9d8;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            color: #3e2723;
+            border: 1px solid #d4af37;
+        }
+
+        #events-list li:hover {
+            background-color: #d4af37;
+            color: white;
+        }
+
+        /* 知识图谱样式 */
+        #relationship-graph {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #relationship-graph a {
+            color: #8b0000;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        #relationship-graph a:hover {
+            color: #d4af37;
+        }
+
+        .comic-container {
+            display: none;
+            /* 默认隐藏 */
+            flex-wrap: wrap;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px;
+            background-color: #f4e9d8;
+            border-radius: 8px;
+            border: 2px solid #d4af37;
+        }
+
+        .comic-container.show {
+            display: flex;
+            /* 点击后显示 */
+        }
+
+        .comic-container img {
+            width: 300px;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #d4af37;
+        }
+
+        .avatar.active {
+            transform: scale(1.1);
+            border-color: #d4af37;
+        }
+
+        .link-style {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #d4af37;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .link-style:hover {
+            background-color: #8b0000;
+            transform: scale(1.05);
+        }
+
+        /* 置顶按钮样式 */
+        #back-to-top {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            background-color: #8b0000;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        #back-to-top:hover {
+            background-color: #d4af37;
+            transform: scale(1.1);
+
+        }
+
+        #back-to-top:active {
+            background-color: #b38f2b;
+        }
+
+        /* 知识图谱样式 */
+        #relationship-graph {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #relationship-graph iframe {
+            width: 100%;
+            max-width: 800px;
+            height: 600px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #relationship-graph img {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #d4af37;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="top-nav">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="./picture/content/home/logo.png" alt="明朝那些事儿 Logo" class="logo">
+                <p class="nav-logo">明朝那些事儿</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="./home.html"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="./content.html"><i class="fas fa-user"></i> 皇帝详情</a></li>
+                <li><a href="./QA.html"><i class="fas fa-question-circle"></i> 问答页面</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- 侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <button class="toggle-btn" id="toggle-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="avatar-container">
+            <!-- 16个皇帝头像 -->
+            <div class="avatar" data-id="1">
+                <img src="./emperor_avatar/1zhuyuanzhang.png" alt="朱元璋">
+                <p>朱元璋</p>
+            </div>
+            <div class="avatar" data-id="2">
+                <img src="./emperor_avatar/2zhuyunwen.png" alt="朱允炆">
+                <p>朱允炆</p>
+            </div>
+            <div class="avatar" data-id="3">
+                <img src="./emperor_avatar/3zhudi.png" alt="朱棣">
+                <p>朱棣</p>
+            </div>
+            <div class="avatar" data-id="4">
+                <img src="./emperor_avatar/4zhugaochi.png" alt="朱高炽">
+                <p>朱高炽</p>
+            </div>
+            <div class="avatar" data-id="5">
+                <img src="./emperor_avatar/5zhuzhanji.png" alt="朱瞻基">
+                <p>朱瞻基</p>
+            </div>
+            <div class="avatar" data-id="6">
+                <img src="./emperor_avatar/6zhuqizhen.png" alt="朱祁镇">
+                <p>朱祁镇</p>
+            </div>
+            <div class="avatar" data-id="7">
+                <img src="./emperor_avatar/7zhuqiyu.png" alt="朱祁钰">
+                <p>朱祁钰</p>
+            </div>
+            <div class="avatar" data-id="8">
+                <img src="./emperor_avatar/8zhujianshen.png" alt="朱见深">
+                <p>朱见深</p>
+            </div>
+            <div class="avatar" data-id="9">
+                <img src="./emperor_avatar/9zhuyoutang.png" alt="朱祐樘">
+                <p>朱祐樘</p>
+            </div>
+            <div class="avatar" data-id="10">
+                <img src="./emperor_avatar/10zhuhouzhao.png" alt="朱厚照">
+                <p>朱厚照</p>
+            </div>
+            <div class="avatar" data-id="11">
+                <img src="./emperor_avatar/11zhuhoucong.png" alt="朱厚熜">
+                <p>朱厚熜</p>
+            </div>
+            <div class="avatar" data-id="12">
+                <img src="./emperor_avatar/12zhuzaiqi.png" alt="朱载垕">
+                <p>朱载垕</p>
+            </div>
+            <div class="avatar" data-id="13">
+                <img src="./emperor_avatar/13zhuyijun.png" alt="朱翊钧">
+                <p>朱翊钧</p>
+            </div>
+            <div class="avatar" data-id="14">
+                <img src="./emperor_avatar/14zhucangluo.png" alt="朱常洛">
+                <p>朱常洛</p>
+            </div>
+            <div class="avatar" data-id="15">
+                <img src="./emperor_avatar/16zhuyoujian.png" alt="朱由校">
+                <p>朱由校</p>
+            </div>
+            <div class="avatar" data-id="16">
+                <img src="./emperor_avatar/16zhuyoujian.png" alt="朱由检">
+                <p>朱由检</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content" id="content">
+        <h1 id="person-name">明朝那些事儿</h1>
+        <div class="info-section">
+            <h2>皇帝关系图谱</h2>
+            <div id="relationship-graph">
+                <!-- 动态加载知识图谱链接 -->
+            </div>
+        </div>
+        <div class="info-section">
+            <h2>关键事件（点击关键事件生成连环画）</h2>
+            <ul id="events-list">
+                <!-- 动态生成事件列表 -->
+            </ul>
+            <div class="comic-container" style="display: none;">
+                <!-- 动画组由 JavaScript 动态加载 -->
+            </div>
+        </div>
+    </div>
+    <!-- 置顶 按钮 -->
+    <button id="back-to-top" title="返回顶部">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const emperors = [
+                {
+                    id: 1,
+                    name: '朱元璋',
+                    graphLink: './huangditupu/1tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱元璋出身贫寒，早年经历坎坷，做过牧童、乞丐，还在皇觉寺出家为僧。后参加郭子兴领导的红巾军反抗元朝，在诸多战役中展现出卓越的军事才能，先后击败陈友谅、张士诚等强大对手。1368年，朱元璋正式称帝，国号大明，定都应天府（今南京）。他在位期间，致力于加强中央集权，废除丞相制度，设立三司分掌地方权力；严惩贪污腐败，制定严苛律法；同时重视农业生产和水利建设，轻徭薄赋，使社会经济逐渐恢复和发展，为明朝的繁荣奠定了坚实基础。', comics: ['./ming_comics/第壹部/第1章_童年_朱元璋_1328年.png',
+                                './ming_comics/第壹部/第1章_童年_朱元璋_1368年_1398年.png',
+                                './ming_comics/第壹部/第1章_童年_朱重八_1328年_1344年.png',
+                                './ming_comics/第壹部/第1章_童年_朱重八_1344年_1347年.png',
+                                './ming_comics/第壹部/第1章_童年_朱重八_1347年_1352年.png',
+                                './ming_comics/第壹部/第2章_灾难_朱重八_17岁.png',
+                                './ming_comics/第壹部/第2章_灾难_朱重八_为僧初期.png',
+                                './ming_comics/第壹部/第2章_灾难_朱重八_元至正四年_1344__proc.png',
+                                './ming_comics/第壹部/第2章_灾难_朱重八_化缘时期.png',
+                                './ming_comics/第壹部/第2章_灾难_朱重八_青年时期_proc.png',
+                                './ming_comics/第壹部/第3章_踏上征途_朱重八_1351年.png',
+                                './ming_comics/第壹部/第3章_踏上征途_脱脱_1351年.png',
+                                './ming_comics/第壹部/第3章_踏上征途_韩山童_1351年.png',
+                                './ming_comics/第壹部/第4章_就从这里起步_朱元璋_至正十二年_1352_ .png',
+                                './ming_comics/第壹部/第5章_储蓄资本_朱元璋_26岁.png',
+                                './ming_comics/第壹部/第5章_储蓄资本_朱元璋_至正十三年_1353_.png',
+                                './ming_comics/第壹部/第5章_储蓄资本_李善长_至正十三年_1353_.png',
+                                './ming_comics/第壹部/第5章_储蓄资本_郭子兴_至正十三年_1353_.png',
+                                './ming_comics/第壹部/第6章_霸业的开始_俞通海_至正十五年_1355_.png',
+                                './ming_comics/第壹部/第6章_霸业的开始_冯国胜_冯胜_至正十五年_1355_前.png',
+                                './ming_comics/第壹部/第6章_霸业的开始_朱元璋_1356年.png',
+                                './ming_comics/第壹部/第6章_霸业的开始_朱元璋_1356年后.png',
+                                './ming_comics/第壹部/第6章_霸业的开始_朱元璋_至正十五年_1355_八月.png',
+                                './ming_comics/第壹部/第7章_可怕的对手_倪文俊_至正年间.png',
+                                './ming_comics/第壹部/第7章_可怕的对手_张士诚_1321年生.png',
+                                './ming_comics/第壹部/第7章_可怕的对手_张士诚_至正十三年.png',
+                                './ming_comics/第壹部/第7章_可怕的对手_徐寿辉_至正十一年.png',
+                                './ming_comics/第壹部/第7章_可怕的对手_陈友谅_1320年生.png',
+                                './ming_comics/第壹部/第8章_可怕的陈友谅_常遇春_至正十七年_1357_.png',
+                                './ming_comics/第壹部/第8章_可怕的陈友谅_常遇春_至正十五年_1355_.png',
+                                './ming_comics/第壹部/第8章_可怕的陈友谅_徐寿辉_至正二十年_1360_.png',
+                                './ming_comics/第壹部/第8章_可怕的陈友谅_陈友谅_至正二十年_1360_前.png',
+                                './ming_comics/第壹部/第8章_可怕的陈友谅_陈友谅_至正二十年六月十六日.png',
+                                './ming_comics/第壹部/第9章_决战不可避免_刘基_1360年.png',
+                                './ming_comics/第壹部/第9章_决战不可避免_常遇春_1359年.png',
+                                './ming_comics/第壹部/第9章_决战不可避免_朱元璋_1359年.png',
+                                './ming_comics/第壹部/第9章_决战不可避免_朱元璋_1360年.png',
+                                './ming_comics/第壹部/第9章_决战不可避免_陈友谅_1360年.png', './ming_comics/第壹部/第10章_等待最好的时机_朱元璋_至正二十三年_1363_三月.png',
+                                './ming_comics/第壹部/第10章_等待最好的时机_陈友谅_至正二十一年_1361_.png',
+                                './ming_comics/第壹部/第10章_等待最好的时机_陈友谅_至正二十三年_1363_.png',
+                                './ming_comics/第壹部/第10章_等待最好的时机_陈友谅_至正二十三年_1363_二月.png',
+                                './ming_comics/第壹部/第11章_洪都的奇迹_张子明_六月.png',
+                                './ming_comics/第壹部/第11章_洪都的奇迹_朱元璋_至正二十三年七月.png',
+                                './ming_comics/第壹部/第11章_洪都的奇迹_朱文正_至正二十三年四月.png',
+                                './ming_comics/第壹部/第11章_洪都的奇迹_朱文正_陈友谅进军当日.png',
+                                './ming_comics/第壹部/第11章_洪都的奇迹_薛显_五月初八.png',
+                                './ming_comics/第壹部/第11章_洪都的奇迹_邓愈_四月二十七日.png',
+                                './ming_comics/第壹部/第11章_洪都的奇迹_陈友谅_至正二十三年四月.png',
+                                './ming_comics/第壹部/第12章_鄱阳湖_决死战_丁普郎_右翼溃败时.png',
+                                './ming_comics/第壹部/第12章_鄱阳湖_决死战_常遇春_张定边突袭时.png',
+                                './ming_comics/第壹部/第12章_鄱阳湖_决死战_张定边_战役僵持阶段.png',
+                                './ming_comics/第壹部/第12章_鄱阳湖_决死战_徐达_战役第二日.png',
+                                './ming_comics/第壹部/第12章_鄱阳湖_决死战_朱元璋_至正二十三年七月二十一日.png',
+                                './ming_comics/第壹部/第12章_鄱阳湖_决死战_陈友谅_战役第三日.png',
+                                './ming_comics/第壹部/第13章_下一个目标_张士诚_张士诚_至正二十七年_1367_.png',
+                                './ming_comics/第壹部/第13章_下一个目标_张士诚_徐达_至正二十六年_1366_.png',
+                                './ming_comics/第壹部/第13章_下一个目标_张士诚_朱元璋_至正二十四年_1364_.png',
+                                './ming_comics/第壹部/第14章_复仇_元顺帝_1368年七月.png',
+                                './ming_comics/第壹部/第14章_复仇_常遇春_1369年.png',
+                                './ming_comics/第壹部/第14章_复仇_徐达_1368年八月.png',
+                                './ming_comics/第壹部/第14章_复仇_文天祥_1283年.png',
+                                './ming_comics/第壹部/第14章_复仇_朱元璋_1363-1367年.png',
+                                './ming_comics/第壹部/第14章_复仇_朱元璋_童年.png',
+                                './ming_comics/第壹部/第14章_复仇_王保保_1370年四月.png',
+                                './ming_comics/第壹部/第14章_复仇_陆秀夫_1279年.png',
+                                './ming_comics/第壹部/第15章_远征沙漠_傅友德_洪武五年五月至十月.png',
+                                './ming_comics/第壹部/第15章_远征沙漠_冯胜_洪武五年正月二十二日.png',
+                                './ming_comics/第壹部/第15章_远征沙漠_李文忠_洪武五年六月二十九日.png',
+                                './ming_comics/第壹部/第15章_远征沙漠_王保保_洪武五年五月六日.png',
+                                './ming_comics/第壹部/第15章_远征沙漠_蓝玉_洪武五年二月二十九日.png',
+                                './ming_comics/第壹部/第16章_建国_刘基_洪武八年.png',
+                                './ming_comics/第壹部/第16章_建国_商辂_正统年间.png',
+                                './ming_comics/第壹部/第16章_建国_朱元璋_明朝建立初年.png',
+                                './ming_comics/第壹部/第16章_建国_朱元璋_洪武三年.png',
+                                './ming_comics/第壹部/第16章_建国_朱元璋_洪武年间.png',
+                                './ming_comics/第壹部/第17章_胡惟庸案件_朱元璋_1373-1380年.png',
+                                './ming_comics/第壹部/第17章_胡惟庸案件_朱元璋_1380年.png',
+                                './ming_comics/第壹部/第17章_胡惟庸案件_胡惟庸_洪武六年_1373_.png',
+                                './ming_comics/第壹部/第17章_胡惟庸案件_马皇后_洪武十五年_1382_.png',
+                                './ming_comics/第壹部/第18章_扫除一切腐败者_朱亮祖_洪武十三年.png',
+                                './ming_comics/第壹部/第18章_扫除一切腐败者_朱元璋_洪武二年.png',
+                                './ming_comics/第壹部/第18章_扫除一切腐败者_朱元璋_洪武十三年.png',
+                                './ming_comics/第壹部/第18章_扫除一切腐败者_朱元璋_洪武年间.png',
+                                './ming_comics/第壹部/第18章_扫除一切腐败者_道同_洪武十三年.png',
+                                './ming_comics/第壹部/第19章_空印案郭桓案_方克勤_洪武九年_1376_.png',
+                                './ming_comics/第壹部/第19章_空印案郭桓案_李善长_洪武二十三年_1390_.png',
+                                './ming_comics/第壹部/第19章_空印案郭桓案_袁凯_洪武年间.png',
+                                './ming_comics/第壹部/第19章_空印案郭桓案_郑士利_洪武九年_1376_.png',
+                                './ming_comics/第壹部/第20章_最后的名将_蓝玉_徐达_洪武十七年_1384_.png',
+                                './ming_comics/第壹部/第20章_最后的名将_蓝玉_朱元璋_明洪武十三年至十四年_1380-1381_.png',
+                                './ming_comics/第壹部/第20章_最后的名将_蓝玉_纳哈出_洪武二十年_1387_.png',
+                                './ming_comics/第壹部/第20章_最后的名将_蓝玉_脱古思帖木儿_洪武二十一年_1388_.png',
+                                './ming_comics/第壹部/第20章_最后的名将_蓝玉_蓝玉_洪武二十一年_1388_.png',
+                                './ming_comics/第壹部/第20章_最后的名将_蓝玉_蓝玉_洪武二十六年_1393_.png',
+                                './ming_comics/第壹部/第20章_最后的名将_蓝玉_蓝玉_洪武二十年_1387_.png',
+                                './ming_comics/第壹部/第21章_蓝玉的覆灭_朱元璋_洪武二十五年.png',
+                                './ming_comics/第壹部/第21章_蓝玉的覆灭_朱标_洪武二十五年.png',
+                                './ming_comics/第壹部/第21章_蓝玉的覆灭_蓝玉_北征归途.png',
+                                './ming_comics/第壹部/第21章_蓝玉的覆灭_蓝玉_洪武二十五年.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_军户_青年时期.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_吊唁者_洪武年间.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_官吏_洪武年间.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_朱元璋_明初.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_朱元璋_洪武年间.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_李成桂_1388年.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_锦衣卫_洪武年间.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_傅友德_洪武二十七年_1394_.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_冯胜_洪武二十八年_1395_.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_朱元璋_洪武三十一年_1398_.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_朱元璋_洪武二十五年.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_朱棣_至正二十年_1360_.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_汤和_洪武年间晚年.png', './ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_朱元璋_1398年.png']
+                        },
+
+                        {
+                            id: 2, title: '推翻元朝，建立明朝，定都南京', comics: ['明太祖朱元璋事件集/1.2_明太祖朱元璋_推翻元朝_建立明朝_定都南京_至正十六年_1356年_三月_攻克集庆_改设应天府.png', '明太祖朱元璋事件集/1.3_明太祖朱元璋_推翻元朝_建立明朝_定都南京_至正二十三年_1363年_七月_鄱阳湖火攻破陈友谅.png', '明太祖朱元璋事件集/1.4_明太祖朱元璋_推翻元朝_建立明朝_定都南京_至正二十七年_1367年_十月_发布_平周檄_总攻张士诚.png', '明太祖朱元璋事件集/1.5_明太祖朱元璋_推翻元朝_建立明朝_定都南京_洪武元年_1368年_正月初四_南郊祭天称帝.png', '明太祖朱元璋事件集/1.6_明太祖朱元璋_推翻元朝_建立明朝_定都南京_洪武元年八月_徐达克大都_元帝北遁.png', '明太祖朱元璋事件集/1.7_明太祖朱元璋_推翻元朝_建立明朝_定都南京_洪武年间_营建南京皇城.png']
+                        },
+                        { id: 3, title: '废除丞相，加强皇权，设锦衣卫监察百官', comics: ['明太祖朱元璋事件集/2.1_明太祖朱元璋_废除丞相_加强皇权_设锦衣卫监察百官_洪武十三年_诛杀胡惟庸并废除丞相制度.png', '明太祖朱元璋事件集/2.2_明太祖朱元璋_废除丞相_加强皇权_设锦衣卫监察百官_洪武二十八年_颁布_皇明祖训_严禁复设丞相.png', '明太祖朱元璋事件集/2.3_明太祖朱元璋_废除丞相_加强皇权_设锦衣卫监察百官_洪武十五年_设置锦衣卫监察百官.png', '明太祖朱元璋事件集/2.4_明太祖朱元璋_废除丞相_加强皇权_设锦衣卫监察百官_洪武十三年_分中书省之权于六部.png', '明太祖朱元璋事件集/2.5_明太祖朱元璋_废除丞相_加强皇权_设锦衣卫监察百官_洪武二十六年_蓝玉案诛杀功臣集团.png', '明太祖朱元璋事件集/2.6_明太祖朱元璋_废除丞相_加强皇权_设锦衣卫监察百官_洪武九年_设通政司直奏皇帝.png', '明太祖朱元璋事件集/2.7_明太祖朱元璋_废除丞相_加强皇权_设锦衣卫监察百官_洪武十七年_颁布_大诰_强化专制.png'] },
+                        { id: 4, title: '颁布《大明律》，整顿吏治，诛杀功臣（如胡惟庸案、蓝玉案）', comics: ['明太祖朱元璋事件集/3.1_明太祖朱元璋_颁布_大明律_整顿吏治_诛杀功臣_如胡惟庸案_蓝玉案_洪武六年_1373年_暂停科举_严查官吏.png', '明太祖朱元璋事件集/3.2_明太祖朱元璋_颁布_大明律_整顿吏治_诛杀功臣_如胡惟庸案_蓝玉案_洪武七年_1374年_颁布_大明律_.png', '明太祖朱元璋事件集/3.3_明太祖朱元璋_颁布_大明律_整顿吏治_诛杀功臣_如胡惟庸案_蓝玉案_洪武十三年_1380年_诛杀胡惟庸及党羽.png', '明太祖朱元璋事件集/3.4_明太祖朱元璋_颁布_大明律_整顿吏治_诛杀功臣_如胡惟庸案_蓝玉案_洪武十五年_1382年_设置都察院监察百官.png', '明太祖朱元璋事件集/3.5_明太祖朱元璋_颁布_大明律_整顿吏治_诛杀功臣_如胡惟庸案_蓝玉案_洪武十八年_1385年_郭桓盗粮案处决万人.png', '明太祖朱元璋事件集/3.6_明太祖朱元璋_颁布_大明律_整顿吏治_诛杀功臣_如胡惟庸案_蓝玉案_洪武二十三年_1390年_李善长案牵连诛戮.png', '明太祖朱元璋事件集/3.7_明太祖朱元璋_颁布_大明律_整顿吏治_诛杀功臣_如胡惟庸案_蓝玉案_洪武二十六年_1393年_蓝玉案诛杀功臣.png', '明太祖朱元璋事件集/3.8_明太祖朱元璋_颁布_大明律_整顿吏治_诛杀功臣_如胡惟庸案_蓝玉案_洪武二十七年_1394年_傅友德王弼被赐死.png'] }
+                        , { id: 5, title: '推行屯田制，普查户口（黄册、鱼鳞册），恢复农业生产', comics: ['明太祖朱元璋事件集/4.1_明太祖朱元璋_推行屯田制_普查户口_黄册_鱼鳞册_恢复农业生产_洪武元年_免除山东田租.png', '明太祖朱元璋事件集/4.2_明太祖朱元璋_推行屯田制_普查户口_黄册_鱼鳞册_恢复农业生产_洪武三年_推行军屯制度.png', '明太祖朱元璋事件集/4.3_明太祖朱元璋_推行屯田制_普查户口_黄册_鱼鳞册_恢复农业生产_洪武十四年_编造黄册登记户口.png', '明太祖朱元璋事件集/4.4_明太祖朱元璋_推行屯田制_普查户口_黄册_鱼鳞册_恢复农业生产_洪武二十年_丈量土地绘制鱼鳞图册.png', '明太祖朱元璋事件集/4.5_明太祖朱元璋_推行屯田制_普查户口_黄册_鱼鳞册_恢复农业生产_洪武二十四年_移民屯垦政策.png', '明太祖朱元璋事件集/4.6_明太祖朱元璋_推行屯田制_普查户口_黄册_鱼鳞册_恢复农业生产_洪武二十六年_设置流动太仆寺管理马政.png', '明太祖朱元璋事件集/4.7_明太祖朱元璋_推行屯田制_普查户口_黄册_鱼鳞册_恢复农业生产_洪武二十七年_督导经济作物种植.png', '明太祖朱元璋事件集/4.8_明太祖朱元璋_推行屯田制_普查户口_黄册_鱼鳞册_恢复农业生产_洪武二十八年_免除新垦田地税收.png'] },
+                        { id: 6, title: '晚年猜忌功臣，为子孙铺路导致朝局紧张', comics: ['明太祖朱元璋事件集/5.2_明太祖朱元璋_晚年猜忌功臣_为子孙铺路导致朝局紧张_洪武二十六年_蓝玉被押赴刑场.png', '明太祖朱元璋事件集/5.3_明太祖朱元璋_晚年猜忌功臣_为子孙铺路导致朝局紧张_洪武二十七年_傅友德殿前自刎.png', '明太祖朱元璋事件集/5.4_明太祖朱元璋_晚年猜忌功臣_为子孙铺路导致朝局紧张_洪武二十八年_冯胜跪听赐死诏.png', '明太祖朱元璋事件集/5.5_明太祖朱元璋_晚年猜忌功臣_为子孙铺路导致朝局紧张_洪武二十五年_周德兴接削爵诏书.png', '明太祖朱元璋事件集/5.6_明太祖朱元璋_晚年猜忌功臣_为子孙铺路导致朝局紧张_洪武二十四年_朱标审阅_昭示奸党录_.png', '明太祖朱元璋事件集/5.7_明太祖朱元璋_晚年猜忌功臣_为子孙铺路导致朝局紧张_洪武二十九年_耿炳文巡视西北边塞.png', '明太祖朱元璋事件集/5.8_明太祖朱元璋_晚年猜忌功臣_为子孙铺路导致朝局紧张_洪武三十年_欧阳伦跪接赐帛.png', '明太祖朱元璋事件集/5.9_明太祖朱元璋_晚年猜忌功臣_为子孙铺路导致朝局紧张_洪武三十一年_太祖临终召见允炆.png'] },
+                    ]
+                },
+                {
+                    id: 2,
+                    name: '朱允炆',
+                    graphLink: './huangditupu/2tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱允炆是朱元璋之孙，因其父懿文太子朱标早逝，故被立为皇太孙。继位后，他试图通过削藩来加强皇权，然而这一举措引起了燕王朱棣等藩王的强烈不满。朱允炆在削藩过程中操之过急，手段相对温和却缺乏足够的谋略和准备。最终，朱棣发动“靖难之役”，起兵反抗中央。朱允炆在这场叔侄之争中，因军事指挥不力、用人不当等原因，逐渐失去优势，最终下落不明，其统治也在战火中宣告结束。', comics: ['./ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_宁王_建文年间.png',
+                                './ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_方孝孺_洪武二十五年.png',
+                                './ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_朱棣_朱允炆少年时期.png',
+                                './ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_黄子澄_东宫伴读时期.png',
+                                './ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_齐泰_雷击谨身殿事件后.png',
+                                './ming_comics/第壹部/第25章_等待中的朱棣_朱棣的痛苦_姚广孝_1335年出生.png',
+                                './ming_comics/第壹部/第25章_等待中的朱棣_朱棣的痛苦_朱元璋_洪武年间.png',
+                                './ming_comics/第壹部/第25章_等待中的朱棣_朱棣的痛苦_朱棣_洪武年间.png',
+                                './ming_comics/第壹部/第25章_等待中的朱棣_朱棣的痛苦_道衍_姚广孝_洪武十八年.png',
+                                './ming_comics/第壹部/第26章_准备行动_徐辉祖_1399年五月.png',
+                                './ming_comics/第壹部/第26章_准备行动_朱允炆_1399年三月.png',
+                                './ming_comics/第壹部/第26章_准备行动_朱柏_1399年.png',
+                                './ming_comics/第壹部/第26章_准备行动_朱棣_1399年.png',
+                                './ming_comics/第壹部/第26章_准备行动_朱棣_1399年六月.png',
+                                './ming_comics/第壹部/第26章_准备行动_李景隆_1398年_建文帝登基一个月_.png',
+                                './ming_comics/第壹部/第26章_准备行动_黄子澄_齐泰_1398年.png',
+                                './ming_comics/第壹部/第27章_不得不反了_张信_建文元年.png',
+                                './ming_comics/第壹部/第27章_不得不反了_张昺_建文元年.png',
+                                './ming_comics/第壹部/第27章_不得不反了_朱棣_建文元年.png',
+                                './ming_comics/第壹部/第27章_不得不反了_耿炳文_建文元年.png',
+                                './ming_comics/第壹部/第27章_不得不反了_齐泰_建文元年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_平安_建文二年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_徐辉祖_建文二年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_朱棣_中年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_朱高炽_青年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_李景隆_建文二年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_耿炳文_建文元年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_黄子澄_建文元年.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_庄得_建文三年.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_朱棣_建文三年.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_朱棣_建文二年冬.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_盛庸_建文三年三月.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_谭渊_夹河之战.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_道衍_东昌败后.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_铁铉_建文二年.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_平安_建文四年三月.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_方孝孺_建文四年.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_朱棣_建文三年十二月.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_朱棣_建文四年.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_朱棣_建文四年元月.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_朱能_建文四年五月.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_道衍_建文三年.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_方孝孺_永乐初年.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_朱允炆_建文四年_1402年_.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_朱棣_永乐年间.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_黄岩_王叔英_1402年.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_黄观_1402年.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_齐泰_1402年.png']
+                        },
+                        { id: 2, title: '采纳齐泰、黄子澄建议削藩，触怒燕王朱棣，引发靖难之役', comics: ['明惠帝朱允炆事件集/1.1_明惠帝朱允炆_采纳齐泰_黄子澄建议削藩_触怒燕王朱棣_引发靖难之役_洪武三十一年_1398_朱允炆即皇帝位颁布新政.png', '明惠帝朱允炆事件集/1.2_明惠帝朱允炆_采纳齐泰_黄子澄建议削藩_触怒燕王朱棣_引发靖难之役_建文元年七月_燕王朱棣斩杀朝廷命官.png', '明惠帝朱允炆事件集/1.4_明惠帝朱允炆_采纳齐泰_黄子澄建议削藩_触怒燕王朱棣_引发靖难之役_建文二年四月_铁铉济南城智守.png', '明惠帝朱允炆事件集/1.5_明惠帝朱允炆_采纳齐泰_黄子澄建议削藩_触怒燕王朱棣_引发靖难之役_建文二年十二月_东昌战役大捷.png', '明惠帝朱允炆事件集/1.6_明惠帝朱允炆_采纳齐泰_黄子澄建议削藩_触怒燕王朱棣_引发靖难之役_建文三年三月_夹河战役拉锯战.png', '明惠帝朱允炆事件集/1.7_明惠帝朱允炆_采纳齐泰_黄子澄建议削藩_触怒燕王朱棣_引发靖难之役_建文四年五月_灵壁决战溃败.png', '明惠帝朱允炆事件集/1.8_明惠帝朱允炆_采纳齐泰_黄子澄建议削藩_触怒燕王朱棣_引发靖难之役_建文四年六月_金川门之变.png', '明惠帝朱允炆事件集/1.9明惠帝朱允炆_采纳齐泰_黄子澄建议削藩_触怒燕王朱棣_引发靖难之役_建文四年六月_皇宫大火.png'] },
+                        { id: 3, title: '推行宽仁政策，减轻赋税，但缺乏政治手腕', comics: ['明惠帝朱允炆事件集/2.1_明惠帝朱允炆_推行宽仁政策_减轻赋税_但缺乏政治手腕_洪武二十五年_1392_立朱允炆为皇太孙.png', '明惠帝朱允炆事件集/2.2_明惠帝朱允炆_推行宽仁政策_减轻赋税_但缺乏政治手腕_洪武二十九年_1396_重定诸王朝见礼仪.png', '明惠帝朱允炆事件集/2.3_明惠帝朱允炆_推行宽仁政策_减轻赋税_但缺乏政治手腕_洪武三十一年_1398_即位大赦天下.png', '明惠帝朱允炆事件集/2.4_明惠帝朱允炆_推行宽仁政策_减轻赋税_但缺乏政治手腕_建文元年_1399_正月_诏举遗漏贤才.png', '明惠帝朱允炆事件集/2.5_明惠帝朱允炆_推行宽仁政策_减轻赋税_但缺乏政治手腕_建文元年二月_减免灾荒田租.png', '明惠帝朱允炆事件集/2.6_明惠帝朱允炆_推行宽仁政策_减轻赋税_但缺乏政治手腕_建文元年三月_祭孔改制.png', '明惠帝朱允炆事件集/2.7_明惠帝朱允炆_推行宽仁政策_减轻赋税_但缺乏政治手腕_建文元年七月_燕王举兵反叛.png', '明惠帝朱允炆事件集/2.8_明惠帝朱允炆_推行宽仁政策_减轻赋税_但缺乏政治手腕_建文四年_1402_六月_都城陷落.png'] },
+                        { id: 4, title: '南京城破后失踪，成为历史悬案', comics: ['明惠帝朱允炆事件集/3.1_明惠帝朱允炆_南京城破后失踪_成为历史悬案_建文四年_1402_六月十四日_燕军攻破金川门入城.png', '明惠帝朱允炆事件集/3.2_明惠帝朱允炆_南京城破后失踪_成为历史悬案_建文四年_1402_六月十四日_宫中燃起大火.png', '明惠帝朱允炆事件集/3.3_明惠帝朱允炆_南京城破后失踪_成为历史悬案_建文四年_1402_六月二十一日_燕王安排帝后葬礼.png', '明惠帝朱允炆事件集/3.4_明惠帝朱允炆_南京城破后失踪_成为历史悬案_建文四年_1402_六月十四日夜_秘密地道出逃.png', '明惠帝朱允炆事件集/3.5_明惠帝朱允炆_南京城破后失踪_成为历史悬案_正统五年_1440_僧人冒充建文帝.png', '明惠帝朱允炆事件集/3.6_明惠帝朱允炆_南京城破后失踪_成为历史悬案_万历年间_西南僧侣云游.png', '明惠帝朱允炆事件集/3.7_明惠帝朱允炆_南京城破后失踪_成为历史悬案_乾隆元年_1736_清廷追谥议定.png', '明惠帝朱允炆事件集/3.8_明惠帝朱允炆_南京城破后失踪_成为历史悬案_建文四年_1402_五月二十八日_灵璧决战溃败.png'] }
+                    ]
+                },
+                {
+                    id: 3,
+                    name: '朱棣',
+                    graphLink: './huangditupu/3tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱棣本是燕王，在“靖难之役”中成功夺取皇位。即位后，他将都城从南京迁至北京，这一举措不仅加强了对北方边疆的控制，也使明朝的政治中心更加稳固。朱棣派遣郑和率领庞大的船队七下西洋，远航西太平洋和印度洋，访问了众多国家和地区，宣扬国威，加强了中国与亚非各国的友好往来和经济文化交流。此外，他还命人编纂《永乐大典》，这是一部集中国古代文化之大成的百科全书式文献集。在军事上，朱棣五次亲征蒙古，沉重打击了蒙古势力，巩固了明朝的边疆安全。', comics: ['./ming_comics/第贰部/第1章_帝王的烦恼_碽妃_洪武七年_1374_.png',
+                                './ming_comics/第贰部/第1章_帝王的烦恼_胡濙_永乐五年_1407_.png',
+                                './ming_comics/第贰部/第1章_帝王的烦恼_姚广孝_永乐二年_1404_.png',
+                                './ming_comics/第贰部/第1章_帝王的烦恼_朱棣_永乐二年_1404_.png',
+                                './ming_comics/第贰部/第2章_帝王的荣耀_解缙_洪武二十一年_1388_.png',
+                                './ming_comics/第贰部/第2章_帝王的荣耀_解缙_永乐十三年_1415_.png',
+                                './ming_comics/第贰部/第2章_帝王的荣耀_解缙_永乐元年_1403_.png',
+                                './ming_comics/第贰部/第2章_帝王的荣耀_王艮_建文四年_1402_.png',
+                                './ming_comics/第贰部/第2章_帝王的荣耀_朱棣_永乐年间.png',
+                                './ming_comics/第贰部/第3章_帝王的抉择_宋礼_永乐九年_1411_.png',
+                                './ming_comics/第贰部/第3章_帝王的抉择_朱棣_迁都后.png',
+                                './ming_comics/第贰部/第3章_帝王的抉择_朱棣_永乐元年_1403_.png',
+                                './ming_comics/第贰部/第3章_帝王的抉择_朱棣_永乐元年_1403_.png',
+                                './ming_comics/第贰部/第4章_郑和之后_再无郑和_陈祖义_永乐五年_1407_.png',
+                                './ming_comics/第贰部/第4章_郑和之后_再无郑和_达_伽马_葡萄牙殖民时期.png',
+                                './ming_comics/第贰部/第4章_郑和之后_再无郑和_爪哇西王_永乐四年_1406_.png',
+                                './ming_comics/第贰部/第4章_郑和之后_再无郑和_郑和_宣德六年_1431_.png',
+                                './ming_comics/第贰部/第4章_郑和之后_再无郑和_郑和_永乐三年_1405_.png',
+                                './ming_comics/第贰部/第4章_郑和之后_再无郑和_朱棣_永乐二十二年_1424_.png',
+                                './ming_comics/第贰部/第5章_纵横天下_陈天平_永乐二年.png',
+                                './ming_comics/第贰部/第5章_纵横天下_胡氏父子_建文年间.png',
+                                './ming_comics/第贰部/第5章_纵横天下_裴伯耆_永乐二年.png',
+                                './ming_comics/第贰部/第5章_纵横天下_源道义_永乐元年.png',
+                                './ming_comics/第贰部/第5章_纵横天下_张辅_永乐五年.png',
+                                './ming_comics/第贰部/第5章_纵横天下_朱棣_永乐三年.png',
+                                './ming_comics/第贰部/第5章_纵横天下_朱棣_永乐元年.png',
+                                './ming_comics/第贰部/第6章_天子守国门_阿鲁台_永乐八年_1410_.png',
+                                './ming_comics/第贰部/第6章_天子守国门_本雅失里_永乐八年_1410_.png',
+                                './ming_comics/第贰部/第6章_天子守国门_邱福_永乐七年_1409_.png',
+                                './ming_comics/第贰部/第6章_天子守国门_朱棣_永乐八年_1410_.png',
+                                './ming_comics/第贰部/第7章_逆命者必剪除之_马哈木_1414年6月.png',
+                                './ming_comics/第贰部/第7章_逆命者必剪除之_马哈木_1414年6月溃败后.png',
+                                './ming_comics/第贰部/第7章_逆命者必剪除之_神机营_1414年6月7日.png',
+                                './ming_comics/第贰部/第7章_逆命者必剪除之_朱棣_1414年6月追击战.png',
+                                './ming_comics/第贰部/第7章_逆命者必剪除之_朱棣_永乐十二年_1414_二月.png',
+                                './ming_comics/第贰部/第8章_帝王的财产_杨溥_永乐十二年_1414_至永乐二十二年_1424_.png',
+                                './ming_comics/第贰部/第8章_帝王的财产_杨荣_建文四年_1402_.png',
+                                './ming_comics/第贰部/第8章_帝王的财产_杨士奇_建文二年_1400_.png',
+                                './ming_comics/第贰部/第8章_帝王的财产_朱棣_永乐初年.png',
+                                './ming_comics/第贰部/第8章_帝王的财产_朱棣_永乐十二年_1414_.png',
+                                './ming_comics/第贰部/第9章_生死相搏_解缙_永乐五年_1407_前.png',
+                                './ming_comics/第贰部/第9章_生死相搏_杨士奇_永乐十二年_1414_.png',
+                                './ming_comics/第贰部/第9章_生死相搏_朱棣_永乐十年_1412_.png',
+                                './ming_comics/第贰部/第9章_生死相搏_朱高煦_永乐初年.png',
+                                './ming_comics/第贰部/第9章_生死相搏_朱高煦_永乐十五年_1417_.png',
+                                './ming_comics/第贰部/第10章_最后的秘密_胡濙_永乐二十一年_1423_.png',
+                                './ming_comics/第贰部/第10章_最后的秘密_姚广孝_永乐二年_1404_.png',
+                                './ming_comics/第贰部/第10章_最后的秘密_姚广孝_永乐十六年_1418_三月.png',
+                                './ming_comics/第贰部/第10章_最后的秘密_朱棣_永乐二十二年_1424_.png',
+                                './ming_comics/第贰部/第10章_最后的秘密_朱棣_永乐十六年_1418_三月.png']
+
+                        }, {
+                            id: 2, title: '通过靖难之役夺取皇位，迁都北京，修建紫禁城'
+                            , comics: ['明成祖朱棣事件集/1.1_明成祖朱棣_通过靖难之役夺取皇位_迁都北京_修建紫禁城_建文元年_1399年_朱棣诱杀谢贵_张籨_夺得九门.png', '明成祖朱棣事件集/1.2_明成祖朱棣_通过靖难之役夺取皇位_迁都北京_修建紫禁城_建文元年七月_朱棣设立五军指挥体系.png', '明成祖朱棣事件集/1.3_明成祖朱棣_通过靖难之役夺取皇位_迁都北京_修建紫禁城_建文二年_1400年_白沟河决战.png', '明成祖朱棣事件集/1.4_明成祖朱棣_通过靖难之役夺取皇位_迁都北京_修建紫禁城_建文四年_1402年_金川门破城.png', '明成祖朱棣事件集/1.5_明成祖朱棣_通过靖难之役夺取皇位_迁都北京_修建紫禁城_永乐元年_1403年_改北平为北京.png', '明成祖朱棣事件集/1.6_明成祖朱棣_通过靖难之役夺取皇位_迁都北京_修建紫禁城_永乐四年_1406年_下诏营建北京宫殿.png', '明成祖朱棣事件集/1.7_明成祖朱棣_通过靖难之役夺取皇位_迁都北京_修建紫禁城_永乐十五年_1417年_陈珪督造紫禁城.png', '明成祖朱棣事件集/1.8_明成祖朱棣_通过靖难之役夺取皇位_迁都北京_修建紫禁城_永乐十八年_1420年_紫禁城竣工大典.png']
+                        },
+                        {
+                            id: 3, title: '派郑和七下西洋，编纂《永乐大典》'
+                            , comics: ['明成祖朱棣事件集/2.1_明成祖朱棣_派郑和七下西洋_编纂_永乐大典_永乐元年_1403年_朱棣命解缙等人编纂_永乐大典_.png', '明成祖朱棣事件集/2.2_明成祖朱棣_派郑和七下西洋_编纂_永乐大典_永乐三年_1405年_郑和率宝船队首航西洋.png', '明成祖朱棣事件集/2.3_明成祖朱棣_派郑和七下西洋_编纂_永乐大典_永乐五年_1407年_郑和船队归国献俘.png', '明成祖朱棣事件集/2.4_明成祖朱棣_派郑和七下西洋_编纂_永乐大典_永乐七年_1409年_姚广孝督修_永乐大典_.png', '明成祖朱棣事件集/2.5_明成祖朱棣_派郑和七下西洋_编纂_永乐大典_永乐十一年_1413年_郑和第四次远航.png', '明成祖朱棣事件集/2.6_明成祖朱棣_派郑和七下西洋_编纂_永乐大典_永乐十九年_1421年_第六次下西洋启航.png', '明成祖朱棣事件集/2.7_明成祖朱棣_派郑和七下西洋_编纂_永乐大典_永乐二十二年_1424年_第七次航海筹备.png', '明成祖朱棣事件集/2.8_明成祖朱棣_派郑和七下西洋_编纂_永乐大典_永乐年间_永乐大典_最终成书.png']
+                        },
+                        {
+                            id: 4, title: '五征漠北打击蒙古', comics: ['明成祖朱棣事件集/3.1_明成祖朱棣_五征漠北打击蒙古_永乐八年_1410年_朱棣率军渡饮马河追击本雅失里.png', '明成祖朱棣事件集/3.2_明成祖朱棣_五征漠北打击蒙古_永乐八年夏_阿鲁台诈降遭识破.png', '明成祖朱棣事件集/3.3_明成祖朱棣_五征漠北打击蒙古_永乐八年六月_大败阿鲁台于静虏镇.png', '明成祖朱棣事件集/3.4_明成祖朱棣_五征漠北打击蒙古_永乐十二年_1414年_忽兰忽失温决战瓦剌.png', '明成祖朱棣事件集/3.5_明成祖朱棣_五征漠北打击蒙古_永乐十二年秋_凯旋途中收降兀良哈.png', '明成祖朱棣事件集/3.6_明成祖朱棣_五征漠北打击蒙古_永乐二十年_1422年_三路大军合围阿鲁台.png', '明成祖朱棣事件集/3.7_明成祖朱棣_五征漠北打击蒙古_永乐二十一年_1423年_屈裂儿河突袭兀良哈.png', '明成祖朱棣事件集/3.8_明成祖朱棣_五征漠北打击蒙古_永乐二十二年_1424年_榆木川临终托付军务.png', '明成祖朱棣事件集/4.10_明成祖朱棣_设内阁雏形_重用宦官_如设立东厂_开创永乐盛世_永乐二十二年_临终传位完善权力交接.png']
+                        },
+                        {
+                            id: 5, title: '设内阁雏形，重用宦官（如设立东厂），开创永乐盛世', comics: ['明成祖朱棣事件集/4.1_明成祖朱棣_设内阁雏形_重用宦官_如设立东厂_开创永乐盛世_永乐元年_命解缙_黄淮入文渊阁参预机务.png', '明成祖朱棣事件集/4.2_明成祖朱棣_设内阁雏形_重用宦官_如设立东厂_开创永乐盛世_永乐三年_遣中官郑和率舟师下西洋.png', '明成祖朱棣事件集/4.3_明成祖朱棣_设内阁雏形_重用宦官_如设立东厂_开创永乐盛世_永乐四年_设立五军都督府分掌兵权.png', '明成祖朱棣事件集/4.4_明成祖朱棣_设内阁雏形_重用宦官_如设立东厂_开创永乐盛世_永乐五年_命陈瑛任左副都御史掌监察.png', '明成祖朱棣事件集/4.5_明成祖朱棣_设内阁雏形_重用宦官_如设立东厂_开创永乐盛世_永乐七年_诏建北京宫殿筹备迁都.png', '明成祖朱棣事件集/4.6_明成祖朱棣_设内阁雏形_重用宦官_如设立东厂_开创永乐盛世_永乐九年_疏浚会通河贯通漕运.png', '明成祖朱棣事件集/4.7_明成祖朱棣_设内阁雏形_重用宦官_如设立东厂_开创永乐盛世_永乐十三年_遣中官山寿率军出云南刺探.png', '明成祖朱棣事件集/4.8_明成祖朱棣_设内阁雏形_重用宦官_如设立东厂_开创永乐盛世_永乐十八年_设东厂由宦官提督监察.png', '明成祖朱棣事件集/4.9_明成祖朱棣_设内阁雏形_重用宦官_如设立东厂_开创永乐盛世_永乐十九年_三殿灾后诏求直言蠲赋.png']
+                        },
+                    ]
+                },
+                {
+                    id: 4,
+                    name: '朱高炽',
+                    graphLink: './huangditupu/4tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱高炽继位后，展现出宽厚仁慈的统治风格。他改变了朱棣时期频繁用兵的政策，采取休养生息的策略，减轻百姓的赋税负担，使社会经济得到进一步恢复和发展。在政治上，他注重选拔人才，任用贤能之士，同时加强了对官员的考核和监督。尽管他在位时间较短，但他的统治为明朝的稳定和发展奠定了良好基础，与儿子朱瞻基在位期间的“仁宣之治”共同构成了明朝初期的繁荣局面。', comics: ['./ming_comics/第贰部/第11章_朱高炽的勇气和疑团_朱高炽_永乐二十二年_1424_至洪熙元年十一月.png',
+                                './ming_comics/第贰部/第11章_朱高炽的勇气和疑团_朱高炽_洪熙元年_1425_.png',
+                                './ming_comics/第贰部/第11章_朱高炽的勇气和疑团_朱高炽_洪熙元年五月.png',
+                                './ming_comics/第贰部/第11章_朱高炽的勇气和疑团_朱高炽_洪熙元年四月.png',
+                                './ming_comics/第贰部/第11章_朱高炽的勇气和疑团_朱高炽_洪熙年间.png']
+
+                        },
+                        {
+                            id: 2, title: '在位仅10个月，赦免建文旧臣，减轻赋税，休养生息', comics: ['明仁宗朱高炽事件集/1.2_明仁宗朱高炽_在位仅10个月_赦免建文旧臣_减轻赋税_休养生息_洪熙元年_1425年_八月_停止西洋宝船及云南采办.png', '明仁宗朱高炽事件集/1.3_明仁宗朱高炽_在位仅10个月_赦免建文旧臣_减轻赋税_休养生息_永乐二十二年_1424年_八月_恢复夏原吉等官员职位.png', '明仁宗朱高炽事件集/1.4_明仁宗朱高炽_在位仅10个月_赦免建文旧臣_减轻赋税_休养生息_洪熙元年_1425年_三月_免除隆平饥荒地区赋税.png', '明仁宗朱高炽事件集/1.5_明仁宗朱高炽_在位仅10个月_赦免建文旧臣_减轻赋税_休养生息_永乐二十二年_1424年_八月_设置南京守备制度.png', '明仁宗朱高炽事件集/1.6_明仁宗朱高炽_在位仅10个月_赦免建文旧臣_减轻赋税_休养生息_洪熙元年_1425年_十二月_释放军籍官员还乡.png', '明仁宗朱高炽事件集/1.7_明仁宗朱高炽_在位仅10个月_赦免建文旧臣_减轻赋税_休养生息_洪熙元年_1425年_四月_免除全国夏税半数.png', '明仁宗朱高炽事件集/1.8_明仁宗朱高炽_在位仅10个月_赦免建文旧臣_减轻赋税_休养生息_洪熙元年_1425年_三月_废除诽谤禁令.png']
+                        },
+                        {
+                            id: 3, title: '身体肥胖多病，但为政温和，扭转永乐严苛之风', comics: ['明仁宗朱高炽事件集/2.1_明仁宗朱高炽_身体肥胖多病_但为政温和_扭转永乐严苛之风_洪武二十八年_1395_分阅奏章时专取军民利弊奏章.png', '明仁宗朱高炽事件集/2.2_明仁宗朱高炽_身体肥胖多病_但为政温和_扭转永乐严苛之风_永乐二年_1404_监国期间遣使赈济四方灾荒.png', '明仁宗朱高炽事件集/2.3_明仁宗朱高炽_身体肥胖多病_但为政温和_扭转永乐严苛之风_永乐十五年_1417_化解高燧夺嫡危机.png', '明仁宗朱高炽事件集/2.4_明仁宗朱高炽_身体肥胖多病_但为政温和_扭转永乐严苛之风_永乐二十二年_1424_即位诏书停止西洋宝船.png', '明仁宗朱高炽事件集/2.5_明仁宗朱高炽_身体肥胖多病_但为政温和_扭转永乐严苛之风_洪熙元年_1425_正月_西角门急诏免除夏税.png', '明仁宗朱高炽事件集/2.6_明仁宗朱高炽_身体肥胖多病_但为政温和_扭转永乐严苛之风_洪熙元年三月_废除诽谤禁令.png', '明仁宗朱高炽事件集/2.7_明仁宗朱高炽_身体肥胖多病_但为政温和_扭转永乐严苛之风_洪熙元年四月_天寿山谒陵途中.png', '明仁宗朱高炽事件集/2.8_明仁宗朱高炽_身体肥胖多病_但为政温和_扭转永乐严苛之风_洪熙元年五月_临终召皇太子继位.png']
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    name: '朱瞻基',
+                    graphLink: './huangditupu/5tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱瞻基自幼受到良好的教育和培养，在其父朱高炽的基础上，继续推行宽松治国和息兵养民的政策。他进一步完善内阁制度，使得内阁的权力得到加强，成为明朝政治体制中的重要组成部分。在对外关系上，他保持了与周边国家的友好往来，边境相对安宁。朱瞻基在位期间，政治清明，经济繁荣，文化昌盛，史称“仁宣之治”，是明朝历史上的一个黄金时期。', comics: ['./ming_comics/第贰部/第12章_朱瞻基是个好同志_于谦_宣德元年八月.png',
+                                './ming_comics/第贰部/第12章_朱瞻基是个好同志_张辅_宣德元年七月.png',
+                                './ming_comics/第贰部/第12章_朱瞻基是个好同志_朱瞻基_宣德元年.png',
+                                './ming_comics/第贰部/第12章_朱瞻基是个好同志_朱瞻基_明宣德年间.png',
+                                './ming_comics/第贰部/第12章_朱瞻基是个好同志_朱高煦_宣德元年八月.png',
+                                './ming_comics/第贰部/第13章_祸根_也先_正统十年_1445_后.png',
+                                './ming_comics/第贰部/第13章_祸根_张太皇太后_正统元年_1436_.png',
+                                './ming_comics/第贰部/第13章_祸根_朱瞻基_宣德年间_1426-1435_.png',
+                                './ming_comics/第贰部/第13章_祸根_王振_正统七年_1442_后.png',
+                                './ming_comics/第贰部/第13章_祸根_王振_永乐末年.png']
+
+                        }, {
+                            id: 2, title: '与父亲共创治世，经济繁荣，政治清明', comics: ['明宣宗朱瞻基事件集/1.1_明宣宗朱瞻基_与父亲共创治世_经济繁荣_政治清明_永乐七年_1409_朱瞻基随成祖巡幸北京_观察农具及田家衣食_作_务本训_.png', '明宣宗朱瞻基事件集/1.2_明宣宗朱瞻基_与父亲共创治世_经济繁荣_政治清明_宣德元年_1426_即位后大赦天下_减免次年税粮.png', '明宣宗朱瞻基事件集/1.3_明宣宗朱瞻基_与父亲共创治世_经济繁荣_政治清明_宣德二年_1427_赦免安南黎利并册封陈氏后裔.png', '明宣宗朱瞻基事件集/1.4_明宣宗朱瞻基_与父亲共创治世_经济繁荣_政治清明_宣德四年_1429_停止湖广采木_赈济陕西饥荒.png', '明宣宗朱瞻基事件集/1.5_明宣宗朱瞻基_与父亲共创治世_经济繁荣_政治清明_宣德五年_1430_颁布宽恤政令减免赋税.png', '明宣宗朱瞻基事件集/1.6_明宣宗朱瞻基_与父亲共创治世_经济繁荣_政治清明_宣德六年_1431_疏通金龙口引黄河水通漕运.png', '明宣宗朱瞻基事件集/1.7_明宣宗朱瞻基_与父亲共创治世_经济繁荣_政治清明_宣德七年_1432_减免官田赋税并严令执行.png', '明宣宗朱瞻基事件集/1.8_明宣宗朱瞻基_与父亲共创治世_经济繁荣_政治清明_宣德八年_1433_旱灾减免田租并疏理冤狱.png']
+                        },
+                        {
+                            id: 3, title: '擅长书画（宣德炉闻名），但开启宦官批红（如宠信太监王振）', comics: ['明宣宗朱瞻基事件集/3.1_明宣宗朱瞻基_擅长书画_宣德炉闻名_但开启宦官批红_如宠信太监王振_永乐七年_1409_朱瞻基随成祖巡幸北京_观察农具及田家衣食_作_务本训_.png', '明宣宗朱瞻基事件集/3.2_明宣宗朱瞻基_擅长书画_宣德炉闻名_但开启宦官批红_如宠信太监王振_宣德元年_1426_命在外采办中官全部回京_停止交易.png', '明宣宗朱瞻基事件集/3.3_明宣宗朱瞻基_擅长书画_宣德炉闻名_但开启宦官批红_如宠信太监王振_宣德元年_1426_命六科凡中官传旨须复奏后执行.png', '明宣宗朱瞻基事件集/3.4_明宣宗朱瞻基_擅长书画_宣德炉闻名_但开启宦官批红_如宠信太监王振_宣德四年_1429_制作_官箴_三十五篇颁示百官.png', '明宣宗朱瞻基事件集/3.5_明宣宗朱瞻基_擅长书画_宣德炉闻名_但开启宦官批红_如宠信太监王振_宣德五年_1430_赐_捕蝗诗_示户部官员.png', '明宣宗朱瞻基事件集/3.6_明宣宗朱瞻基_擅长书画_宣德炉闻名_但开启宦官批红_如宠信太监王振_宣德七年_1432_惩治贪暴中官袁琦等十一人弃市.png', '明宣宗朱瞻基事件集/3.7_明宣宗朱瞻基_擅长书画_宣德炉闻名_但开启宦官批红_如宠信太监王振_宣德八年_1433_作_闵旱诗_示群臣.png', '明宣宗朱瞻基事件集/3.8_明宣宗朱瞻基_擅长书画_宣德炉闻名_但开启宦官批红_如宠信太监王振_宣德九年_1434_临终前停采办营造诸使.png']
+                        }
+                    ]
+                },
+                {
+                    id: 6,
+                    name: '朱祁镇',
+                    graphLink: './huangditupu/6tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱祁镇九岁即位，初期由太皇太后张氏和“三杨”（杨士奇、杨荣、杨溥）辅政，政治较为清明。但随着太皇太后去世，“三杨”相继离世，朱祁镇开始亲政。然而，他在军事决策上出现重大失误，亲自率军征讨瓦剌，却在土木堡遭遇惨败，自己也被俘虏。这一事件导致明朝国力受到重创，明朝从此走向衰落。朱祁镇被放回后，其弟朱祁钰即位，他被尊为太上皇。后来朱祁钰病逝，朱祁镇再次登上皇位，但此时的明朝已难以恢复往日的辉煌。', comics: ['./ming_comics/第贰部/第13章_祸根_王振_永乐末年.png',
+                                './ming_comics/第贰部/第14章_土木堡_朱勇_正统十四年_1449_八月十日.png',
+                                './ming_comics/第贰部/第14章_土木堡_朱祁镇_正统十四年_1449_七月十七日.png',
+                                './ming_comics/第贰部/第14章_土木堡_樊忠_正统十四年_1449_八月十五日.png',
+                                './ming_comics/第贰部/第14章_土木堡_王振_正统十四年_1449_七月.png',
+                                './ming_comics/第贰部/第14章_土木堡_王振_正统十四年_1449_八月三日.png',
+                                './ming_comics/第贰部/第14章_土木堡_石亨_正统十四年_1449_八月.png',
+                                './ming_comics/第贰部/第15章_力挽狂澜_于谦_正统十四年_1449_八月十八日.png',
+                                './ming_comics/第贰部/第15章_力挽狂澜_喜宁_正统十四年_1449_八月十五日.png',
+                                './ming_comics/第贰部/第15章_力挽狂澜_徐珵_正统十四年_1449_八月十八日.png',
+                                './ming_comics/第贰部/第15章_力挽狂澜_朱祁镇_正统十四年_1449_八月十五日.png',
+                                './ming_comics/第贰部/第15章_力挽狂澜_袁彬_正统十四年_1449_八月十六日.png',
+                                './ming_comics/第贰部/第15章_力挽狂澜_钱皇后_正统十四年_1449_八月十六日.png', './ming_comics/第贰部/第16章_决断_朱祁镇_正统十四年_1449_八月十五日.png',
+                                './ming_comics/第贰部/第16章_决断_于谦_正统十四年_1449_八月十八日.png']
+
+                        }, {
+                            id: 2, title: '1449年亲征瓦剌被俘，导致明朝精锐尽失', comics: ['明英宗朱祁镇事件集/1.1_明英宗朱祁镇_1449年亲征瓦剌被俘_导致明朝精锐尽失_1449年七月十一日_朱祁镇下诏亲征瓦剌.png', '明英宗朱祁镇事件集/1.2_明英宗朱祁镇_1449年亲征瓦剌被俘_导致明朝精锐尽失_1449年八月十三日_鹞儿岭伏击战.png', '明英宗朱祁镇事件集/1.4_明英宗朱祁镇_1449年亲征瓦剌被俘_导致明朝精锐尽失_1449年八月十五日_五十万大军覆灭.png', '明英宗朱祁镇事件集/1.5_明英宗朱祁镇_1449年亲征瓦剌被俘_导致明朝精锐尽失_1449年八月十七日_京师闻败讯.png', '明英宗朱祁镇事件集/1.6_明英宗朱祁镇_1449年亲征瓦剌被俘_导致明朝精锐尽失_1449年九月六日_朱祁钰正式即位.png', '明英宗朱祁镇事件集/1.7_明英宗朱祁镇_1449年亲征瓦剌被俘_导致明朝精锐尽失_1449年十月十七日_北京保卫战.png', '明英宗朱祁镇事件集/1.8_明英宗朱祁镇_1449年亲征瓦剌被俘_导致明朝精锐尽失_1450年八月二日_英宗南归启程.png']
+                        },
+                        {
+                            id: 3, title: '1457年复位后诛杀于谦，改元天顺，晚年废除殉葬制度', comics: ['明英宗朱祁镇事件集/2.1_明英宗朱祁镇_1457年复位后诛杀于谦_改元天顺_晚年废除殉葬制度_1457年正月十七日_石亨_徐有贞等发动夺门之变.png', '明英宗朱祁镇事件集/2.2_明英宗朱祁镇_1457年复位后诛杀于谦_改元天顺_晚年废除殉葬制度_1457年正月二十一日_下于谦于锦衣卫狱.png', '明英宗朱祁镇事件集/2.3_明英宗朱祁镇_1457年复位后诛杀于谦_改元天顺_晚年废除殉葬制度_1457年正月二十二日_改元天顺大赦天下.png', '明英宗朱祁镇事件集/2.4_明英宗朱祁镇_1457年复位后诛杀于谦_改元天顺_晚年废除殉葬制度_1457年正月二十四日_处死于谦王文.png', '明英宗朱祁镇事件集/2.5_明英宗朱祁镇_1457年复位后诛杀于谦_改元天顺_晚年废除殉葬制度_1457年二月_追查于谦党羽.png', '明英宗朱祁镇事件集/2.6_明英宗朱祁镇_1457年复位后诛杀于谦_改元天顺_晚年废除殉葬制度_1464年正月_颁布废除殉葬诏书.png', '明英宗朱祁镇事件集/2.7_明英宗朱祁镇_1457年复位后诛杀于谦_改元天顺_晚年废除殉葬制度_1464年正月十六日_临终交代遗诏.png', '明英宗朱祁镇事件集/2.8_明英宗朱祁镇_1457年复位后诛杀于谦_改元天顺_晚年废除殉葬制度_天顺年间_清算景泰旧臣.png']
+                        },
+                        {
+                            id: 4, title: '轻信宦官王振，但复位后施政趋于平稳', comics: ['明英宗朱祁镇事件集/3.1_明英宗朱祁镇_轻信宦官王振_但复位后施政趋于平稳_正统元年九月_王振掌管司礼监.png', '明英宗朱祁镇事件集/3.2_明英宗朱祁镇_轻信宦官王振_但复位后施政趋于平稳_正统七年十月_授予王振弟侄世袭锦衣卫官职.png', '明英宗朱祁镇事件集/3.3_明英宗朱祁镇_轻信宦官王振_但复位后施政趋于平稳_正统十四年七月_王振怂恿英宗亲征瓦剌.png', '明英宗朱祁镇事件集/3.4_明英宗朱祁镇_轻信宦官王振_但复位后施政趋于平稳_正统十四年八月_土木堡全军覆灭.png', '明英宗朱祁镇事件集/3.5_明英宗朱祁镇_轻信宦官王振_但复位后施政趋于平稳_景泰元年正月_停止元旦朝贺.png', '明英宗朱祁镇事件集/3.6_明英宗朱祁镇_轻信宦官王振_但复位后施政趋于平稳_景泰元年十月_减免湖广税粮.png', '明英宗朱祁镇事件集/3.7_明英宗朱祁镇_轻信宦官王振_但复位后施政趋于平稳_景泰三年四月_修筑黄河堤防.png', '明英宗朱祁镇事件集/3.8_明英宗朱祁镇_轻信宦官王振_但复位后施政趋于平稳_景泰五年十二月_设立常平仓备荒.png']
+                        }
+                    ]
+                },
+                {
+                    id: 7,
+                    name: '朱祁钰',
+                    graphLink: './huangditupu/7tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱祁钰在土木堡之变后临危受命，继承皇位。他在位期间，任用于谦等贤臣，成功抵御了瓦剌的入侵，保卫了明朝的江山社稷。为了稳定局势，他采取了一系列措施加强边防建设，同时注重发展经济，减轻百姓负担。然而，朱祁钰在立储问题上与朝中大臣产生矛盾，最终导致朝政出现一些不稳定因素。尽管如此，他的统治在一定程度上延续了明朝的国运。', comics: ['./ming_comics/第壹部/第21章_蓝玉的覆灭_朱元璋_洪武二十五年.png',
+                                './ming_comics/第壹部/第21章_蓝玉的覆灭_朱标_洪武二十五年.png',
+                                './ming_comics/第壹部/第21章_蓝玉的覆灭_蓝玉_北征归途.png',
+                                './ming_comics/第壹部/第21章_蓝玉的覆灭_蓝玉_洪武二十五年.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_军户_青年时期.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_吊唁者_洪武年间.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_官吏_洪武年间.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_朱元璋_明初.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_朱元璋_洪武年间.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_李成桂_1388年.png',
+                                './ming_comics/第壹部/第22章_制度后的秘密_锦衣卫_洪武年间.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_傅友德_洪武二十七年_1394_.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_冯胜_洪武二十八年_1395_.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_朱元璋_洪武三十一年_1398_.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_朱元璋_洪武二十五年.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_朱棣_至正二十年_1360_.png',
+                                './ming_comics/第壹部/第23章_终点_起点_最后的朋友们_汤和_洪武年间晚年.png',
+                                './ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_宁王_建文年间.png',
+                                './ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_方孝孺_洪武二十五年.png',
+                                './ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_朱元璋_1398年.png',
+                                './ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_朱棣_朱允炆少年时期.png',
+                                './ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_黄子澄_东宫伴读时期.png',
+                                './ming_comics/第壹部/第24章_建文帝_建文帝的忧虑_齐泰_雷击谨身殿事件后.png',
+                                './ming_comics/第壹部/第25章_等待中的朱棣_朱棣的痛苦_姚广孝_1335年出生.png',
+                                './ming_comics/第壹部/第25章_等待中的朱棣_朱棣的痛苦_朱元璋_洪武年间.png',
+                                './ming_comics/第壹部/第25章_等待中的朱棣_朱棣的痛苦_朱棣_洪武年间.png',
+                                './ming_comics/第壹部/第25章_等待中的朱棣_朱棣的痛苦_道衍_姚广孝_洪武十八年.png',
+                                './ming_comics/第壹部/第26章_准备行动_徐辉祖_1399年五月.png',
+                                './ming_comics/第壹部/第26章_准备行动_朱允炆_1399年三月.png',
+                                './ming_comics/第壹部/第26章_准备行动_朱柏_1399年.png',
+                                './ming_comics/第壹部/第26章_准备行动_朱棣_1399年.png',
+                                './ming_comics/第壹部/第26章_准备行动_朱棣_1399年六月.png',
+                                './ming_comics/第壹部/第26章_准备行动_李景隆_1398年_建文帝登基一个月_.png',
+                                './ming_comics/第壹部/第26章_准备行动_黄子澄_齐泰_1398年.png',
+                                './ming_comics/第壹部/第27章_不得不反了_张信_建文元年.png',
+                                './ming_comics/第壹部/第27章_不得不反了_张昺_建文元年.png',
+                                './ming_comics/第壹部/第27章_不得不反了_朱棣_建文元年.png',
+                                './ming_comics/第壹部/第27章_不得不反了_耿炳文_建文元年.png',
+                                './ming_comics/第壹部/第27章_不得不反了_齐泰_建文元年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_平安_建文二年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_徐辉祖_建文二年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_朱棣_中年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_朱高炽_青年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_李景隆_建文二年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_耿炳文_建文元年.png',
+                                './ming_comics/第壹部/第28章_你死我活的战争_黄子澄_建文元年.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_庄得_建文三年.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_朱棣_建文三年.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_朱棣_建文二年冬.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_盛庸_建文三年三月.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_谭渊_夹河之战.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_道衍_东昌败后.png',
+                                './ming_comics/第壹部/第29章_朱棣的对手_铁铉_建文二年.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_平安_建文四年三月.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_方孝孺_建文四年.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_朱棣_建文三年十二月.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_朱棣_建文四年.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_朱棣_建文四年元月.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_朱能_建文四年五月.png',
+                                './ming_comics/第壹部/第30章_离胜利只差一步_道衍_建文三年.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_方孝孺_永乐初年.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_朱允炆_建文四年_1402年_.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_朱棣_永乐年间.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_黄岩_王叔英_1402年.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_黄观_1402年.png',
+                                './ming_comics/第壹部/第31章_殉国_疑团_残暴_软弱_齐泰_1402年.png',
+                                './ming_comics/第贰部/第16章_决断_朱祁钰_正统十四年_1449_九月六日.png',
+                                './ming_comics/第贰部/第16章_决断_朱祁镇_正统十四年_1449_八月十五日.png',
+                                './ming_comics/第贰部/第16章_决断_王竑_正统十四年_1449_八月二十三日.png',
+                                './ming_comics/第贰部/第16章_决断_陈镒_正统十四年_1449_八月二十三日.png',
+                                './ming_comics/第贰部/第16章_决断_马顺_正统十四年_1449_八月二十三日.png',
+                                './ming_comics/第贰部/第17章_信念_于谦_正统十四年_1449_十月八日.png',
+                                './ming_comics/第贰部/第17章_信念_孙祥_正统十四年_1449_十月一日.png',
+                                './ming_comics/第贰部/第17章_信念_朱祁钰_正统十四年_1449_十月十一日.png',
+                                './ming_comics/第贰部/第17章_信念_杨洪_正统十四年_1449_八月二十一日.png',
+                                './ming_comics/第贰部/第17章_信念_石亨_正统十四年_1449_十月八日.png',
+                                './ming_comics/第贰部/第17章_信念_郭登_正统十四年_1449_八月二十三日.png',
+                                './ming_comics/第贰部/第18章_北京保卫战_也先_正统十四年十月十一日.png',
+                                './ming_comics/第贰部/第18章_北京保卫战_于谦_正统十四年.png',
+                                './ming_comics/第贰部/第18章_北京保卫战_孙镗_瓦剌转攻西直门时.png',
+                                './ming_comics/第贰部/第18章_北京保卫战_石亨_北京保卫战期间.png',
+                                './ming_comics/第贰部/第18章_北京保卫战_神机营_德胜门伏击战.png',
+                                './ming_comics/第贰部/第19章_朱祁镇的奋斗_也先_1449年.png',
+                                './ming_comics/第贰部/第19章_朱祁镇的奋斗_伯颜帖木儿_1450年.png',
+                                './ming_comics/第贰部/第19章_朱祁镇的奋斗_喜宁_1450年.png',
+                                './ming_comics/第贰部/第19章_朱祁镇的奋斗_朱祁镇_土木堡之变后.png',
+                                './ming_comics/第贰部/第19章_朱祁镇的奋斗_脱脱不花_1449年.png',
+                                './ming_comics/第贰部/第19章_朱祁镇的奋斗_袁彬_1449-1450年.png',
+                                './ming_comics/第贰部/第20章_回家_于谦_景泰元年_1450_.png',
+                                './ming_comics/第贰部/第20章_回家_伯颜帖木儿_景泰元年_1450_.png',
+                                './ming_comics/第贰部/第20章_回家_朱祁钰_景泰元年_1450_.png',
+                                './ming_comics/第贰部/第20章_回家_杨善_景泰元年_1450_.png',
+                                './ming_comics/第贰部/第20章_回家_钱皇后_景泰元年_1450_.png',
+                                './ming_comics/第叁部/第1章_有冤报冤_有仇报仇_于谦_天顺元年正月二十三日.png',
+                                './ming_comics/第叁部/第1章_有冤报冤_有仇报仇_徐有贞_天顺元年正月.png',
+                                './ming_comics/第叁部/第1章_有冤报冤_有仇报仇_抄家官员_于谦死后次日.png',
+                                './ming_comics/第叁部/第1章_有冤报冤_有仇报仇_朱祁镇_天顺元年.png',
+                                './ming_comics/第叁部/第1章_有冤报冤_有仇报仇_朱祁镇_天顺八年.png',
+                                './ming_comics/第叁部/第2章_隐藏的敌人_徐有贞_天顺四年_1460_.png',
+                                './ming_comics/第叁部/第2章_隐藏的敌人_曹吉祥_天顺元年_1457_五月.png',
+                                './ming_comics/第叁部/第2章_隐藏的敌人_李贤_天顺元年_1457_五月后.png',
+                                './ming_comics/第叁部/第3章_公道_孙镗_天顺五年_1461_七月庚子日.png',
+                                './ming_comics/第叁部/第3章_公道_曹吉祥_天顺五年_1461_七月庚子日.png',
+                                './ming_comics/第叁部/第3章_公道_朱祁镇_天顺元年_1457_五月后.png',
+                                './ming_comics/第叁部/第3章_公道_朱祁镇_天顺四年_1460_正月.png',
+                                './ming_comics/第叁部/第3章_公道_李贤_天顺三年_1459_八月.png',
+                                './ming_comics/第叁部/第3章_公道_李贤_天顺五年_1461_七月庚子日.png',
+                                './ming_comics/第叁部/第3章_公道_石亨_天顺元年_1457_五月后.png',
+                                './ming_comics/第叁部/第4章_不伦之恋_万贵妃_成化二年_1466_.png',
+                                './ming_comics/第叁部/第4章_不伦之恋_张敏_成化十一年_1475_.png',
+                                './ming_comics/第叁部/第4章_不伦之恋_朱祁镇_天顺八年_1464_.png',
+                                './ming_comics/第叁部/第4章_不伦之恋_朱见深_正统十四年_1449_景泰三年_1452_.png',
+                                './ming_comics/第叁部/第4章_不伦之恋_纪姑娘_成化六年_1470_.png',
+                            ]
+
+                        }, {
+                            id: 2, title: '英宗被俘后即位，任用于谦打赢北京保卫战', comics: ['明代宗朱祁钰事件集/1.1_明代宗朱祁钰_英宗被俘后即位_任用于谦打赢北京保卫战_景泰三年_1452_朱见浚被废为沂王.png', '明代宗朱祁钰事件集/1.2_明代宗朱祁钰_英宗被俘后即位_任用于谦打赢北京保卫战_天顺元年_1457_复立朱见深为皇太子.png', '明代宗朱祁钰事件集/1.3_明代宗朱祁钰_英宗被俘后即位_任用于谦打赢北京保卫战_成化元年_1465_赵辅率军征讨广西瑶民.png', '明代宗朱祁钰事件集/1.4_明代宗朱祁钰_英宗被俘后即位_任用于谦打赢北京保卫战_成化元年十二月_改大藤峡为断藤峡.png', '明代宗朱祁钰事件集/1.5_明代宗朱祁钰_英宗被俘后即位_任用于谦打赢北京保卫战_成化二年_1466_朱永擒获刘通.png', '明代宗朱祁钰事件集/1.6_明代宗朱祁钰_英宗被俘后即位_任用于谦打赢北京保卫战_成化二年八月_恢复祭祀于谦.png', '明代宗朱祁钰事件集/1.8_明代宗朱祁钰_英宗被俘后即位_任用于谦打赢北京保卫战_成化三年十二月_驳斥景泰旧事争议.png']
+                        },
+                        {
+                            id: 3, title: '拒绝归还皇位，死后被废帝号，陵墓降格（景泰蓝工艺因其年号得名）', comics: ['明代宗朱祁钰事件集/2.1_明代宗朱祁钰_拒绝归还皇位_死后被废帝号_陵墓降格_景泰蓝工艺因其年号得名_景泰三年_1452_废朱见浚为沂王.png', '明代宗朱祁钰事件集/2.2_明代宗朱祁钰_拒绝归还皇位_死后被废帝号_陵墓降格_景泰蓝工艺因其年号得名_天顺元年_1457_复立朱见深为皇太子.png', '明代宗朱祁钰事件集/2.3_明代宗朱祁钰_拒绝归还皇位_死后被废帝号_陵墓降格_景泰蓝工艺因其年号得名_成化元年_1465_捣毁锦衣卫新设监狱.png', '明代宗朱祁钰事件集/2.5_明代宗朱祁钰_拒绝归还皇位_死后被废帝号_陵墓降格_景泰蓝工艺因其年号得名_成化二年_1466_告谕祭祀于谦.png', '明代宗朱祁钰事件集/2.6_明代宗朱祁钰_拒绝归还皇位_死后被废帝号_陵墓降格_景泰蓝工艺因其年号得名_成化三年_1467_黎淳谏言景泰旧事.png', '明代宗朱祁钰事件集/2.7_明代宗朱祁钰_拒绝归还皇位_死后被废帝号_陵墓降格_景泰蓝工艺因其年号得名_成化三年_1467_杖责编修章懋等人.png', '明代宗朱祁钰事件集/2.8_明代宗朱祁钰_拒绝归还皇位_死后被废帝号_陵墓降格_景泰蓝工艺因其年号得名_成化年间_改大藤峡为断藤峡.png']
+                        }
+                    ]
+                },
+                {
+                    id: 8,
+                    name: '朱见深',
+                    graphLink: './huangditupu/8tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱见深继位之初，面临着复杂的政治局面。他努力扭转宪宗初期的朝政混乱局面，重用李贤等贤臣，使得朝政逐渐稳定。在军事上，他对北方蒙古和南方少数民族叛乱进行了有效的打击，维护了国家的统一和稳定。此外，朱见深还注重文化建设，他大力提倡尊崇儒学，编纂了一些文化典籍。在他的统治下，明朝的社会经济得到了一定程度的恢复和发展。', comics: ['./ming_comics/第叁部/第4章_不伦之恋_朱见深_正统十四年_1449_景泰三年_1452_.png',
+                                './ming_comics/第叁部/第4章_不伦之恋_纪姑娘_成化六年_1470_.png',
+                                './ming_comics/第叁部/第5章_武林大会_万安_成化十四年.png',
+                                './ming_comics/第叁部/第5章_武林大会_万贵妃_成化年间.png',
+                                './ming_comics/第叁部/第5章_武林大会_怀恩_成化二十一年.png',
+                                './ming_comics/第叁部/第5章_武林大会_朱见深_成化二十三年.png',
+                                './ming_comics/第叁部/第5章_武林大会_李孜省_成化年间.png',
+                                './ming_comics/第叁部/第5章_武林大会_梁芳_成化年间.png']
+
+                        }, {
+                            id: 2, title: '年长17岁的万贵妃专权，外戚宦官横行', comics: ['明宪宗朱见深事件集/1.1_明宪宗朱见深_年长17岁的万贵妃专权_外戚宦官横行_成化四年_太监刘祥监督征讨满俊的军队.png', '明宪宗朱见深事件集/1.2_明宪宗朱见深_年长17岁的万贵妃专权_外戚宦官横行_成化五年_万安入值文渊阁参与机要.png', '明宪宗朱见深事件集/1.3_明宪宗朱见深_年长17岁的万贵妃专权_外戚宦官横行_成化十三年_设立西厂由汪直统领.png', '明宪宗朱见深事件集/1.4_明宪宗朱见深_年长17岁的万贵妃专权_外戚宦官横行_成化十五年_汪直杖责五十六名言官.png', '明宪宗朱见深事件集/1.6_明宪宗朱见深_年长17岁的万贵妃专权_外戚宦官横行_成化十九年_汪直贬调南京御马监.png', '明宪宗朱见深事件集/1.7_明宪宗朱见深_年长17岁的万贵妃专权_外戚宦官横行_成化二十年_太监张善总督大同防务.png', '明宪宗朱见深事件集/1.8_明宪宗朱见深_年长17岁的万贵妃专权_外戚宦官横行_成化二十一年_传奉官制度泛滥.png', '明宪宗朱见深事件集/1.9_明宪宗朱见深_年长17岁的万贵妃专权_外戚宦官横行_成化二十三年_宦官把持临终朝政.png']
+                        },
+                        {
+                            id: 3, title: '为叔父平反，但怠政严重，设立皇庄加剧土地兼并', comics: ['明宪宗朱见深事件集/2.1_明宪宗朱见深_为叔父平反_但怠政严重_设立皇庄加剧土地兼并_成化四年_下诏禁止豪富之家擅自请求田土.png', '明宪宗朱见深事件集/2.2_明宪宗朱见深_为叔父平反_但怠政严重_设立皇庄加剧土地兼并_成化十一年_恢复郕王帝号.png', '明宪宗朱见深事件集/2.4_明宪宗朱见深_为叔父平反_但怠政严重_设立皇庄加剧土地兼并_成化十五年_汪直弹劾马文升下狱.png', '明宪宗朱见深事件集/2.5_明宪宗朱见深_为叔父平反_但怠政严重_设立皇庄加剧土地兼并_成化十六年_禁止势家豪族侵占民田.png', '明宪宗朱见深事件集/2.6_明宪宗朱见深_为叔父平反_但怠政严重_设立皇庄加剧土地兼并_成化二十年_清查畿内功臣庄田.png', '明宪宗朱见深事件集/2.7_明宪宗朱见深_为叔父平反_但怠政严重_设立皇庄加剧土地兼并_成化二十二年_减免各省受灾税粮.png', '明宪宗朱见深事件集/2.8_明宪宗朱见深_为叔父平反_但怠政严重_设立皇庄加剧土地兼并_成化年间_纵容宦官干预朝政.png']
+                        },
+                        {
+                            id: 4, title: '景德镇瓷器工艺达到高峰（成化斗彩）', comics: ['明宪宗朱见深事件集/3.1_明宪宗朱见深_景德镇瓷器工艺达到高峰_成化斗彩_成化四年_1468_减免江西受灾秋粮.png', '明宪宗朱见深事件集/3.2_明宪宗朱见深_景德镇瓷器工艺达到高峰_成化斗彩_成化七年_1471_掩埋京师暴露尸骨.png', '明宪宗朱见深事件集/3.3_明宪宗朱见深_景德镇瓷器工艺达到高峰_成化斗彩_成化十年_1474_修紫城砦至花马池边墙.png', '明宪宗朱见深事件集/3.4_明宪宗朱见深_景德镇瓷器工艺达到高峰_成化斗彩_成化十八年_1482_仓副使应时用谏罢御器烧造.png', '明宪宗朱见深事件集/3.5_明宪宗朱见深_景德镇瓷器工艺达到高峰_成化斗彩_成化二十年_1484_停止采办营造物料.png', '明宪宗朱见深事件集/3.6_明宪宗朱见深_景德镇瓷器工艺达到高峰_成化斗彩_成化二十一年_1485_释放传奉官五百余人.png', '明宪宗朱见深事件集/3.7_明宪宗朱见深_景德镇瓷器工艺达到高峰_成化斗彩_成化二十三年_1487_减免多地税粮.png', '明宪宗朱见深事件集/3.8_明宪宗朱见深_景德镇瓷器工艺达到高峰_成化斗彩_成化年间中期_琉球等国频繁朝贡.png']
+                        }
+                    ]
+                },
+                {
+                    id: 9,
+                    name: '朱祐樘',
+                    graphLink: './huangditupu/9tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱佑樘是明朝历史上一位较为贤明的皇帝。他在位期间，勤于政事，每日两次视朝，努力处理政务，致力于改革弊政，任用贤能，使得朝廷政治清明。他还倡导节俭之风，减轻百姓赋税负担，促进了社会经济的发展。在个人品德方面，朱佑樘以仁慈宽厚著称，他与皇后张氏感情深厚，家庭和睦，被后世誉为“弘治中兴”的开创者。', comics: ['./ming_comics/第叁部/第6章_明君_朱祐樘_弘治中后期.png',
+                                './ming_comics/第叁部/第6章_明君_朱祐樘_弘治元年.png',
+                                './ming_comics/第叁部/第6章_明君_朱祐樘_弘治初年.png',
+                                './ming_comics/第叁部/第6章_明君_朱祐樘_弘治十八年.png',
+                                './ming_comics/第叁部/第6章_明君_朱祐樘_弘治年间.png',
+                                './ming_comics/第叁部/第7章_斗争_还是隐忍_刘健_正德元年.png',
+                                './ming_comics/第叁部/第7章_斗争_还是隐忍_刘瑾_夜间.png',
+                                './ming_comics/第叁部/第7章_斗争_还是隐忍_朱厚照_15岁.png',
+                                './ming_comics/第叁部/第7章_斗争_还是隐忍_李东阳_送别宴.png',
+                                './ming_comics/第叁部/第7章_斗争_还是隐忍_焦芳_深夜.png',]
+
+                        },
+                        {
+                            id: 2, title: '勤政节俭，罢黜奸佞（如万安），开创“弘治中兴”', comics: ['明孝宗朱祐樘事件集/1.1_明孝宗朱祐樘_勤政节俭_罢黜奸佞_如万安_开创_弘治中兴_成化二十三年_1487_斥退李孜省_梁芳_万喜等奸佞.png', '明孝宗朱祐樘事件集/1.2_明孝宗朱祐樘_勤政节俭_罢黜奸佞_如万安_开创_弘治中兴_弘治元年_1488_减浙江银课汰冗官.png', '明孝宗朱祐樘事件集/1.3_明孝宗朱祐樘_勤政节俭_罢黜奸佞_如万安_开创_弘治中兴_弘治三年_1490_禁内府加派御用物料.png', '明孝宗朱祐樘事件集/1.4_明孝宗朱祐樘_勤政节俭_罢黜奸佞_如万安_开创_弘治中兴_弘治五年_1492_停苏松额外织造.png', '明孝宗朱祐樘事件集/1.5_明孝宗朱祐樘_勤政节俭_罢黜奸佞_如万安_开创_弘治中兴_弘治七年_1494_设养济院漏泽园.png', '明孝宗朱祐樘事件集/1.6_明孝宗朱祐樘_勤政节俭_罢黜奸佞_如万安_开创_弘治中兴_弘治十一年_1498_罢团营军士工役.png', '明孝宗朱祐樘事件集/1.7_明孝宗朱祐樘_勤政节俭_罢黜奸佞_如万安_开创_弘治中兴_弘治十三年_1500_严定诬告连坐法.png', '明孝宗朱祐樘事件集/1.8_明孝宗朱祐樘_勤政节俭_罢黜奸佞_如万安_开创_弘治中兴_弘治十七年_1504_罢云南银场.png',]
+                        },
+                        {
+                            id: 3, title: '终身仅娶张皇后，无妃嫔，为历代罕见', comics: ['明孝宗朱祐樘事件集/2.1_明孝宗朱祐樘_终身仅娶张皇后_无妃嫔_为历代罕见_成化二十三年_1487年_十月十日_立妃张氏为皇后.png', '明孝宗朱祐樘事件集/2.2_明孝宗朱祐樘_终身仅娶张皇后_无妃嫔_为历代罕见_成化二十三年_1487年_十一月_贬谪万贵妃同党.png', '明孝宗朱祐樘事件集/2.3_明孝宗朱祐樘_终身仅娶张皇后_无妃嫔_为历代罕见_弘治元年_1488年_整顿传奉官.png', '明孝宗朱祐樘事件集/2.4_明孝宗朱祐樘_终身仅娶张皇后_无妃嫔_为历代罕见_弘治四年_1491年_十月十三日_皇长子朱厚照诞生.png', '明孝宗朱祐樘事件集/2.5_明孝宗朱祐樘_终身仅娶张皇后_无妃嫔_为历代罕见_弘治五年_1492年_三月八日_册立皇太子.png', '明孝宗朱祐樘事件集/2.6_明孝宗朱祐樘_终身仅娶张皇后_无妃嫔_为历代罕见_弘治十一年_1498年_十月二十五日_清宁宫火灾后独居.png', '明孝宗朱祐樘事件集/2.7_明孝宗朱祐樘_终身仅娶张皇后_无妃嫔_为历代罕见_弘治十七年_1504年_三月二十二日_定太庙一帝一后制.png', '明孝宗朱祐樘事件集/2.8_明孝宗朱祐樘_终身仅娶张皇后_无妃嫔_为历代罕见_弘治十八年_1505年_五月七日_临终托付皇嗣.png'
+
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 10,
+                    name: '朱厚照',
+                    graphLink: './huangditupu/10tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱厚照自幼调皮捣蛋，对宫廷的规矩和礼仪不感兴趣，却热衷于军事和冒险活动。他在位期间，经常离开京城到边疆地区进行军事演练和游玩，甚至亲自率军作战。朱厚照的行为引起了一些大臣的不满，但他在军事上也有一定的才能，多次击退外敌入侵。然而，他的统治也存在着一些问题，如宠信宦官刘瑾，导致朝政腐败，社会矛盾逐渐加剧。', comics: ['./ming_comics/第叁部/第8章_传奇就此开始_东乡平八郎_1905年.png',
+                                './ming_comics/第叁部/第8章_传奇就此开始_刘瑾_明武宗时期.png',
+                                './ming_comics/第叁部/第8章_传奇就此开始_李东阳_明武宗时期.png',
+                                './ming_comics/第叁部/第8章_传奇就此开始_王守仁_三十四岁.png',
+                                './ming_comics/第叁部/第8章_传奇就此开始_王守仁_十七岁.png',
+                                './ming_comics/第叁部/第8章_传奇就此开始_王守仁_十二岁.png',
+                                './ming_comics/第叁部/第8章_传奇就此开始_王守仁_十五岁.png',
+                                './ming_comics/第叁部/第8章_传奇就此开始_王守仁_十八岁.png',
+                                './ming_comics/第叁部/第9章_悟道_王守仁_三十七岁.png',
+                                './ming_comics/第叁部/第9章_悟道_王守仁_二十一岁.png',
+                                './ming_comics/第叁部/第9章_悟道_王守仁_二十八岁.png',
+                                './ming_comics/第叁部/第9章_悟道_王守仁_二十六岁.png',
+                                './ming_comics/第叁部/第9章_悟道_王守仁_弘治十四年_1501_.png',
+                                './ming_comics/第叁部/第9章_悟道_王守仁_流放途中.png',
+                                './ming_comics/第叁部/第9章_悟道_王守仁_青年时期.png',
+                                './ming_comics/第叁部/第10章_机会终于到来_刘瑾_正德年间.png',
+                                './ming_comics/第叁部/第10章_机会终于到来_李东阳_正德二年_1507_.png',
+                                './ming_comics/第叁部/第10章_机会终于到来_杨一清_正德三年_1508_.png',
+                                './ming_comics/第叁部/第10章_机会终于到来_杨廷和_正德二年_1507_.png',
+                                './ming_comics/第叁部/第10章_机会终于到来_杨廷和_正德年间.png',
+                                './ming_comics/第叁部/第10章_机会终于到来_罗圮_正德年间.png',
+                                './ming_comics/第叁部/第11章_必杀刘瑾_刘瑾_正德五年_1510_四月.png',
+                                './ming_comics/第叁部/第11章_必杀刘瑾_刘瑾_正德五年八月十五日.png',
+                                './ming_comics/第叁部/第11章_必杀刘瑾_张永_正德五年七月.png',
+                                './ming_comics/第叁部/第11章_必杀刘瑾_朱厚照_正德五年八月十六日.png',
+                                './ming_comics/第叁部/第11章_必杀刘瑾_李东阳_正德五年八月十七日.png',
+                                './ming_comics/第叁部/第11章_必杀刘瑾_杨一清_正德五年五月.png',
+                                './ming_comics/第叁部/第12章_皇帝的幸福生活_张钦_正德十二年_1517_.png',
+                                './ming_comics/第叁部/第12章_皇帝的幸福生活_朱厚照_正德十二年_1517_.png',
+                                './ming_comics/第叁部/第12章_皇帝的幸福生活_朱厚照_正德十二年_1517_八月甲辰夜.png',
+                                './ming_comics/第叁部/第12章_皇帝的幸福生活_朱厚照_正德年间.png',
+                                './ming_comics/第叁部/第13章_无人知晓的胜利_小王子_正德六年_1511_三月.png',
+                                './ming_comics/第叁部/第13章_无人知晓的胜利_小王子_正德六年_1511_十月.png',
+                                './ming_comics/第叁部/第13章_无人知晓的胜利_小王子_正德十二年_1517_丁未日.png',
+                                './ming_comics/第叁部/第13章_无人知晓的胜利_朱厚照_正德十三年_1518_.png',
+                                './ming_comics/第叁部/第13章_无人知晓的胜利_朱厚照_正德十二年_1517_十月.png',
+                                './ming_comics/第叁部/第13章_无人知晓的胜利_朱厚照_正德十二年_1517_甲辰日.png',
+                                './ming_comics/第叁部/第14章_东山再起_唐伯虎_正德十二年_1517_前后.png',
+                                './ming_comics/第叁部/第14章_东山再起_孙燧_正德十年_1515_至正德十四年_1519_.png',
+                                './ming_comics/第叁部/第14章_东山再起_宁王朱权_明初靖难之役时期.png',
+                                './ming_comics/第叁部/第15章_孤军_孙燧_正德十四年_1519_六月.png',
+                                './ming_comics/第叁部/第15章_孤军_朱宸濠_正德十四年_1519_四月.png',
+                                './ming_comics/第叁部/第15章_孤军_王守仁_正德十四年_1519_六月.png',
+                                './ming_comics/第叁部/第15章_孤军_王守仁_正德十四年_1519_四月.png',
+                                './ming_comics/第叁部/第16章_奋战_朱宸濠_正德十四年_1519_七月.png',
+                                './ming_comics/第叁部/第16章_奋战_杨锐_正德十四年_1519_.png',
+                                './ming_comics/第叁部/第16章_奋战_王守仁_正德十四年_1519_.png',
+                                './ming_comics/第叁部/第16章_奋战_王守仁_正德十四年_1519_七月二十三日夜.png',
+                                './ming_comics/第叁部/第17章_死亡的阴谋_刘姬_霜降前夜.png',
+                                './ming_comics/第叁部/第17章_死亡的阴谋_张忠_冬至日南昌.png',
+                                './ming_comics/第叁部/第17章_死亡的阴谋_张永_正德十四年_1519_九月.png',
+                                './ming_comics/第叁部/第17章_死亡的阴谋_朱厚照_八月庚寅拂晓.png',
+                                './ming_comics/第叁部/第17章_死亡的阴谋_朱厚照_正德十四年_1519_八月.png',
+                                './ming_comics/第叁部/第17章_死亡的阴谋_江彬_捷报抵京当夜.png',
+                                './ming_comics/第叁部/第17章_死亡的阴谋_江彬_正德十四年_1519_九月.png',
+                                './ming_comics/第叁部/第17章_死亡的阴谋_王守仁_子夜杭州行辕.png',
+                                './ming_comics/第叁部/第17章_死亡的阴谋_王守仁_正德十四年_1519_六月.png',
+                                './ming_comics/第叁部/第17章_死亡的阴谋_王琼_正德十四年夏_1519_.png',
+                                './ming_comics/第叁部/第17章_死亡的阴谋_钱宁_九月甲午驿道.png',
+                                './ming_comics/第叁部/第18章_沉默的较量_乔宇_正德十五年_1520_一月.png',
+                                './ming_comics/第叁部/第18章_沉默的较量_张忠_正德十四年_1519_十一月.png',
+                                './ming_comics/第叁部/第18章_沉默的较量_朱厚照_正德十四年_1519_十二月.png',
+                                './ming_comics/第叁部/第18章_沉默的较量_江彬_正德十五年_1520_一月.png',
+                                './ming_comics/第叁部/第18章_沉默的较量_王守仁_正德十四年_1519_十一月.png',
+                                './ming_comics/第叁部/第18章_沉默的较量_蒋瑶_正德十四年_1519_十二月.png',
+                                './ming_comics/第叁部/第19章_终结的归宿_朱厚照_正德十五年_1520_九月.png',
+                                './ming_comics/第叁部/第19章_终结的归宿_朱厚照_正德十五年_1520_六月.png',
+                                './ming_comics/第叁部/第19章_终结的归宿_朱厚照_正德十六年_1521_三月.png',
+                                './ming_comics/第叁部/第19章_终结的归宿_王守仁_嘉靖七年_1528_十一月.png']
+                        },
+                        {
+                            id: 2, title: '建豹房游乐，自称“总督军务威武大将军”，沉迷军事游戏', comics: ['明武宗朱厚照事件集/1.1_明武宗朱厚照_建豹房游乐_自称_总督军务威武大将军_沉迷军事游戏_正德二年_1507_修建豹房.png', '明武宗朱厚照事件集/1.2_明武宗朱厚照_建豹房游乐_自称_总督军务威武大将军_沉迷军事游戏_正德十二年_1517_自封总督军务威武大将军.png', '明武宗朱厚照事件集/1.3_明武宗朱厚照_建豹房游乐_自称_总督军务威武大将军_沉迷军事游戏_正德十三年_1518_率军夜巡居庸关.png', '明武宗朱厚照事件集/1.6_明武宗朱厚照_建豹房游乐_自称_总督军务威武大将军_沉迷军事游戏_正德九年_1514_与猛虎搏戏受伤.png', '明武宗朱厚照事件集/1.7_明武宗朱厚照_建豹房游乐_自称_总督军务威武大将军_沉迷军事游戏_正德十一年_1516_夜袭小王子部众.png', '明武宗朱厚照事件集/1.8_明武宗朱厚照_建豹房游乐_自称_总督军务威武大将军_沉迷军事游戏_正德七年_1512_操演神机营火器.png']
+                        },
+                        {
+                            id: 3, title: '王阳明迅速平叛，但武宗仍欲亲征作秀', comics: ['明武宗朱厚照事件集/2.2_明武宗朱厚照_王阳明迅速平叛_但武宗仍欲亲征作秀_正德十四年八月_密藏王阳明捷报继续南下.png', '明武宗朱厚照事件集/2.3_明武宗朱厚照_王阳明迅速平叛_但武宗仍欲亲征作秀_正德十四年十二月_在南京受俘仪式.png', '明武宗朱厚照事件集/2.4_明武宗朱厚照_王阳明迅速平叛_但武宗仍欲亲征作秀_正德十五年_1520_闰八月_乘龙舟返京途中落水.png', '明武宗朱厚照事件集/2.5_明武宗朱厚照_王阳明迅速平叛_但武宗仍欲亲征作秀_正德十五年九月_强撑病体郊祀.png', '明武宗朱厚照事件集/2.6_明武宗朱厚照_王阳明迅速平叛_但武宗仍欲亲征作秀_正德十五年十月_驻跸通州审叛党.png', '明武宗朱厚照事件集/2.7_明武宗朱厚照_王阳明迅速平叛_但武宗仍欲亲征作秀_正德十五年十二月_强撑病体南郊祭天.png', '明武宗朱厚照事件集/2.8_明武宗朱厚照_王阳明迅速平叛_但武宗仍欲亲征作秀_正德十六年_1521_三月_临终前在豹房挣扎.png'
+                            ]
+                        },
+                        {
+                            id: 4, title: '南巡落水致病死，引发继位争议', comics: ['明武宗朱厚照事件集/3.1_明武宗朱厚照_南巡落水致病死_引发继位争议_正德十五年_1520_九月_武宗在积水池钓鱼翻船落水.png', '明武宗朱厚照事件集/3.2_明武宗朱厚照_南巡落水致病死_引发继位争议_正德十五年闰八月_接受江西俘虏班师回京.png', '明武宗朱厚照事件集/3.3_明武宗朱厚照_南巡落水致病死_引发继位争议_正德十五年十月_返京途中病情加重.png', '明武宗朱厚照事件集/3.4_明武宗朱厚照_南巡落水致病死_引发继位争议_正德十六年_1521_三月_临终前召见司礼监传旨.png', '明武宗朱厚照事件集/3.5_明武宗朱厚照_南巡落水致病死_引发继位争议_正德十六年三月十四日_武宗驾崩于豹房.png', '明武宗朱厚照事件集/3.6_明武宗朱厚照_南巡落水致病死_引发继位争议_正德十六年三月二十一日_颁布遗诏安排继位.png', '明武宗朱厚照事件集/3.7_明武宗朱厚照_南巡落水致病死_引发继位争议_正德十六年三月二十三日_锦衣卫逮捕权宦江彬.png', '明武宗朱厚照事件集/3.8_明武宗朱厚照_南巡落水致病死_引发继位争议_正德十六年四月_世宗即位处理善后.png'
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 11,
+                    name: '朱厚熜',
+                    graphLink: './huangditupu/11tupu.html', // 知识图谱外部链接
+                    events: [
+                        {
+                            id: 1, title: '朱厚熜以藩王身份继承皇位后，在政治上推行了一系列改革措施，如整顿朝纲、减轻赋役等，使明朝出现了一段时期的繁荣。但他后期迷信方术，追求长生不老，长期不理朝政，导致严嵩父子专权，政治腐败，边患严重，明朝国力逐渐衰落。尽管如此，朱厚熜在位期间的前期还是有一定作为的，对明朝的发展产生了重要影响。', comics: ['./ming_comics/第肆部/第1章_皇帝很脆弱_张璁_正德十六年_1521_四月.png',
+                                './ming_comics/第肆部/第1章_皇帝很脆弱_朱厚熜_正德十六年_1521_四月.png',
+                                './ming_comics/第肆部/第1章_皇帝很脆弱_杨一清_正德十六年_1521_六月.png',
+                                './ming_comics/第肆部/第1章_皇帝很脆弱_杨廷和_正德十六年_1521_四月.png',
+                                './ming_comics/第肆部/第1章_皇帝很脆弱_桂萼_正德十六年_1521_五月.png',
+                                './ming_comics/第肆部/第2章_大臣很强悍_杨廷和_嘉靖二年_1523_.png',
+                                './ming_comics/第肆部/第2章_大臣很强悍_杨慎_嘉靖三年_1524_.png',
+                                './ming_comics/第肆部/第2章_大臣很强悍_杨慎_嘉靖三年_1524_七月.png',
+                                './ming_comics/第肆部/第2章_大臣很强悍_桂萼_嘉靖三年_1524_四月.png',
+                                './ming_comics/第肆部/第2章_大臣很强悍_桂萼_嘉靖二年_1523_.png',
+                                './ming_comics/第肆部/第2章_大臣很强悍_汪俊_嘉靖三年_1524_二月.png',
+                                './ming_comics/第肆部/第3章_解脱_张璁_嘉靖八年_1529年_.png',
+                                './ming_comics/第肆部/第3章_解脱_朱厚熜_明代嘉靖年间.png',
+                                './ming_comics/第肆部/第3章_解脱_杨廷和_致仕前.png',
+                                './ming_comics/第肆部/第3章_解脱_杨慎_嘉靖三年_1524年_.png',
+                                './ming_comics/第肆部/第3章_解脱_杨慎_晚年.png',
+                                './ming_comics/第肆部/第3章_解脱_杨慎_流放初期.png',
+                                './ming_comics/第肆部/第4章_龙争虎斗_夏言_嘉靖九年_1530_二月.png',
+                                './ming_comics/第肆部/第4章_龙争虎斗_张璁_嘉靖九年_1530_二月.png',
+                                './ming_comics/第肆部/第4章_龙争虎斗_彭泽_嘉靖十年_1531_七月.png',
+                                './ming_comics/第肆部/第4章_龙争虎斗_徐阶_嘉靖九年_1530_末.png',
+                                './ming_comics/第肆部/第4章_龙争虎斗_郭勋_嘉靖十五年_1536_.png',
+                                './ming_comics/第肆部/第5章_锋芒_夏言_嘉靖二十年_1541_.png',
+                                './ming_comics/第肆部/第5章_锋芒_杨金英_嘉靖二十一年_1542_.png',
+                                './ming_comics/第肆部/第5章_锋芒_郭勋_嘉靖二十年_1541_.png',
+                                './ming_comics/第肆部/第5章_锋芒_高时_嘉靖二十年_1541_.png',
+                                './ming_comics/第肆部/第6章_最阴险的敌人_严嵩_八岁.png',
+                                './ming_comics/第肆部/第6章_最阴险的敌人_严嵩_嘉靖二十一年_1542_.png',
+                                './ming_comics/第肆部/第6章_最阴险的敌人_严嵩_嘉靖十七年_1538_.png',
+                                './ming_comics/第肆部/第6章_最阴险的敌人_严嵩_弘治八年_1495_.png',
+                                './ming_comics/第肆部/第6章_最阴险的敌人_严嵩_成化十六年_1480_.png',
+                                './ming_comics/第肆部/第6章_最阴险的敌人_严嵩_正德元年_1506_.png',
+                                './ming_comics/第肆部/第6章_最阴险的敌人_严嵩_正德四年_1509_.png',
+                                './ming_comics/第肆部/第6章_最阴险的敌人_夏言_嘉靖年间.png',
+                                './ming_comics/第肆部/第7章_徐阶的觉醒_徐阶_嘉靖三年_1524_八月.png',
+                                './ming_comics/第肆部/第7章_徐阶的觉醒_徐阶_嘉靖六年_1527_.png',
+                                './ming_comics/第肆部/第7章_徐阶的觉醒_徐阶_嘉靖十三年_1534_.png',
+                                './ming_comics/第肆部/第7章_徐阶的觉醒_徐阶_嘉靖十八年_1539_.png',
+                                './ming_comics/第肆部/第7章_徐阶的觉醒_徐阶_弘治十六年_1503_十月.png',
+                                './ming_comics/第肆部/第7章_徐阶的觉醒_徐阶_正德二年_1507_.png',
+                                './ming_comics/第肆部/第7章_徐阶的觉醒_徐阶_正德十五年_1520_.png',
+                                './ming_comics/第肆部/第8章_天下_三人而已_严世蕃_嘉靖二十四年.png',
+                                './ming_comics/第肆部/第8章_天下_三人而已_唐顺之_嘉靖十五年.png',
+                                './ming_comics/第肆部/第8章_天下_三人而已_夏言_嘉靖十三年.png',
+                                './ming_comics/第肆部/第8章_天下_三人而已_徐阶_嘉靖十三年.png',
+                                './ming_comics/第肆部/第8章_天下_三人而已_徐阶_嘉靖十五至十九年.png',
+                                './ming_comics/第肆部/第8章_天下_三人而已_杨博_嘉靖十年.png',
+                                './ming_comics/第肆部/第8章_天下_三人而已_陆炳_嘉靖十八年.png',
+                                './ming_comics/第肆部/第9章_致命的疏漏_严世蕃_嘉靖二十五年_1546_后.png',
+                                './ming_comics/第肆部/第9章_致命的疏漏_严嵩_嘉靖二十五年_1546_后.png',
+                                './ming_comics/第肆部/第9章_致命的疏漏_仇鸾_嘉靖二十七年_1548_.png',
+                                './ming_comics/第肆部/第9章_致命的疏漏_夏言_嘉靖二十六年_1547_.png',
+                                './ming_comics/第肆部/第9章_致命的疏漏_徐阶_嘉靖二十七年_1548_.png',
+                                './ming_comics/第肆部/第9章_致命的疏漏_陆炳_嘉靖二十六年_1547_.png',
+                                './ming_comics/第肆部/第10章_隐藏的精英_丁汝夔_嘉靖二十九年_1550_.png',
+                                './ming_comics/第肆部/第10章_隐藏的精英_严世蕃_嘉靖年间.png',
+                                './ming_comics/第肆部/第10章_隐藏的精英_严嵩_嘉靖二十九年_1550_.png',
+                                './ming_comics/第肆部/第10章_隐藏的精英_仇鸾_嘉靖二十九年_1550_.png',
+                                './ming_comics/第肆部/第10章_隐藏的精英_徐阶_嘉靖三十年_1551_.png',
+                                './ming_comics/第肆部/第10章_隐藏的精英_徐阶_嘉靖二十六年_1547_.png',
+                                './ming_comics/第肆部/第10章_隐藏的精英_戚继光_嘉靖二十九年_1550_.png',
+                                './ming_comics/第肆部/第11章_勇气_仇鸾_嘉靖三十四年_1555_.png',
+                                './ming_comics/第肆部/第11章_勇气_杨继盛_嘉靖三十四年_1555_.png',
+                                './ming_comics/第肆部/第11章_勇气_沈鍊_庚戌之变期间.png',
+                                './ming_comics/第肆部/第11章_勇气_陆炳_沈鍊行刑前.png',
+                                './ming_comics/第肆部/第12章_东南的奇才_严世蕃_嘉靖二十五年_1546_后.png',
+                                './ming_comics/第肆部/第12章_东南的奇才_严嵩_嘉靖二十五年_1546_后.png',
+                                './ming_comics/第肆部/第12章_东南的奇才_仇鸾_嘉靖二十七年_1548_.png',
+                                './ming_comics/第肆部/第12章_东南的奇才_夏言_嘉靖二十六年_1547_.png',
+                                './ming_comics/第肆部/第12章_东南的奇才_张经_嘉靖三十三年_1554_.png',
+                                './ming_comics/第肆部/第12章_东南的奇才_徐阶_嘉靖二十七年_1548_.png',
+                                './ming_comics/第肆部/第12章_东南的奇才_胡宗宪_嘉靖三十四年_1555_五月.png',
+                                './ming_comics/第肆部/第12章_东南的奇才_赵文华_嘉靖三十二年_1553_十一月.png',
+                                './ming_comics/第肆部/第12章_东南的奇才_陆炳_嘉靖二十六年_1547_.png',
+                                './ming_comics/第肆部/第13章_天下第一幕僚_俞大猷_嘉靖三十五年_1556_.png',
+                                './ming_comics/第肆部/第13章_天下第一幕僚_徐渭_嘉靖三十六年_1557_春.png',
+                                './ming_comics/第肆部/第14章_强敌_徐海_嘉靖三十四年_1555_.png',
+                                './ming_comics/第肆部/第14章_强敌_毛海峰_嘉靖年间.png',
+                                './ming_comics/第肆部/第14章_强敌_汪直_嘉靖年间.png',
+                                './ming_comics/第肆部/第14章_强敌_胡宗宪_嘉靖三十四年_1555_十一月.png',
+                                './ming_comics/第肆部/第15章_天才的谋略_俞大猷_嘉靖三十五年_1556_.png',
+                                './ming_comics/第肆部/第15章_天才的谋略_徐海_嘉靖三十五年_1556_.png',
+                                './ming_comics/第肆部/第15章_天才的谋略_徐渭_嘉靖三十五年_1556_.png',
+                                './ming_comics/第肆部/第15章_天才的谋略_王翠翘_嘉靖三十五年_1556_.png',
+                                './ming_comics/第肆部/第15章_天才的谋略_胡宗宪_嘉靖三十五年_1556_.png',
+                                './ming_comics/第肆部/第15章_天才的谋略_陈东_嘉靖三十五年_1556_.png',
+                                './ming_comics/第肆部/第16章_战争_最后的抉择_俞大猷_嘉靖三十七年_1558_秋.png',
+                                './ming_comics/第肆部/第16章_战争_最后的抉择_戚继光_嘉靖七年_1528_十月初一.png',
+                                './ming_comics/第肆部/第16章_战争_最后的抉择_毛海峰_嘉靖三十七年_1558_春.png',
+                                './ming_comics/第肆部/第16章_战争_最后的抉择_汪直_嘉靖三十六年_1557_十月.png',
+                                './ming_comics/第肆部/第16章_战争_最后的抉择_王本固_嘉靖三十六年_1557_冬.png',
+                                './ming_comics/第肆部/第16章_战争_最后的抉择_胡宗宪_嘉靖三十六年_1557_十一月.png',
+                                './ming_comics/第肆部/第17章_名将的起点_戚继光_嘉靖三十七年_1558_.png',
+                                './ming_comics/第肆部/第17章_名将的起点_戚继光_嘉靖三十八年_1559_.png',
+                                './ming_comics/第肆部/第17章_名将的起点_戚继光_嘉靖三十四年_1555_.png',
+                                './ming_comics/第肆部/第17章_名将的起点_戚继光_嘉靖二十八年_1549_.png',
+                                './ming_comics/第肆部/第18章_制胜之道_严嵩_嘉靖四十年_1561_前.png',
+                                './ming_comics/第肆部/第18章_制胜之道_唐顺之_嘉靖四十年_1561_前.png',
+                                './ming_comics/第肆部/第18章_制胜之道_徐阶_嘉靖四十年_1561_前.png',
+                                './ming_comics/第肆部/第18章_制胜之道_王氏_戚夫人_嘉靖四十年_1561_四月.png',
+                                './ming_comics/第肆部/第18章_制胜之道_赵文华_嘉靖四十年_1561_前.png', './ming_comics/第叁部/第19章_终结的归宿_朱厚照_正德十五年_1520_九月.png',
+                                './ming_comics/第肆部/第19章_终结的归宿_朱厚照_正德十五年_1520_六月.png',
+                                './ming_comics/第肆部/第19章_终结的归宿_朱厚照_正德十六年_1521_三月.png',
+                                './ming_comics/第肆部/第19章_终结的归宿_王守仁_嘉靖七年_1528_十一月.png',
+                                './ming_comics/第肆部/第20章_新的开始_杨廷和_朱厚照驾崩后.png',
+                                './ming_comics/第肆部/第20章_新的开始_杨廷和_正德十六年_1521_三月.png',
+                                './ming_comics/第肆部/第20章_新的开始_杨廷和_正德十六年四月.png',
+                                './ming_comics/第肆部/第20章_新的开始_江彬_嘉靖继位前.png', './ ming_comics / 第肆部/第21章_曙光_严嵩_嘉靖四十年_1561_.png',
+                                './ming_comics/第肆部/第21章_曙光_徐阶_嘉靖三十九年_1560_.png',
+                                './ming_comics/第肆部/第21章_曙光_徐阶_嘉靖二十一年后近二十年.png',
+                                './ming_comics/第肆部/第21章_曙光_徐阶_嘉靖四十年_1561_.png',
+                                './ming_comics/第肆部/第21章_曙光_王世贞_嘉靖年间.png',
+                                './ming_comics/第肆部/第22章_胜利_严嵩_嘉靖四十一年_1562_五月.png',
+                                './ming_comics/第肆部/第22章_胜利_何心隐_嘉靖四十一年_1562_.png',
+                                './ming_comics/第肆部/第22章_胜利_徐阶_嘉靖四十一年_1562_五月.png',
+                                './ming_comics/第肆部/第22章_胜利_蓝道行_嘉靖四十一年_1562_.png',
+                                './ming_comics/第肆部/第22章_胜利_邹应龙_嘉靖四十一年_1562_.png', './ming_comics/第1章/致命的正义/严世蕃_发配雷州期间.png',
+                            ]
+
+                        },
+                        {
+                            id: 2, title: '为生父争名分，打压朝臣，确立皇权权威', comics: ['明世宗朱厚熜事件集/1.1_明世宗朱厚熜_为生父争名分_打压朝臣_确立皇权权威_正德十六年_1521_拒绝按皇太子礼仪入城.png', '明世宗朱厚熜事件集/1.2_明世宗朱厚熜_为生父争名分_打压朝臣_确立皇权权威_嘉靖三年_1524_廷臣伏阙抗争.png', '明世宗朱厚熜事件集/1.3_明世宗朱厚熜_为生父争名分_打压朝臣_确立皇权权威_嘉靖十七年_1538_追尊献皇帝庙号睿宗.png', '明世宗朱厚熜事件集/1.4_明世宗朱厚熜_为生父争名分_打压朝臣_确立皇权权威_嘉靖三年_1524_九月_定大礼称孝宗为皇伯考.png', '明世宗朱厚熜事件集/1.5_明世宗朱厚熜_为生父争名分_打压朝臣_确立皇权权威_嘉靖七年_1528_颁布_明伦大典_.png', '明世宗朱厚熜事件集/1.7_明世宗朱厚熜_为生父争名分_打压朝臣_确立皇权权威_嘉靖元年_1522_尊生母为兴国太后.png', '明世宗朱厚熜事件集/1.8_明世宗朱厚熜_为生父争名分_打压朝臣_确立皇权权威_嘉靖七年_1528_七月_追尊献皇帝谥号.png']
+                        },
+                        {
+                            id: 3, title: '沉迷道教炼丹，严嵩专权20年，倭寇肆虐（戚继光抗倭）', comics: ['明世宗朱厚熜事件集/2.10_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖三十五年_戚继光编练新军.png', '明世宗朱厚熜事件集/2.11_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖四十五年_海瑞进谏_治安疏_.png', '明世宗朱厚熜事件集/2.12_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖三十九年_严世蕃贪墨军饷.png', '明世宗朱厚熜事件集/2.1_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖五年_封道士邵元节为真人.png', '明世宗朱厚熜事件集/2.2_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖二十一年_严嵩升任礼部尚书兼武英殿大学士.png', '明世宗朱厚熜事件集/2.3_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖三十四年_采集灵芝炼制仙丹.png', '明世宗朱厚熜事件集/2.4_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖三十七年_严嵩排除异己独揽朝政.png', '明世宗朱厚熜事件集/2.5_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖四十年_建造万寿宫供奉三清.png', '明世宗朱厚熜事件集/2.6_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖四十一年_严嵩罢官其子伏诛.png', '明世宗朱厚熜事件集/2.7_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖四十二年_戚继光平海卫大捷.png', '明世宗朱厚熜事件集/2.8_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖四十四年_玉芝宫炼丹终夜不息.png', '明世宗朱厚熜事件集/2.9_明世宗朱厚熜_沉迷道教炼丹_严嵩专权20年_倭寇肆虐_戚继光抗倭_嘉靖二十七年_严嵩构陷曾铣夏言.png'
+                            ]
+                        },
+                        {
+                            id: 4, title: '宫女刺杀未遂，自此深居西苑不理朝政', comics: ['明世宗朱厚熜事件集/3.2_明世宗朱厚熜_宫女刺杀未遂_自此深居西苑不理朝政_嘉靖二十一年四月_大高玄殿建成.png', '明世宗朱厚熜事件集/3.3_明世宗朱厚熜_宫女刺杀未遂_自此深居西苑不理朝政_嘉靖二十一年闰五月_诱杀俺答使者.png', '明世宗朱厚熜事件集/3.4_明世宗朱厚熜_宫女刺杀未遂_自此深居西苑不理朝政_嘉靖二十一年六月_俺答破雁门关.png', '明世宗朱厚熜事件集/3.5_明世宗朱厚熜_宫女刺杀未遂_自此深居西苑不理朝政_嘉靖二十一年七月_夏言罢官离京.png', '明世宗朱厚熜事件集/3.6_明世宗朱厚熜_宫女刺杀未遂_自此深居西苑不理朝政_嘉靖二十一年八月_严嵩入阁参政.png', '明世宗朱厚熜事件集/3.7_明世宗朱厚熜_宫女刺杀未遂_自此深居西苑不理朝政_嘉靖二十一年十一月_杖责谏官下狱.png', '明世宗朱厚熜事件集/3.8_明世宗朱厚熜_宫女刺杀未遂_自此深居西苑不理朝政_嘉靖二十一年十二月_免除受灾税粮.png'
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 12,
+                    name: '朱载垕',
+                    graphLink: './huangditupu/12tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱载垕为明世宗朱厚熜第三子，母杜康妃，因生母不受宠，早年于裕王府低调成长 。嘉靖帝驾崩后，朱载垕即位，次年改元隆庆 。他在位期间，启用徐阶、高拱、张居正等能臣，革新吏治，整肃朝堂；施行轻徭薄赋政策，鼓励垦荒，促进经济复苏，商业与手工业得以蓬勃发展；军事上重用戚继光等名将，加强北方边防建设，有效抵御外敌，在民族关系上采取开明政策，维护了周边稳定 。不过，朱载垕在位六年便因病离世，终年36岁 ，但他在位的举措为之后的“万历中兴”尤其是张居正改革奠定了一定基础 。', comics: ['./ming_comics/第伍部/第5章_最终的乱战_詹仰庇_隆庆初年.png',
+                                './ming_comics/第伍部/第5章_最终的乱战_邵大侠_1569年.png',
+                                './ming_comics/第伍部/第5章_最终的乱战_郑履淳_1566年.png',
+                                './ming_comics/第伍部/第5章_最终的乱战_高拱_1569年.png',
+                                './ming_comics/第伍部/第6章_高拱的成就_徐阶_隆庆三年_1569_.png',
+                                './ming_comics/第伍部/第6章_高拱的成就_海瑞_隆庆三年_1569_.png',
+                                './ming_comics/第伍部/第6章_高拱的成就_潘季驯_隆庆五年_1571_.png',
+                                './ming_comics/第伍部/第6章_高拱的成就_王崇古_隆庆四年_1570_.png',
+                                './ming_comics/第伍部/第6章_高拱的成就_高拱_隆庆四年_1570_.png',
+                                './ming_comics/第伍部/第7章_死斗_冯保_隆庆六年_1572_五月二十七日.png',
+                                './ming_comics/第伍部/第7章_死斗_张居正_隆庆六年_1572_.png',
+                                './ming_comics/第伍部/第7章_死斗_殷士儋_隆庆四年_1570_.png',
+                                './ming_comics/第伍部/第7章_死斗_高拱_隆庆六年_1572_五月二十六日.png',
+                                './ming_comics/第伍部/第8章_阴谋_冯保_隆庆六年六月十二日.png',
+                                './ming_comics/第伍部/第8章_阴谋_张居正_万历元年_1573_.png',
+                                './ming_comics/第伍部/第8章_阴谋_张居正_隆庆六年六月十四日.png',
+                                './ming_comics/第伍部/第8章_阴谋_程文_隆庆六年六月十三日.png',
+                                './ming_comics/第伍部/第8章_阴谋_高拱_隆庆六年_1572_六月十日.png',
+                                './ming_comics/第伍部/第8章_阴谋_高拱_隆庆六年六月十六日.png'
+                            ]
+
+                        },
+                        {
+                            id: 2, title: '隆庆开关，允许民间海外贸易，缓解财政危机', comics: ['明穆宗朱载坖事件集/1.1_明穆宗朱载坖_隆庆开关_允许民间海外贸易_缓解财政危机_隆庆元年_1567_大赦天下并减免赋税.png', '明穆宗朱载坖事件集/1.2_明穆宗朱载坖_隆庆开关_允许民间海外贸易_缓解财政危机_隆庆元年七月_招抚流民免除徭役.png', '明穆宗朱载坖事件集/1.3_明穆宗朱载坖_隆庆开关_允许民间海外贸易_缓解财政危机_隆庆三年七月_整治仓储备荒.png', '明穆宗朱载坖事件集/1.5_明穆宗朱载坖_隆庆开关_允许民间海外贸易_缓解财政危机_隆庆四年十月_处理蒙汉和议.png', '明穆宗朱载坖事件集/1.6_明穆宗朱载坖_隆庆开关_允许民间海外贸易_缓解财政危机_隆庆五年三月_敕封顺义王.png', '明穆宗朱载坖事件集/1.7_明穆宗朱载坖_隆庆开关_允许民间海外贸易_缓解财政危机_隆庆五年八月_开放边境互市.png', '明穆宗朱载坖事件集/1.8_明穆宗朱载坖_隆庆开关_允许民间海外贸易_缓解财政危机_隆庆五年九月_完善边贸体系.png']
+                        },
+                        {
+                            id: 3, title: '与蒙古达成和议，结束北疆战争', comics: ['明穆宗朱载坖事件集/2.1_明穆宗朱载坖_与蒙古达成和议_结束北疆战争_隆庆四年十月_俺答孙把汉那吉率部归降.png', '明穆宗朱载坖事件集/2.2_明穆宗朱载坖_与蒙古达成和议_结束北疆战争_隆庆四年十月_册封把汉那吉为指挥使.png', '明穆宗朱载坖事件集/2.3_明穆宗朱载坖_与蒙古达成和议_结束北疆战争_隆庆四年十一月_俺答缚献叛党赵全等人.png', '明穆宗朱载坖事件集/2.4_明穆宗朱载坖_与蒙古达成和议_结束北疆战争_隆庆五年三月_册封俺答为顺义王.png', '明穆宗朱载坖事件集/2.5_明穆宗朱载坖_与蒙古达成和议_结束北疆战争_隆庆五年四月_开放边境互市贸易.png', '明穆宗朱载坖事件集/2.6_明穆宗朱载坖_与蒙古达成和议_结束北疆战争_隆庆五年六月_河套部受封都督同知.png', '明穆宗朱载坖事件集/2.7_明穆宗朱载坖_与蒙古达成和议_结束北疆战争_隆庆五年八月_三镇贡市正式修成.png', '明穆宗朱载坖事件集/2.8_明穆宗朱载坖_与蒙古达成和议_结束北疆战争_隆庆五年九月_顺义王进献战马.png'
+                            ]
+                        },
+                        {
+                            id: 4, title: '重用高拱、张居正，为万历改革奠基', comics: ['明穆宗朱载坖事件集/3.1_明穆宗朱载坖_重用高拱_张居正_为万历改革奠基_隆庆元年_1567_张居正任吏部左侍郎兼东阁大学士.png', '明穆宗朱载坖事件集/3.2_明穆宗朱载坖_重用高拱_张居正_为万历改革奠基_隆庆三年_1569_高拱复任内阁首辅.png', '明穆宗朱载坖事件集/3.3_明穆宗朱载坖_重用高拱_张居正_为万历改革奠基_隆庆五年_1571_封俺答为顺义王.png', '明穆宗朱载坖事件集/3.4_明穆宗朱载坖_重用高拱_张居正_为万历改革奠基_隆庆六年_1572_临终托孤三位阁臣.png', '明穆宗朱载坖事件集/3.5_明穆宗朱载坖_重用高拱_张居正_为万历改革奠基_隆庆元年_1567_整顿前朝弊政.png', '明穆宗朱载坖事件集/3.6_明穆宗朱载坖_重用高拱_张居正_为万历改革奠基_隆庆二年_1568_清丈勋戚庄田.png', '明穆宗朱载坖事件集/3.7_明穆宗朱载坖_重用高拱_张居正_为万历改革奠基_隆庆四年_1570_整顿边防军务.png', '明穆宗朱载坖事件集/3.8_明穆宗朱载坖_重用高拱_张居正_为万历改革奠基_隆庆五年_1571_推行盐政改革.png'
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 13,
+                    name: '朱翊钧',
+                    graphLink: './huangditupu/13tupu.html',
+                    events: [
+                        {
+                            id: 1,
+                            title: '朱翊钧即位时年幼，由张居正辅政。在张居正的主持下，明朝进行了一系列改革，如推行考成法、一条鞭法等，使得明朝的经济得到恢复和发展，国力有所增强。然而，张居正去世后，朱翊钧开始亲政，但他逐渐对朝政失去兴趣，长期怠政，导致明朝的政治、经济和社会问题日益严重。后期，明朝面临着内忧外患的局面，边疆战事频繁，国内农民起义不断。',
+                            comics: ['./ming_comics/第伍部/第8章_阴谋_冯保_隆庆六年六月十二日.png',
+                                './ming_comics/第伍部/第8章_阴谋_张居正_万历元年_1573_.png',
+                                './ming_comics/第伍部/第8章_阴谋_张居正_隆庆六年六月十四日.png',
+                                './ming_comics/第伍部/第8章_阴谋_程文_隆庆六年六月十三日.png',
+                                './ming_comics/第伍部/第8章_阴谋_高拱_隆庆六年_1572_六月十日.png',
+                                './ming_comics/第伍部/第8章_阴谋_高拱_隆庆六年六月十六日.png',
+                                './ming_comics/第伍部/第9章_张居正的缺陷_何心隐_万历七年_1579年_.png',
+                                './ming_comics/第伍部/第9章_张居正的缺陷_冯保_万历元年_1573年_.png',
+                                './ming_comics/第伍部/第9章_张居正的缺陷_刘台_万历三年_1575年_.png',
+                                './ming_comics/第伍部/第9章_张居正的缺陷_张居正_万历元年_1573年_.png',
+                                './ming_comics/第伍部/第9章_张居正的缺陷_朱希孝_万历元年_1573年_.png',
+                                './ming_comics/第伍部/第9章_张居正的缺陷_王大臣_万历元年_1573年_.png',
+                                './ming_comics/第伍部/第10章_敌人_万历帝_万历五年_1577_十月.png',
+                                './ming_comics/第伍部/第10章_敌人_吴中行_万历五年_1577_十月.png',
+                                './ming_comics/第伍部/第10章_敌人_张居正_万历五年_1577_.png',
+                                './ming_comics/第伍部/第10章_敌人_赵用贤妻_廷杖执行后.png',
+                                './ming_comics/第伍部/第11章_千古_唯此一人_万历帝_万历八年_1580_.png',
+                                './ming_comics/第伍部/第11章_千古_唯此一人_张四维_万历十一年_1583_.png',
+                                './ming_comics/第伍部/第11章_千古_唯此一人_张居正_万历五年_1577_.png',
+                                './ming_comics/第伍部/第11章_千古_唯此一人_张居正_万历十年_1582_.png',
+                                './ming_comics/第伍部/第11章_千古_唯此一人_李太后_隆庆六年_1572_至万历十年_1582_.png',
+                                './ming_comics/第伍部/第12章_谜团_万历_万历十一年_1583_.png',
+                                './ming_comics/第伍部/第12章_谜团_万历_万历十三年_1585_.png',
+                                './ming_comics/第伍部/第12章_谜团_丰臣秀吉_万历二十年_1592_.png',
+                                './ming_comics/第伍部/第12章_谜团_戚继光_万历十五年_1587_.png',
+                                './ming_comics/第伍部/第12章_谜团_海瑞_万历十五年_1587_.png',
+                                './ming_comics/第伍部/第13章_野心的起始_丰臣秀吉_万历十三年_1585_.png',
+                                './ming_comics/第伍部/第13章_野心的起始_织田信长_1582年.png',
+                                './ming_comics/第伍部/第13章_野心的起始_羽柴秀吉_1583年.png',
+                                './ming_comics/第伍部/第14章_明朝的愤怒_万历_1592年.png',
+                                './ming_comics/第伍部/第14章_明朝的愤怒_李如松_1592年.png',
+                                './ming_comics/第伍部/第14章_明朝的愤怒_祖承训_1592年七月.png',
+                                './ming_comics/第伍部/第15章_兵不厌诈_吴惟忠_万历二十年十二月.png',
+                                './ming_comics/第伍部/第15章_兵不厌诈_李如松_万历二十一年正月初七夜.png',
+                                './ming_comics/第伍部/第15章_兵不厌诈_李如松_万历二十年_1592_.png',
+                                './ming_comics/第伍部/第15章_兵不厌诈_沈惟敬_万历二十年十二月.png',
+                                './ming_comics/第伍部/第16章_平壤_血战_小西行长_万历二十一年_1593_正月初九.png',
+                                './ming_comics/第伍部/第16章_平壤_血战_李如松_万历二十一年_1593_正月初九.png',
+                                './ming_comics/第伍部/第16章_平壤_血战_李如松_万历二十一年_1593_正月初八.png',
+                                './ming_comics/第伍部/第16章_平壤_血战_祖承训_平壤战役期间.png',
+                                './ming_comics/第伍部/第17章_不世出之名将_李如如柏_万历二十一年正月十八日.png',
+                                './ming_comics/第伍部/第17章_不世出之名将_李如松_万历二十一年三月.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_丰臣秀吉_万历二十四年_1596_九月.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_加藤清正_万历二十六年_1598_正月.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_小西飞_万历二十二年十二月二十日.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_杨镐_万历二十六年正月.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_沈惟敬_万历二十二年_1594_十二月.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_石星_万历二十二年十二月十九日.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_麻贵_万历二十五年_1597_九月七日.png',
+                                './ming_comics/第伍部/第19章_胜算_岛津义弘_1598年10月3日.png',
+                                './ming_comics/第伍部/第19章_胜算_李舜臣_1598年11月18日.png',
+                                './ming_comics/第伍部/第19章_胜算_董一元_1598年10月1日.png',
+                                './ming_comics/第陆部/第1章_绝顶的官僚_申时行_万历六年_1578年_.png',
+                                './ming_comics/第陆部/第1章_绝顶的官僚_申时行_万历十三年_1585年_.png',
+                                './ming_comics/第陆部/第1章_绝顶的官僚_申时行_万历十二年_1584年_.png',
+                                './ming_comics/第陆部/第1章_绝顶的官僚_申时行_嘉靖四十一年_1562年_.png',
+                                './ming_comics/第陆部/第1章_绝顶的官僚_申时行_嘉靖四十二年_1563年_.png',
+                                './ming_comics/第陆部/第2章_和稀泥的艺术_万历帝_万历九年.png',
+                                './ming_comics/第陆部/第2章_和稀泥的艺术_李太后_万历九年.png',
+                                './ming_comics/第陆部/第2章_和稀泥的艺术_申时行_万历五年.png',
+                                './ming_comics/第陆部/第2章_和稀泥的艺术_申时行_万历十八年.png',
+                                './ming_comics/第陆部/第2章_和稀泥的艺术_雒于仁_万历十七年.png',
+                                './ming_comics/第陆部/第3章_游戏的开始_万历帝_万历十四年_1586_.png',
+                                './ming_comics/第陆部/第3章_游戏的开始_朱常洛_万历十八年_1590_.png',
+                                './ming_comics/第陆部/第3章_游戏的开始_汤显祖_万历十九年_1591_.png',
+                                './ming_comics/第陆部/第3章_游戏的开始_王宫女_万历十年_1582_.png',
+                                './ming_comics/第陆部/第3章_游戏的开始_王家屏_万历十八年_1590_.png',
+                                './ming_comics/第陆部/第3章_游戏的开始_申时行_万历十八年_1590_正月初一.png',
+                                './ming_comics/第陆部/第3章_游戏的开始_申时行_万历十四年_1586_.png',
+                                './ming_comics/第陆部/第3章_游戏的开始_郑贵妃_万历十一年_1583_.png',
+                                './ming_comics/第陆部/第4章_混战_万历帝_万历二十一年_1593_.png',
+                                './ming_comics/第陆部/第4章_混战_孟养浩_万历二十年_1592_.png',
+                                './ming_comics/第陆部/第4章_混战_岳元声_万历二十一年_1593_.png',
+                                './ming_comics/第陆部/第4章_混战_李腾芳_万历二十一年_1593_.png',
+                                './ming_comics/第陆部/第4章_混战_王家屏_万历二十年_1592_.png',
+                                './ming_comics/第陆部/第4章_混战_王锡爵_万历二十一年_1593_.png',
+                                './ming_comics/第陆部/第4章_混战_赵南星_万历二十一年_1593_.png',
+                                './ming_comics/第陆部/第4章_混战_顾宪成_万历二十一年_1593_.png',
+                                './ming_comics/第陆部/第5章_东林崛起_李三才_万历三十四年.png',
+                                './ming_comics/第陆部/第5章_东林崛起_赵志皋_万历二十二年至二十九年.png',
+                                './ming_comics/第陆部/第5章_东林崛起_顾宪成_万历三十二年.png',
+                                './ming_comics/第陆部/第5章_东林崛起_顾宪成_万历四年至万历二十一年.png',
+                                './ming_comics/第陆部/第6章_谋杀_万历皇帝_万历四十三年五月二十八日.png',
+                                './ming_comics/第陆部/第6章_谋杀_叶向高_万历四十一年_1613_.png',
+                                './ming_comics/第陆部/第6章_谋杀_张差_万历四十三年_1615_五月初四.png',
+                                './ming_comics/第陆部/第6章_谋杀_朱常洛_万历四十三年五月.png',
+                                './ming_comics/第陆部/第6章_谋杀_王之寀_万历四十三年五月十一日.png',
+                                './ming_comics/第陆部/第7章_不起眼的敌人_努尔哈赤_1583年.png',
+                                './ming_comics/第陆部/第7章_不起眼的敌人_努尔哈赤_万历四十六年_1618_.png',
+                                './ming_comics/第陆部/第7章_不起眼的敌人_努尔哈赤_万历四十四年_1616_.png',
+                                './ming_comics/第陆部/第7章_不起眼的敌人_李成梁_万历三十四年_1606_.png',
+                                './ming_comics/第陆部/第7章_不起眼的敌人_李成梁_万历十一年_1583_.png',
+                                './ming_comics/第陆部/第7章_不起眼的敌人_李成梁_隆庆四年_1570_.png',
+                                './ming_comics/第陆部/第7章_不起眼的敌人_王杲_万历元年_1573_.png',
+                                './ming_comics/第陆部/第8章_萨尔浒会战_刘綎_万历四十七年三月.png',
+                                './ming_comics/第陆部/第8章_萨尔浒会战_努尔哈赤_万历四十七年_1619_前.png',
+                                './ming_comics/第陆部/第8章_萨尔浒会战_李如柏_万历四十七年三月.png',
+                                './ming_comics/第陆部/第8章_萨尔浒会战_杜松_万历四十七年三月.png',
+                                './ming_comics/第陆部/第8章_萨尔浒会战_杨镐_万历四十七年二月.png',
+                                './ming_comics/第陆部/第8章_萨尔浒会战_熊廷弼_万历四十七年冬.png',
+                                './ming_comics/第陆部/第9章_东林党的实力_李三才_万历中期.png',
+                                './ming_comics/第陆部/第9章_东林党的实力_李选侍_泰昌元年_1620_八月.png',
+                                './ming_comics/第陆部/第9章_东林党的实力_杨涟_万历四十八年_1620_八月.png',
+                                './ming_comics/第陆部/第9章_东林党的实力_沈一贯_万历三十三年_1605_.png',
+                                './ming_comics/第陆部/第9章_东林党的实力_郑贵妃_万历四十八年_1620_七月.png',
+                                './ming_comics/第陆部/第10章_小人物的奋斗_左光斗_万历四十八年九月初二.png',
+                                './ming_comics/第陆部/第10章_小人物的奋斗_朱由校_万历四十八年九月初五.png',
+                                './ming_comics/第陆部/第10章_小人物的奋斗_李选侍_万历四十八年八月二十五日.png',
+                                './ming_comics/第陆部/第10章_小人物的奋斗_杨涟_万历四十八年九月初一.png',
+                                './ming_comics/第陆部/第10章_小人物的奋斗_王安_万历四十八年九月初一.png',
+                                './ming_comics/第陆部/第10章_小人物的奋斗_魏忠贤_万历四十八年九月初四.png',
+                                './ming_comics/第陆部/第11章_强大_无比强大_孙得功_天启二年_1622_正月.png',
+                                './ming_comics/第陆部/第11章_强大_无比强大_孙慎行_天启元年_1621_.png',
+                                './ming_comics/第陆部/第11章_强大_无比强大_孙承宗_天启年间.png',
+                                './ming_comics/第陆部/第11章_强大_无比强大_朱常洛_万历四十八年_1620_八月.png',
+                                './ming_comics/第陆部/第11章_强大_无比强大_朱由校_万历四十八年_1620_.png',
+                                './ming_comics/第陆部/第11章_强大_无比强大_杨涟_万历四十八年_1620_八月至九月.png',
+                                './ming_comics/第陆部/第11章_强大_无比强大_罗一贯_天启二年_1622_正月.png',
+                                './ming_comics/第陆部/第12章_天才的敌手_孙承宗_天启二年_1622_.png',
+                                './ming_comics/第陆部/第12章_天才的敌手_毛文龙_天启元年_1621_.png',
+                                './ming_comics/第陆部/第12章_天才的敌手_满桂_天启三年_1623_.png',
+                                './ming_comics/第陆部/第12章_天才的敌手_祖大寿_天启二年_1622_.png',
+                                './ming_comics/第陆部/第12章_天才的敌手_袁崇焕_天启三年_1623_.png',
+                                './ming_comics/第陆部/第12章_天才的敌手_赵率教_天启三年_1623_.png',
+                                './ming_comics/第陆部/第13章_一个监狱看守_官应震_天启初年.png',
+                                './ming_comics/第陆部/第13章_一个监狱看守_梅之焕_万历末年.png',
+                                './ming_comics/第陆部/第13章_一个监狱看守_汪文言_万历四十八年七月.png',
+                                './ming_comics/第陆部/第13章_一个监狱看守_汪文言_万历末年.png',
+                                './ming_comics/第陆部/第13章_一个监狱看守_汪文言_天启初年.png',
+                                './ming_comics/第陆部/第13章_一个监狱看守_王安_万历四十八年.png',
+                                './ming_comics/第陆部/第14章_毁灭之路_客氏_天启年间.png',
+                                './ming_comics/第陆部/第14章_毁灭之路_赵南星_天启三年_1623_.png',
+                                './ming_comics/第陆部/第14章_毁灭之路_魏忠贤_万历十七年_1589_.png',
+                                './ming_comics/第陆部/第14章_毁灭之路_魏忠贤_万历十六年_1588_.png',
+                                './ming_comics/第陆部/第14章_毁灭之路_魏忠贤_天启二年_1622_.png',
+                                './ming_comics/第陆部/第14章_毁灭之路_魏忠贤_天启元年_1620_.png',]
+                        },
+                        {
+                            id: 2,
+                            title: '前期推行“一条鞭法”，国力恢复；后期清算张居正',
+                            comics: ['明神宗朱翊钧事件集/1.2_明神宗朱翊钧_前期推行_一条鞭法_国力恢复_后期清算张居正_万历四年_1576_刘台弹劾张居正入狱.png', '明神宗朱翊钧事件集/1.3_明神宗朱翊钧_前期推行_一条鞭法_国力恢复_后期清算张居正_万历五年_1577_张居正穿素服办公.png', '明神宗朱翊钧事件集/1.4_明神宗朱翊钧_前期推行_一条鞭法_国力恢复_后期清算张居正_万历五年_1577_杖责进谏官员.png', '明神宗朱翊钧事件集/1.5_明神宗朱翊钧_前期推行_一条鞭法_国力恢复_后期清算张居正_万历六年_1578_张居正回乡安葬父亲.png', '明神宗朱翊钧事件集/1.6_明神宗朱翊钧_前期推行_一条鞭法_国力恢复_后期清算张居正_万历十年_1582_冯保被贬.png', '明神宗朱翊钧事件集/1.7_明神宗朱翊钧_前期推行_一条鞭法_国力恢复_后期清算张居正_万历十年_1582_张居正逝世.png', '明神宗朱翊钧事件集/1.8_明神宗朱翊钧_前期推行_一条鞭法_国力恢复_后期清算张居正_万历十一年_1583_追削张居正官级.png', '明神宗朱翊钧事件集/1.9_明神宗朱翊钧_前期推行_一条鞭法_国力恢复_后期清算张居正_万历十二年_1584_查抄张居正家产.png', '明神宗朱翊钧事件集/1.10_明神宗朱翊钧_前期推行_一条鞭法_国力恢复_后期清算张居正_万历十二年_1584_公布张居正罪状.png', '明神宗朱翊钧事件集/1.11_明神宗朱翊钧_前期推行_一条鞭法_国力恢复_后期清算张居正_万历十二年_1584_张居正家属戍边.png']
+                        }
+                    ]
+                },
+                {
+                    id: 14,
+                    name: '朱常洛',
+                    graphLink: './huangditupu/14tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '在位29天暴毙，疑因“红丸案”被毒杀', comics: ['明光宗朱常洛事件集/1.1_明光宗朱常洛_在位29天暴毙_疑因_红丸案_被毒杀_万历四十八年_1620_九月初一_明光宗朱常洛驾崩前颁布遗诏.png', '明光宗朱常洛事件集/1.2_明光宗朱常洛_在位29天暴毙_疑因_红丸案_被毒杀_万历四十八年九月二日_李可灼进献红丸.png', '明光宗朱常洛事件集/1.3_明光宗朱常洛_在位29天暴毙_疑因_红丸案_被毒杀_万历四十八年九月二日_群臣哭拜新君.png', '明光宗朱常洛事件集/1.4_明光宗朱常洛_在位29天暴毙_疑因_红丸案_被毒杀_万历四十八年九月四日_李选侍被迫移宫.png', '明光宗朱常洛事件集/1.5_明光宗朱常洛_在位29天暴毙_疑因_红丸案_被毒杀_万历四十八年九月五日_朱由校登基大典.png', '明光宗朱常洛事件集/1.6_明光宗朱常洛_在位29天暴毙_疑因_红丸案_被毒杀_万历四十八年九月十九日_封赏客氏与魏忠贤.png', '明光宗朱常洛事件集/1.7_明光宗朱常洛_在位29天暴毙_疑因_红丸案_被毒杀_万历四十八年十月三日_显皇帝入葬定陵.png', '明光宗朱常洛事件集/1.8_明光宗朱常洛_在位29天暴毙_疑因_红丸案_被毒杀_天启五年_1625_五月十六日_编纂_三朝要典_.png']
+                        },
+                        {
+                            id: 2, title: '短暂任内废除万历弊政，但未能挽救颓势', comics: ['明光宗朱常洛事件集/2.1_明光宗朱常洛_短暂任内废除万历弊政_但未能挽救颓势_1620年九月_群臣拥立朱由校登基.png', '明光宗朱常洛事件集/2.2_明光宗朱常洛_短暂任内废除万历弊政_但未能挽救颓势_1620年九月_李选侍被迫移居仁寿殿.png', '明光宗朱常洛事件集/2.3_明光宗朱常洛_短暂任内废除万历弊政_但未能挽救颓势_1621年闰二月_废除齐泰黄子澄亲属戍籍.png', '明光宗朱常洛事件集/2.4_明光宗朱常洛_短暂任内废除万历弊政_但未能挽救颓势_1621年四月_七省募兵令颁布.png', '明光宗朱常洛事件集/2.5_明光宗朱常洛_短暂任内废除万历弊政_但未能挽救颓势_1621年六月_熊廷弼复任辽东经略.png', '明光宗朱常洛事件集/2.6_明光宗朱常洛_短暂任内废除万历弊政_但未能挽救颓势_1622年八月_孙承宗督师蓟辽.png', '明光宗朱常洛事件集/2.7_明光宗朱常洛_短暂任内废除万历弊政_但未能挽救颓势_1623年春_赈济山东流民.png', '明光宗朱常洛事件集/2.8_明光宗朱常洛_短暂任内废除万历弊政_但未能挽救颓势_1624年六月_杨涟弹劾魏忠贤.png']
+                        }
+                    ]
+                },
+                {
+                    id: 15,
+                    name: '朱由校',
+                    graphLink: './huangditupu/15tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱由校即位后，沉迷于木工技艺，不理朝政，将朝政大权交给了宦官魏忠贤。魏忠贤与客氏勾结，形成了一股强大的阉党势力，他们专擅朝政，迫害东林党人等正直官员，导致明朝的政治腐败到了极点。在他们的统治下，明朝的社会矛盾日益尖锐，边防松弛，后金势力逐渐崛起，明朝面临着严重的危机。', comics: ['./ming_comics/第陆部/第15章_道统_叶向高_天启四年_1624_.png',
+                                './ming_comics/第陆部/第15章_道统_汪文言_天启四年_1624_.png',
+                                './ming_comics/第陆部/第15章_道统_阮大铖_天启四年_1624_.png',
+                                './ming_comics/第陆部/第15章_道统_魏忠贤_天启四年_1624_.png',
+                                './ming_comics/第陆部/第15章_道统_魏忠贤_天启年间.png',
+                                './ming_comics/第陆部/第15章_道统_黄尊素_天启四年_1624_.png', './ming_comics/第伍部/第16章_平壤_血战_小西行长_万历二十一年_1593_正月初九.png',
+                                './ming_comics/第伍部/第16章_平壤_血战_李如松_万历二十一年_1593_正月初九.png',
+                                './ming_comics/第伍部/第16章_平壤_血战_李如松_万历二十一年_1593_正月初八.png',
+                                './ming_comics/第伍部/第16章_平壤_血战_祖承训_平壤战役期间.png',
+                                './ming_comics/第伍部/第17章_不世出之名将_李如如柏_万历二十一年正月十八日.png',
+                                './ming_comics/第伍部/第17章_不世出之名将_李如松_万历二十一年三月.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_丰臣秀吉_万历二十四年_1596_九月.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_加藤清正_万历二十六年_1598_正月.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_小西飞_万历二十二年十二月二十日.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_杨镐_万历二十六年正月.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_沈惟敬_万历二十二年_1594_十二月.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_石星_万历二十二年十二月十九日.png',
+                                './ming_comics/第伍部/第18章_二次摊牌_麻贵_万历二十五年_1597_九月七日.png',
+                                './ming_comics/第伍部/第19章_胜算_岛津义弘_1598年10月3日.png',
+                                './ming_comics/第伍部/第19章_胜算_李舜臣_1598年11月18日.png',
+                                './ming_comics/第伍部/第19章_胜算_董一元_1598年10月1日.png',
+                                './ming_comics/第柒部/第1章_皇太极_努尔哈赤_天启六年_1626_.png',
+                                './ming_comics/第柒部/第1章_皇太极_满桂_天启七年_1627_五月十六日.png',
+                                './ming_comics/第柒部/第1章_皇太极_皇太极_天启七年_1627_五月二十日.png',
+                                './ming_comics/第柒部/第1章_皇太极_皇太极_天启七年_1627_正月.png',
+                                './ming_comics/第柒部/第1章_皇太极_皇太极_天启六年_1626_九月初一.png',
+                                './ming_comics/第柒部/第1章_皇太极_袁崇焕_天启七年_1627_春.png',
+                                './ming_comics/第柒部/第1章_皇太极_袁崇焕_天启六年_1626_十月.png',
+                                './ming_comics/第柒部/第1章_皇太极_赵率教_天启七年_1627_五月十一日.png',
+                                './ming_comics/第柒部/第2章_宁远_决战_张嫣_懿安皇后_天启七年_1627_八月.png',
+                                './ming_comics/第柒部/第2章_宁远_决战_满桂_天启七年_1627_五月二十八日.png',
+                                './ming_comics/第柒部/第2章_宁远_决战_皇太极_天启七年_1627_五月二十八日.png',
+                                './ming_comics/第柒部/第2章_宁远_决战_袁崇焕_天启七年_1627_五月.png',
+                                './ming_comics/第柒部/第2章_宁远_决战_赵率教_天启七年_1627_五月十三日至六月五日.png',
+                                './ming_comics/第柒部/第2章_宁远_决战_魏忠贤_天启七年_1627_七月.png',
+                                './ming_comics/第柒部/第3章_疑惑_崇祯_天启七年_1627_九月.png',
+                                './ming_comics/第柒部/第3章_疑惑_崔呈秀_天启七年_1627_十月.png',
+                                './ming_comics/第柒部/第3章_疑惑_张皇后_登基典礼当日.png',
+                                './ming_comics/第柒部/第3章_疑惑_张维迎_天启七年_1627_.png',
+                                './ming_comics/第柒部/第3章_疑惑_朱由检_天启七年_1627_八月二十四日.png',
+                                './ming_comics/第柒部/第3章_疑惑_魏忠贤_天启七年_1627_九月初一.png',
+                                './ming_comics/第柒部/第4章_夜半歌声_崇祯_天启七年_1627_十一月.png',
+                                './ming_comics/第柒部/第4章_夜半歌声_崇祯_天启七年_1627_十月二十二日.png',
+                                './ming_comics/第柒部/第4章_夜半歌声_钱嘉徵_天启七年_1627_十月二十六日.png',
+                                './ming_comics/第柒部/第4章_夜半歌声_魏忠贤_天启七年_1627_十一月三日.png',
+                                './ming_comics/第柒部/第4章_夜半歌声_魏忠贤_天启七年_1627_十一月六日.png',
+                                './ming_comics/第柒部/第4章_夜半歌声_魏忠贤_天启七年_1627_十月二十五日.png',
+                                './ming_comics/第柒部/第5章_算账_刘若愚_1627年.png',
+                                './ming_comics/第柒部/第5章_算账_崇祯_1628年.png',
+                                './ming_comics/第柒部/第5章_算账_李永贞_1627年.png',
+                                './ming_comics/第柒部/第5章_算账_黄宗羲_1629年.png',
+                                './ming_comics/第柒部/第6章_起复_崇祯_天启七年_1627_.png',
+                                './ming_comics/第柒部/第6章_起复_袁崇焕_崇祯二年_1629_六月初五.png',
+                                './ming_comics/第柒部/第6章_起复_袁崇焕_崇祯二年_1629_四月.png',
+                                './ming_comics/第柒部/第6章_起复_袁崇焕_崇祯元年_1628_七月十四日.png']
+
+                        },
+                        {
+                            id: 2, title: '沉迷木工，魏忠贤掌权，阉党迫害东林党（六君子案）', comics: [
+                                '明熹宗朱由校事件集/1.1_明熹宗朱由校_沉迷木工_魏忠贤掌权_阉党迫害东林党_六君子案_天启七年_1627_八月_熹宗病危召信王入宫授遗命.png', '明熹宗朱由校事件集/1.2_明熹宗朱由校_沉迷木工_魏忠贤掌权_阉党迫害东林党_六君子案_天启七年十一月_魏忠贤被贬凤阳自缢.png', '明熹宗朱由校事件集/1.3_明熹宗朱由校_沉迷木工_魏忠贤掌权_阉党迫害东林党_六君子案_崇祯元年_1628_正月_斩戮魏忠贤崔呈秀尸体.png', '明熹宗朱由校事件集/1.4_明熹宗朱由校_沉迷木工_魏忠贤掌权_阉党迫害东林党_六君子案_崇祯元年六月_处决阉党冯铨魏广微.png', '明熹宗朱由校事件集/1.5_明熹宗朱由校_沉迷木工_魏忠贤掌权_阉党迫害东林党_六君子案_崇祯元年三月_昭雪东林冤案抚恤遗属.png', '明熹宗朱由校事件集/1.6_明熹宗朱由校_沉迷木工_魏忠贤掌权_阉党迫害东林党_六君子案_崇祯元年四月_焚毁_三朝要典_.png', '明熹宗朱由校事件集/1.7_明熹宗朱由校_沉迷木工_魏忠贤掌权_阉党迫害东林党_六君子案_崇祯二年_1629_正月_定逆案分六等治罪.png', '明熹宗朱由校事件集/1.8_明熹宗朱由校_沉迷木工_魏忠贤掌权_阉党迫害东林党_六君子案_崇祯二年三月_重新安葬东林六君子.png']
+                        },
+                        {
+                            id: 3, title: '后金（清）攻占沈阳、辽阳，明朝丧失辽东', comics: ['明熹宗朱由校事件集/2.1_明熹宗朱由校_后金_清_攻占沈阳_辽阳_明朝丧失辽东_崇祯二年_1629_大清兵进入大安口.png', '明熹宗朱由校事件集/2.2_明熹宗朱由校_后金_清_攻占沈阳_辽阳_明朝丧失辽东_崇祯二年_1629_赵率教战死遵化.png', '明熹宗朱由校事件集/2.3_明熹宗朱由校_后金_清_攻占沈阳_辽阳_明朝丧失辽东_崇祯二年_1629_满桂孙祖寿战死德胜门.png', '明熹宗朱由校事件集/2.4_明熹宗朱由校_后金_清_攻占沈阳_辽阳_明朝丧失辽东_崇祯三年_1630_永平城破.png', '明熹宗朱由校事件集/2.5_明熹宗朱由校_后金_清_攻占沈阳_辽阳_明朝丧失辽东_崇祯三年_1630_滦州沦陷.png', '明熹宗朱由校事件集/2.6_明熹宗朱由校_后金_清_攻占沈阳_辽阳_明朝丧失辽东_崇祯三年_1630_祖大寿突围大凌城.png', '明熹宗朱由校事件集/2.7_明熹宗朱由校_后金_清_攻占沈阳_辽阳_明朝丧失辽东_崇祯四年_1631_大凌城陷落.png', '明熹宗朱由校事件集/2.8_明熹宗朱由校_后金_清_攻占沈阳_辽阳_明朝丧失辽东_崇祯五年_1632_孔有德渡海降清.png']
+                        }
+                    ]
+                },
+                {
+                    id: 16,
+                    name: '朱由检',
+                    graphLink: './huangditupu/16tupu.html',
+                    events: [
+                        {
+                            id: 1, title: '朱由检继位时，明朝已经处于内忧外患的绝境。他即位后，试图通过铲除阉党、任用贤能等措施来挽救明朝的命运。他勤于政事，生活节俭，试图重振朝纲。然而，由于明朝积弊已久，各种问题错综复杂，加上农民起义和后金的双重打击，明朝的局势已经无法挽回。最终，李自成领导的农民起义军攻破北京，朱由检在煤山自缢身亡，明朝灭亡。', comics: [
+                                './ming_comics/第柒部/第7章_杀人_孙承宗_崇祯二年十一月.png',
+                                './ming_comics/第柒部/第7章_杀人_崇祯帝_崇祯二年六月十八日.png',
+                                './ming_comics/第柒部/第7章_杀人_袁崇焕_崇祯二年_1629_.png',
+                                './ming_comics/第柒部/第7章_杀人_袁崇焕_崇祯二年十一月二十七日.png',
+                                './ming_comics/第柒部/第7章_杀人_赵率教_崇祯二年十一月四日.png',
+                                './ming_comics/第柒部/第8章_坚持到底的人_余大成_崇祯二年_1629_十二月四日.png',
+                                './ming_comics/第柒部/第8章_坚持到底的人_孙承宗_崇祯三年_1630_二月.png',
+                                './ming_comics/第柒部/第8章_坚持到底的人_崇祯_崇祯二年_1629_十二月一日.png',
+                                './ming_comics/第柒部/第8章_坚持到底的人_祖大寿_崇祯二年_1629_十二月四日.png',
+                                './ming_comics/第柒部/第8章_坚持到底的人_袁崇焕_崇祯三年_1630_八月十六日.png',
+                                './ming_comics/第柒部/第8章_坚持到底的人_袁崇焕_崇祯二年_1629_十二月一日.png',
+                                './ming_comics/第柒部/第9章_阴谋_崇祯_天启七年_1627_.png',
+                                './ming_comics/第柒部/第9章_阴谋_温体仁_崇祯元年_1628_.png',
+                                './ming_comics/第柒部/第9章_阴谋_袁崇焕_明末.png',
+                                './ming_comics/第柒部/第10章_斗争技术_刘懋_崇祯二年_1629_.png',
+                                './ming_comics/第柒部/第10章_斗争技术_崇祯_崇祯元年_1628_十一月六日.png',
+                                './ming_comics/第柒部/第10章_斗争技术_李自成_崇祯二年_1629_.png',
+                                './ming_comics/第柒部/第10章_斗争技术_温体仁_崇祯三年_1630_.png',
+                                './ming_comics/第柒部/第10章_斗争技术_温体仁_崇祯元年_1628_十一月六日.png',
+                                './ming_comics/第柒部/第10章_斗争技术_温体仁_崇祯四年_1631_.png',
+                                './ming_comics/第柒部/第10章_斗争技术_钱龙锡_崇祯元年_1628_十一月六日.png',
+                                './ming_comics/第柒部/第10章_斗争技术_韩一良_崇祯二年_1629_.png',
+                                './ming_comics/第柒部/第11章_投降_何可纲_崇祯四年_1631_.png',
+                                './ming_comics/第柒部/第11章_投降_孙承宗_崇祯四年_1631_.png',
+                                './ming_comics/第柒部/第11章_投降_皇太极_崇祯四年_1631_.png',
+                                './ming_comics/第柒部/第11章_投降_祖大寿_崇祯四年_1631_.png',
+                                './ming_comics/第柒部/第12章_纯属偶然_崇祯_崇祯元年至四年.png',
+                                './ming_comics/第柒部/第12章_纯属偶然_杨鹤_崇祯元年.png',
+                                './ming_comics/第柒部/第12章_纯属偶然_洪承畴_崇祯四年.png',
+                                './ming_comics/第柒部/第12章_纯属偶然_王左桂_崇祯四年.png',
+                                './ming_comics/第柒部/第12章_纯属偶然_神一魁_崇祯四年九月.png',
+                                './ming_comics/第柒部/第13章_第二个猛人_曹文诏_一年前.png',
+                                './ming_comics/第柒部/第13章_第二个猛人_曹文诏_崇祯七年.png',
+                                './ming_comics/第柒部/第13章_第二个猛人_曹文诏_崇祯六年.png',
+                                './ming_comics/第柒部/第13章_第二个猛人_洪承畴_崇祯六年.png',
+                                './ming_comics/第柒部/第14章_突围_崇祯_崇祯八年十月.png',
+                                './ming_comics/第柒部/第14章_突围_左良玉_崇祯六年十二月.png',
+                                './ming_comics/第柒部/第14章_突围_张献忠_崇祯八年_1635_正月.png',
+                                './ming_comics/第柒部/第14章_突围_李自成_崇祯八年荥阳大会.png',
+                                './ming_comics/第柒部/第14章_突围_王朴_崇祯六年_1634_十一月.png',
+                                './ming_comics/第柒部/第14章_突围_陈奇瑜_崇祯七年_1634_.png',
+                                './ming_comics/第柒部/第15章_一个文雅的人_卢象昇_1636年.png',
+                                './ming_comics/第柒部/第15章_一个文雅的人_曹文诏_1635年.png',
+                                './ming_comics/第柒部/第15章_一个文雅的人_高迎祥_1636年.png',
+                                './ming_comics/第柒部/第16章_孙传庭_卢象昇_1636年.png',
+                                './ming_comics/第柒部/第16章_孙传庭_孙传庭_1636年.png',
+                                './ming_comics/第柒部/第16章_孙传庭_高迎祥_1636年.png',
+                                './ming_comics/第柒部/第17章_奇迹_孙传庭_崇祯九年_1636_七月.png',
+                                './ming_comics/第柒部/第17章_奇迹_温体仁_崇祯年间.png',
+                                './ming_comics/第柒部/第17章_奇迹_高迎祥_崇祯九年_1636_七月.png',
+                                './ming_comics/第柒部/第17章_奇迹_高迎祥_崇祯九年_1636_七月二十日.png',
+                                './ming_comics/第柒部/第18章_天才的计划_崇祯_崇祯十一年_1638年_.png',
+                                './ming_comics/第柒部/第18章_天才的计划_张献忠_崇祯十三年_1640年_夏.png',
+                                './ming_comics/第柒部/第18章_天才的计划_杨嗣昌_崇祯十二年_1639年_春.png',
+                                './ming_comics/第柒部/第19章_选择_卢象昇_崇祯十一年_1638_.png',
+                                './ming_comics/第柒部/第19章_选择_卢象昇_崇祯十一年十二月二十一日.png',
+                                './ming_comics/第柒部/第19章_选择_孙承宗_崇祯十一年_1638_.png',
+                                './ming_comics/第柒部/第19章_选择_张献忠_崇祯十二年_1639_.png',
+                                './ming_comics/第柒部/第19章_选择_杨嗣昌_崇祯十三年_1640_.png',
+                                './ming_comics/第柒部/第20章_没有选择_崇祯_崇祯十七年_1644_三月十八日.png',
+                                './ming_comics/第柒部/第20章_没有选择_杨嗣昌_崇祯']
+                        }, {
+                            id: 2, title: '即位后诛杀魏忠贤，但刚愎多疑，频繁换将（如袁崇焕被杀）', comics: [
+                                '明思宗朱由检事件集/1.1_明思宗朱由检_即位后诛杀魏忠贤_但刚愎多疑_频繁换将_如袁崇焕被杀_崇祯元年_1628_朱由检下诏清算阉党.png', '明思宗朱由检事件集/1.2_明思宗朱由检_即位后诛杀魏忠贤_但刚愎多疑_频繁换将_如袁崇焕被杀_崇祯二年_1629_袁崇焕被押赴西市.png', '明思宗朱由检事件集/1.3_明思宗朱由检_即位后诛杀魏忠贤_但刚愎多疑_频繁换将_如袁崇焕被杀_崇祯十一年_1638_洪承畴跪接尚方剑.png', '明思宗朱由检事件集/1.4_明思宗朱由检_即位后诛杀魏忠贤_但刚愎多疑_频繁换将_如袁崇焕被杀_崇祯十二年_1639_杨嗣昌捧诏出京督师.png', '明思宗朱由检事件集/1.5_明思宗朱由检_即位后诛杀魏忠贤_但刚愎多疑_频繁换将_如袁崇焕被杀_崇祯十三年_1640_贺人龙被斩于军帐.png', '明思宗朱由检事件集/1.6_明思宗朱由检_即位后诛杀魏忠贤_但刚愎多疑_频繁换将_如袁崇焕被杀_崇祯十四年_1641_傅宗龙项城战殁.png', '明思宗朱由检事件集/1.8_明思宗朱由检_即位后诛杀魏忠贤_但刚愎多疑_频繁换将_如袁崇焕被杀_崇祯十七年_1644_朱由检煤山自缢.png']
+                        },
+                        {
+                            id: 3, title: '李自成起义、清军入关，1644年自缢煤山，明朝灭亡', comics: ['明思宗朱由检事件集/2.1_明思宗朱由检_李自成起义_清军入关_1644年自缢煤山_明朝灭亡_崇祯十七年_1644_朱由检自缢煤山.png', '明思宗朱由检事件集/2.2_明思宗朱由检_李自成起义_清军入关_1644年自缢煤山_明朝灭亡_崇祯十七年三月_李自成攻破居庸关.png', '明思宗朱由检事件集/2.3_明思宗朱由检_李自成起义_清军入关_1644年自缢煤山_明朝灭亡_崇祯十六年_1643_孙传庭潼关战死.png', '明思宗朱由检事件集/2.4_明思宗朱由检_李自成起义_清军入关_1644年自缢煤山_明朝灭亡_崇祯十五年_1642_洪承畴松山降清.png', '明思宗朱由检事件集/2.5_明思宗朱由检_李自成起义_清军入关_1644年自缢煤山_明朝灭亡_崇祯十七年正月_李建泰出师败退.png', '明思宗朱由检事件集/2.6_明思宗朱由检_李自成起义_清军入关_1644年自缢煤山_明朝灭亡_崇祯十四年_1641_李自成破洛阳杀福王.png', '明思宗朱由检事件集/2.7_明思宗朱由检_李自成起义_清军入关_1644年自缢煤山_明朝灭亡_崇祯十一年_1638_清军破墙子岭入塞.png', '明思宗朱由检事件集/2.8_明思宗朱由检_李自成起义_清军入关_1644年自缢煤山_明朝灭亡_崇祯十七年四月_清军山海关大捷.png']
+                        },
+                        {
+                            id: 4, title: '勤政节俭却无力回天，性格缺陷加速王朝崩溃', comics: ['明思宗朱由检事件集/3.1_明思宗朱由检_勤政节俭却无力回天_性格缺陷加速王朝崩溃_崇祯九年_1636_卢象升率军救援滁州.png', '明思宗朱由检事件集/3.2_明思宗朱由检_勤政节俭却无力回天_性格缺陷加速王朝崩溃_1636年三月_卢象升剿灭河南流贼.png', '明思宗朱由检事件集/3.3_明思宗朱由检_勤政节俭却无力回天_性格缺陷加速王朝崩溃_1636年七月_清军攻破昌平城防.png', '明思宗朱由检事件集/3.4_明思宗朱由检_勤政节俭却无力回天_性格缺陷加速王朝崩溃_崇祯十一年_1638_松山明军全线溃败.png', '明思宗朱由检事件集/3.5_明思宗朱由检_勤政节俭却无力回天_性格缺陷加速王朝崩溃_崇祯十五年_1642_洪承畴率军降清.png', '明思宗朱由检事件集/3.6_明思宗朱由检_勤政节俭却无力回天_性格缺陷加速王朝崩溃_1643年十月_孙传庭潼关战死.png', '明思宗朱由检事件集/3.7_明思宗朱由检_勤政节俭却无力回天_性格缺陷加速王朝崩溃_1644年三月_李自成攻破北京城.png', '明思宗朱由检事件集/3.8_明思宗朱由检_勤政节俭却无力回天_性格缺陷加速王朝崩溃_1644年三月十九日_帝后自缢殉国.png']
+                        }
+                    ]
+                }
+            ];
+
+            const sidebar = document.getElementById('sidebar');
+            const eventsList = document.getElementById('events-list');
+            const comicContainer = document.querySelector('.comic-container');
+            const graphGraph = document.getElementById('relationship-graph');
+
+            // 绑定侧边栏头像点击事件
+            sidebar.querySelectorAll('.avatar').forEach(avatar => {
+                avatar.addEventListener('click', () => {
+                    const emperorId = parseInt(avatar.dataset.id);
+                    const emperor = emperors.find(e => e.id === emperorId);
+
+                    if (emperor) {
+                        loadEmperorDetails(emperor);
+                    }
+                });
+            });
+
+            // 加载皇帝详情
+            function loadEmperorDetails(emperor) {
+                // 更新皇帝名称
+                document.getElementById('person-name').textContent = emperor.name;
+                comicContainer.style.display = 'none';
+                // 加载知识图谱链接
+                if (emperor.graphLink) {
+                    loadGraphLink(emperor.graphLink);
+                } else {
+                    graphGraph.innerHTML = '<p>暂无知识图谱</p>';
+                }
+
+                // 清空事件列表
+                eventsList.innerHTML = '';
+
+                // 动态生成事件列表
+                const eventHTML = emperor.events.map(event => `
+                    <li data-event-id="${event.id}">
+                        <i class="fas fa-circle-check"></i>
+                        ${event.title}
+                    </li>
+                `).join('');
+                eventsList.innerHTML = eventHTML;
+
+                // 绑定事件点击
+                eventsList.querySelectorAll('li').forEach(eventItem => {
+                    eventItem.addEventListener('click', (e) => {
+                        const eventId = parseInt(e.target.dataset.eventId);
+                        showEventComics(emperor.events, eventId);
+                    });
+                });
+
+
+            }
+
+            // 加载知识图谱链接
+            function loadGraphLink(graphLink) {
+                const link = document.createElement('a');
+                link.href = graphLink;
+                link.target = "_blank"; // 在新窗口打开
+                link.textContent = "查看知识图谱";
+                graphGraph.innerHTML = ''; // 清空之前的内容
+                graphGraph.appendChild(link);
+            }
+
+            let isLoadingImages = false;
+
+            // 显示事件对应的连环画
+            function showEventComics(events, eventId) {
+                // 如果正在加载图片，则忽略点击
+                if (isLoadingImages) {
+                    return;
+                }
+
+                // 设置加载状态为true
+                isLoadingImages = true;
+
+                const comicContainer = document.querySelector('.comic-container');
+                comicContainer.style.display = 'flex'; // 显示图片容器
+                comicContainer.classList.add('show'); // 添加 show 类以显示
+                comicContainer.innerHTML = ''; // 清空漫画容器
+
+                // 添加加载提示
+                const loadingTip = document.createElement('div');
+                loadingTip.textContent = '图片加载中，请稍候...';
+                loadingTip.style.padding = '10px';
+                loadingTip.style.color = '#8B4513';
+                comicContainer.appendChild(loadingTip);
+
+                // 找到对应的事件
+                const event = events.find(e => e.id === eventId);
+
+                if (event && event.comics) {
+                    // 移除加载提示
+                    comicContainer.innerHTML = '';
+
+                    // 按顺序加载图片
+                    let index = 0;
+                    const totalImages = event.comics.length;
+
+                    function loadNextImage() {
+                        if (index < totalImages) {
+                            const img = document.createElement('img');
+                            img.src = event.comics[index];
+                            img.alt = `事件${eventId}`;
+                            img.style.marginRight = '10px';
+                            img.style.borderRadius = '8px';
+                            img.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                            img.style.opacity = 0; // 初始透明度为0
+                            comicContainer.appendChild(img);
+
+                            // 使用动画让图片逐渐显示
+                            setTimeout(() => {
+                                img.style.transition = 'opacity 0.5s ease';
+                                img.style.opacity = 1;
+                            }, 10); // 延迟10ms确保样式生效
+
+                            index++;
+                            setTimeout(loadNextImage, 150); // 每张图片间隔0.15秒
+                        } else {
+                            // 所有图片加载完成，重置加载状态
+                            isLoadingImages = false;
+                        }
+                    }
+
+                    // 开始加载第一张图片
+                    loadNextImage();
+                } else {
+                    // 如果没有找到对应的漫画
+                    comicContainer.innerHTML = '<p>暂无对应的连环画</p>';
+                    // 重置加载状态
+                    isLoadingImages = false;
+                }
+            }
+
+            // 绑定事件点击
+            eventsList.querySelectorAll('li').forEach(eventItem => {
+                eventItem.addEventListener('click', (e) => {
+                    const eventId = parseInt(e.target.dataset.eventId);
+                    showEventComics(emperor.events, eventId);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
